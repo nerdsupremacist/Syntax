@@ -40,6 +40,8 @@
 		0EB829C3226F514400F5B66D /* IntTokenGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C2226F514400F5B66D /* IntTokenGenerator.swift */; };
 		0EB829D0226F55CC00F5B66D /* TokenKeyPathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829CF226F55CC00F5B66D /* TokenKeyPathParser.swift */; };
 		0EB829DC226F5F6D00F5B66D /* Parsable+Recursive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829DB226F5F6D00F5B66D /* Parsable+Recursive.swift */; };
+		0EB829DE226F6E5500F5B66D /* Parsable+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829DD226F6E5500F5B66D /* Parsable+Map.swift */; };
+		0EB829E0226F6EC700F5B66D /* TokenProtocol+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829DF226F6EC700F5B66D /* TokenProtocol+Map.swift */; };
 		1F770356B890ABB307F629162EDC60A2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
 		29A60D0B694B60DC2C9A845A7D4791CB /* Ogma-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 98F59E8CC85604E07D638A17D3FDE056 /* Ogma-dummy.m */; };
 		3C52B9AF754492C0E8FAB001187B84DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
@@ -103,6 +105,8 @@
 		0EB829C2226F514400F5B66D /* IntTokenGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntTokenGenerator.swift; sourceTree = "<group>"; };
 		0EB829CF226F55CC00F5B66D /* TokenKeyPathParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenKeyPathParser.swift; sourceTree = "<group>"; };
 		0EB829DB226F5F6D00F5B66D /* Parsable+Recursive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parsable+Recursive.swift"; sourceTree = "<group>"; };
+		0EB829DD226F6E5500F5B66D /* Parsable+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parsable+Map.swift"; sourceTree = "<group>"; };
+		0EB829DF226F6EC700F5B66D /* TokenProtocol+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TokenProtocol+Map.swift"; sourceTree = "<group>"; };
 		12CDC5142905FEDA47F3F5F58132B60C /* Pods-Ogma_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Ogma_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		2A514D496A0AE397DAC2B3397CC8D0CD /* Pods-Ogma_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ogma_Tests-Info.plist"; sourceTree = "<group>"; };
 		302C266DCEEA15389D96369F04981F6E /* Pods-Ogma_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ogma_Example-Info.plist"; sourceTree = "<group>"; };
@@ -171,6 +175,7 @@
 				0EB82931226F3D1900F5B66D /* Parsable+Init.swift */,
 				0EB82932226F3D1900F5B66D /* Optional+Parsable.swift */,
 				0EB829DB226F5F6D00F5B66D /* Parsable+Recursive.swift */,
+				0EB829DD226F6E5500F5B66D /* Parsable+Map.swift */,
 			);
 			path = Parsable;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 				0EB8297B226F3D5500F5B66D /* Array+TokenGenerator.swift */,
 				0EB8299F226F3E3C00F5B66D /* TokenProtocol.swift */,
 				0EB829B3226F4AEF00F5B66D /* TokenProtocol+Regex.swift */,
+				0EB829DF226F6EC700F5B66D /* TokenProtocol+Map.swift */,
 				0EB829B9226F4D7E00F5B66D /* StandardParsers */,
 			);
 			path = Lexer;
@@ -559,6 +565,7 @@
 				0EB829BF226F4F2400F5B66D /* StringTokenGenerator.swift in Sources */,
 				0EB8299B226F3D5500F5B66D /* GeneratedToken.swift in Sources */,
 				0EB8297C226F3D5500F5B66D /* Lexer.swift in Sources */,
+				0EB829E0226F6EC700F5B66D /* TokenProtocol+Map.swift in Sources */,
 				0EB829B4226F4AEF00F5B66D /* TokenProtocol+Regex.swift in Sources */,
 				0EB829A0226F3E3C00F5B66D /* TokenProtocol.swift in Sources */,
 				0EB82951226F3D1900F5B66D /* Parser+Map.swift in Sources */,
@@ -574,6 +581,7 @@
 				0EB8294F226F3D1900F5B66D /* Parser+Optional.swift in Sources */,
 				0EB82955226F3D1900F5B66D /* Parser+AnyParser.swift in Sources */,
 				0EB829B2226F4A4000F5B66D /* AnyTokenGenerator.swift in Sources */,
+				0EB829DE226F6E5500F5B66D /* Parsable+Map.swift in Sources */,
 				0EB82954226F3D1900F5B66D /* AnyParser.swift in Sources */,
 				0EB829BD226F4E3D00F5B66D /* TokenGenerator+map.swift in Sources */,
 				0EB8294A226F3D1900F5B66D /* Optional+Parsable.swift in Sources */,
