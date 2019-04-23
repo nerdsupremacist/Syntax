@@ -14,7 +14,7 @@ enum Lexer: GeneratorLexer {
 
     static let generator: AnyTokenGenerator<Token> = {
         return [
-            Token.supportWhiteSpaces,
+            Token.ignoringWhiteSpaces,
             Token.openCurlyBracket.generator(with: "\\{"),
             Token.closeCurlyBracket.generator(with: "\\}"),
             Token.openSquareBracket.generator(with: "\\["),

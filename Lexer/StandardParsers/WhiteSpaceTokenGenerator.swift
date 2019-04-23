@@ -9,8 +9,7 @@ import Foundation
 
 extension TokenProtocol {
 
-    // TODO: Find a better API for this
-    public static var supportWhiteSpaces: AnyTokenGenerator<Self> {
+    public static var ignoringWhiteSpaces: AnyTokenGenerator<Self> {
         return WhiteSpaceTokenGenerator().any()
     }
 
