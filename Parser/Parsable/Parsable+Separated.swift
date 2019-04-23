@@ -9,8 +9,8 @@ import Foundation
 
 extension Parsable {
 
-    public static func recursive(with separator: Token) -> AnyParser<Token, [Self]> {
-        return indirect.recursive(with: separator)
+    public static func separated(by separator: Token) -> AnyParser<Token, [Self]> {
+        return indirect.separated(by: separator)
     }
 
 }

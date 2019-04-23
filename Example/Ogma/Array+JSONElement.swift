@@ -13,8 +13,7 @@ extension Array: Parsable where Element == JSON {
     public typealias Token = JSON.Token
 
     public static let parser: AnyParser<JSON.Token, Array<JSON>> = JSON
-        .indirect
-        .recursive(with: .comma)
+        .separated(by: .comma)
         .wrapped(by: .openSquareBracket, and: .closeSquareBracket)
 }
 
