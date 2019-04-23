@@ -18,8 +18,7 @@ public protocol LexerProtocol {
 }
 
 public protocol GeneratorLexer: LexerProtocol {
-    associatedtype Generator: TokenGenerator where Generator.Token == Token
-    static var generator: Generator { get }
+    static var generator: AnyTokenGenerator<Token> { get }
 }
 
 extension GeneratorLexer {

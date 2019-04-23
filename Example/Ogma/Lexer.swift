@@ -11,9 +11,8 @@ import Ogma
 
 enum Lexer: GeneratorLexer {
     typealias Token = Ogma_Example.Token
-    typealias Generator = AnyTokenGenerator<Token>
 
-    static let generator: Generator = {
+    static let generator: AnyTokenGenerator<Token> = {
         return [
             Token.supportWhiteSpaces,
             Token.openCurlyBracket.generator(with: "\\{"),
