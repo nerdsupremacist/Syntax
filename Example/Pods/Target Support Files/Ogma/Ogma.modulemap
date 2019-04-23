@@ -1,0 +1,6 @@
+framework module Ogma {
+  umbrella header "Ogma-umbrella.h"
+
+  export *
+  module * { export * }
+}

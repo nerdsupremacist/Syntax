@@ -1,0 +1,16 @@
+PODS:
+  - Ogma (0.1.0)
+
+DEPENDENCIES:
+  - Ogma (from `../`)
+
+EXTERNAL SOURCES:
+  Ogma:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Ogma: 3ddff9ef2b43c38c9dd578e59b9dc54f1ed76b3f
+
+PODFILE CHECKSUM: 6db0c127627730089646f595d04766639ddbd310
+
+COCOAPODS: 1.6.0.beta.1

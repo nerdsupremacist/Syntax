@@ -1,0 +1,22 @@
+{
+  "name": "Ogma",
+  "version": "0.1.0",
+  "summary": "A short description of Ogma.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/mathiasquintero/Ogma",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "mathiasquintero": "me@quintero.io"
+  },
+  "source": {
+    "git": "https://github.com/mathiasquintero/Ogma.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "Ogma/Classes/**/*"
+}

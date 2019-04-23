@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Ogma_Example' do
+  pod 'Ogma', :path => '../'
+
+  target 'Ogma_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
