@@ -9,6 +9,10 @@
 import Foundation
 import Ogma
 
-extension String: JSONParsable {
+extension String: JSONElement {
     public static let parser: AnyParser<Token, String> = Token.parser(for: \.string)
+
+    var json: JSON {
+        return .string(self)
+    }
 }

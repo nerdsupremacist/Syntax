@@ -9,14 +9,12 @@
 import Foundation
 import Ogma
 
-extension JSON: JSONParsable {
-
-    public static let parser: AnyParser<Token, JSON> = Bool.map(JSON.bool) ||
-        Int.map(JSON.int) ||
-        Double.map(JSON.double) ||
-        String.map(JSON.string) ||
-        Token.null.map { JSON.null } ||
-        Array<JSON>.map(JSON.array) ||
-        Dictionary<String, JSON>.map(JSON.dictionary)
-
+extension JSON: Parsable {
+    public static let parser: AnyParser<Token, JSON> = Bool.json ||
+        Int.json ||
+        Double.json ||
+        String.json ||
+        Token.null.map { .null } ||
+        Array<JSON>.json ||
+        Dictionary<String, JSON>.json
 }

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0EB829A7226F480700F5B66D /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
-		0EB829AA226F487100F5B66D /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* Token.swift */; };
+		0EB829AA226F487100F5B66D /* JSON+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* JSON+Token.swift */; };
 		0EB829B6226F4BAD00F5B66D /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829B5226F4BAD00F5B66D /* Lexer.swift */; };
-		0EB829C6226F51CD00F5B66D /* JSONParsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C5226F51CD00F5B66D /* JSONParsable.swift */; };
+		0EB829C6226F51CD00F5B66D /* JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C5226F51CD00F5B66D /* JSONElement.swift */; };
 		0EB829C8226F520100F5B66D /* Bool+JSONParsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C7226F520100F5B66D /* Bool+JSONParsable.swift */; };
 		0EB829CA226F53CC00F5B66D /* String+JSONParsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C9226F53CC00F5B66D /* String+JSONParsable.swift */; };
 		0EB829CE226F556C00F5B66D /* Int+JSONParsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829CD226F556C00F5B66D /* Int+JSONParsable.swift */; };
@@ -41,9 +41,9 @@
 
 /* Begin PBXFileReference section */
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
-		0EB829A9226F487100F5B66D /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
 		0EB829B5226F4BAD00F5B66D /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
-		0EB829C5226F51CD00F5B66D /* JSONParsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParsable.swift; sourceTree = "<group>"; };
+		0EB829C5226F51CD00F5B66D /* JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONElement.swift; sourceTree = "<group>"; };
 		0EB829C7226F520100F5B66D /* Bool+JSONParsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+JSONParsable.swift"; sourceTree = "<group>"; };
 		0EB829C9226F53CC00F5B66D /* String+JSONParsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+JSONParsable.swift"; sourceTree = "<group>"; };
 		0EB829CD226F556C00F5B66D /* Int+JSONParsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+JSONParsable.swift"; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 		0EB829AC226F490000F5B66D /* Parser */ = {
 			isa = PBXGroup;
 			children = (
-				0EB829A9226F487100F5B66D /* Token.swift */,
+				0EB829A9226F487100F5B66D /* JSON+Token.swift */,
 				0EB829B5226F4BAD00F5B66D /* Lexer.swift */,
 				0EB829D9226F5C9100F5B66D /* JSONParser.swift */,
 				0EB829C4226F51C200F5B66D /* JSONParsable */,
@@ -116,7 +116,7 @@
 		0EB829C4226F51C200F5B66D /* JSONParsable */ = {
 			isa = PBXGroup;
 			children = (
-				0EB829C5226F51CD00F5B66D /* JSONParsable.swift */,
+				0EB829C5226F51CD00F5B66D /* JSONElement.swift */,
 				0EB829C7226F520100F5B66D /* Bool+JSONParsable.swift */,
 				0EB829C9226F53CC00F5B66D /* String+JSONParsable.swift */,
 				0EB829CD226F556C00F5B66D /* Int+JSONParsable.swift */,
@@ -403,10 +403,10 @@
 				0EB829CA226F53CC00F5B66D /* String+JSONParsable.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				0EB829D8226F59C200F5B66D /* Dictionary+JSONParsable.swift in Sources */,
-				0EB829AA226F487100F5B66D /* Token.swift in Sources */,
+				0EB829AA226F487100F5B66D /* JSON+Token.swift in Sources */,
 				0EB829B6226F4BAD00F5B66D /* Lexer.swift in Sources */,
 				0EB829C8226F520100F5B66D /* Bool+JSONParsable.swift in Sources */,
-				0EB829C6226F51CD00F5B66D /* JSONParsable.swift in Sources */,
+				0EB829C6226F51CD00F5B66D /* JSONElement.swift in Sources */,
 				0EB829D6226F589C00F5B66D /* JSON+JSONParsable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

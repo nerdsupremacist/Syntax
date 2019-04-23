@@ -9,28 +9,32 @@
 import Foundation
 import Ogma
 
-public enum Token: TokenProtocol {
-    case openCurlyBracket
-    case closeCurlyBracket
+extension JSON {
 
-    case openSquareBracket
-    case closeSquareBracket
+    public enum Token: TokenProtocol {
+        case openCurlyBracket
+        case closeCurlyBracket
 
-    case comma
-    case colon
+        case openSquareBracket
+        case closeSquareBracket
 
-    case `true`
-    case `false`
+        case comma
+        case colon
 
-    case string(String)
+        case `true`
+        case `false`
 
-    case double(Double)
-    case int(Int)
+        case string(String)
 
-    case null
+        case double(Double)
+        case int(Int)
+
+        case null
+    }
+
 }
 
-extension Token {
+extension JSON.Token {
 
     var string: String? {
         guard case .string(let string) = self else { return nil }

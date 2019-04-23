@@ -13,7 +13,7 @@ extension Dictionary: Parsable where Key == String, Value == JSON {
     public typealias Token = JSON.Token
 
     public static let parser: AnyParser<JSON.Token, Dictionary<String, JSON>> = {
-        let element = String.self && .colon && JSON.self
+        let element = String.self && .colon && json.self
 
         return element
             .recursive(with: .comma)
@@ -22,7 +22,11 @@ extension Dictionary: Parsable where Key == String, Value == JSON {
             .wrapped(by: .openCurlyBracket, and: .closeCurlyBracket)
             .map { $0 ?? [:] }
     }()
+
+    var json: JSON {
+        return .dictionary(self)
+    }
 }
 
-extension Dictionary: JSONParsable where Key == String, Value == JSON { }
+extension Dictionary: JSONElement where Key == String, Value == JSON { }
 

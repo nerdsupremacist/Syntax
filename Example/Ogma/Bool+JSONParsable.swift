@@ -9,7 +9,11 @@
 import Foundation
 import Ogma
 
-extension Bool: JSONParsable {
+extension Bool: JSONElement {
     public static let parser: AnyParser<Token, Bool> = Token.true.map { true } ||
         Token.false.map { false }
+
+    var json: JSON {
+        return .bool(self)
+    }
 }

@@ -10,7 +10,7 @@ import Foundation
 import Ogma
 
 enum Lexer: GeneratorLexer {
-    typealias Token = Ogma_Example.Token
+    typealias Token = JSON.Token
 
     static let generator: AnyTokenGenerator<Token> = {
         return [

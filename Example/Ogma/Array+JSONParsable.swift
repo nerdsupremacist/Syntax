@@ -16,7 +16,12 @@ extension Array: Parsable where Element == JSON {
         .indirect
         .recursive(with: .comma)
         .wrapped(by: .openSquareBracket, and: .closeSquareBracket)
-
 }
 
-extension Array: JSONParsable where Element == JSON { }
+extension Array: JSONElement where Element == JSON {
+
+    var json: JSON {
+        return .array(self)
+    }
+
+}
