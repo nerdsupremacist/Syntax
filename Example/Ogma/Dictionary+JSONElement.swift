@@ -13,7 +13,7 @@ extension Dictionary: Parsable where Key == String, Value == JSON {
     public typealias Token = JSON.Token
 
     public static let parser: AnyParser<JSON.Token, Dictionary<String, JSON>> = {
-        let element = String.self && .colon && json.self
+        let element = String.self && .colon && JSON.self
 
         return element
             .separated(by: .comma)

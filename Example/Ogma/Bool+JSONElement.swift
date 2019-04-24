@@ -10,7 +10,7 @@ import Foundation
 import Ogma
 
 extension Bool: JSONElement {
-    public static let parser: AnyParser<Token, Bool> = Token.true.map { true } ||
+    public static let parser: AnyParser<JSON.Token, Bool> = Token.true.map { true } ||
         Token.false.map { false }
 
     var json: JSON {

@@ -10,7 +10,7 @@ import Foundation
 import Ogma
 
 extension String: JSONElement {
-    public static let parser: AnyParser<Token, String> = Token.parser(for: \.string)
+    public static let parser: AnyParser<JSON.Token, String> = Token.parser(for: \.string)
 
     var json: JSON {
         return .string(self)

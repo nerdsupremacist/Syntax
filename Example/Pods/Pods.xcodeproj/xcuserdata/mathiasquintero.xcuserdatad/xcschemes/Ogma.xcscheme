@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6B5054BC5E6A4E7A371DF4B0FB79B338"
+               BlueprintIdentifier = "1304E306E678CB9E1DAE1BDA6A5DCEE2"
                BlueprintName = "Ogma"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "Ogma.framework">

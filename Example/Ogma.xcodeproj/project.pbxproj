@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E1AEDF022704C7900E3C436 /* JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C5226F51CD00F5B66D /* JSONElement.swift */; };
+		0E1AEDF122704C8500E3C436 /* JSON+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */; };
+		0E1AEDF222704C9E00E3C436 /* Bool+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C7226F520100F5B66D /* Bool+JSONElement.swift */; };
+		0E1AEDF322704CA400E3C436 /* String+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C9226F53CC00F5B66D /* String+JSONElement.swift */; };
+		0E1AEDF422704CA900E3C436 /* Int+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829CD226F556C00F5B66D /* Int+JSONElement.swift */; };
+		0E1AEDF522704CAE00E3C436 /* Double+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D1226F584500F5B66D /* Double+JSONElement.swift */; };
+		0E1AEDF622704CB300E3C436 /* Array+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D3226F588900F5B66D /* Array+JSONElement.swift */; };
+		0E1AEDF822704D0400E3C436 /* Dictionary+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */; };
 		0EB829A7226F480700F5B66D /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
 		0EB829AA226F487100F5B66D /* JSON+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* JSON+Token.swift */; };
 		0EB829B6226F4BAD00F5B66D /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829B5226F4BAD00F5B66D /* Lexer.swift */; };
-		0EB829C6226F51CD00F5B66D /* JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C5226F51CD00F5B66D /* JSONElement.swift */; };
-		0EB829C8226F520100F5B66D /* Bool+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C7226F520100F5B66D /* Bool+JSONElement.swift */; };
-		0EB829CA226F53CC00F5B66D /* String+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C9226F53CC00F5B66D /* String+JSONElement.swift */; };
-		0EB829CE226F556C00F5B66D /* Int+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829CD226F556C00F5B66D /* Int+JSONElement.swift */; };
-		0EB829D2226F584500F5B66D /* Double+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D1226F584500F5B66D /* Double+JSONElement.swift */; };
-		0EB829D4226F588900F5B66D /* Array+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D3226F588900F5B66D /* Array+JSONElement.swift */; };
-		0EB829D6226F589C00F5B66D /* JSON+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */; };
-		0EB829D8226F59C200F5B66D /* Dictionary+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */; };
-		0EB829DA226F5C9100F5B66D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D9226F5C9100F5B66D /* JSONParser.swift */; };
+		0EB829DA226F5C9100F5B66D /* JSON+Parse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D9226F5C9100F5B66D /* JSON+Parse.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -51,7 +51,7 @@
 		0EB829D3226F588900F5B66D /* Array+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+JSONElement.swift"; sourceTree = "<group>"; };
 		0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Parsable.swift"; sourceTree = "<group>"; };
 		0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+JSONElement.swift"; sourceTree = "<group>"; };
-		0EB829D9226F5C9100F5B66D /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
+		0EB829D9226F5C9100F5B66D /* JSON+Parse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Parse.swift"; sourceTree = "<group>"; };
 		36E89E92650B90DC7F4A6CB5 /* Pods-Ogma_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ogma_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Ogma_Tests/Pods-Ogma_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5C89AAAC7200BA3C50C55859 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Ogma_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ogma_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +107,7 @@
 			children = (
 				0EB829A9226F487100F5B66D /* JSON+Token.swift */,
 				0EB829B5226F4BAD00F5B66D /* Lexer.swift */,
-				0EB829D9226F5C9100F5B66D /* JSONParser.swift */,
+				0EB829D9226F5C9100F5B66D /* JSON+Parse.swift */,
 				0EB829C4226F51C200F5B66D /* Parser */,
 			);
 			name = Parser;
@@ -238,7 +238,7 @@
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				7186748B8A2ABB69E0ADFF27 /* [CP] Embed Pods Frameworks */,
+				99F6BEF4FD36AD35204C3D2C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -351,7 +351,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7186748B8A2ABB69E0ADFF27 /* [CP] Embed Pods Frameworks */ = {
+		99F6BEF4FD36AD35204C3D2C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -403,19 +403,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EB829A7226F480700F5B66D /* JSON.swift in Sources */,
+				0E1AEDF522704CAE00E3C436 /* Double+JSONElement.swift in Sources */,
+				0E1AEDF222704C9E00E3C436 /* Bool+JSONElement.swift in Sources */,
 				0EB829AA226F487100F5B66D /* JSON+Token.swift in Sources */,
-				0EB829C6226F51CD00F5B66D /* JSONElement.swift in Sources */,
-				0EB829DA226F5C9100F5B66D /* JSONParser.swift in Sources */,
-				0EB829D2226F584500F5B66D /* Double+JSONElement.swift in Sources */,
-				0EB829D4226F588900F5B66D /* Array+JSONElement.swift in Sources */,
-				0EB829CE226F556C00F5B66D /* Int+JSONElement.swift in Sources */,
+				0EB829DA226F5C9100F5B66D /* JSON+Parse.swift in Sources */,
+				0E1AEDF622704CB300E3C436 /* Array+JSONElement.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				0EB829CA226F53CC00F5B66D /* String+JSONElement.swift in Sources */,
+				0E1AEDF322704CA400E3C436 /* String+JSONElement.swift in Sources */,
+				0E1AEDF822704D0400E3C436 /* Dictionary+JSONElement.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
-				0EB829D8226F59C200F5B66D /* Dictionary+JSONElement.swift in Sources */,
+				0E1AEDF122704C8500E3C436 /* JSON+Parsable.swift in Sources */,
 				0EB829B6226F4BAD00F5B66D /* Lexer.swift in Sources */,
-				0EB829C8226F520100F5B66D /* Bool+JSONElement.swift in Sources */,
-				0EB829D6226F589C00F5B66D /* JSON+Parsable.swift in Sources */,
+				0E1AEDF422704CA900E3C436 /* Int+JSONElement.swift in Sources */,
+				0E1AEDF022704C7900E3C436 /* JSONElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

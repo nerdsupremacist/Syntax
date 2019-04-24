@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         """
 
-        let json = try! JSONParser.json(from: input)
+        let json: JSON = try! .parse(input: input)
         print(json)
 
         return true

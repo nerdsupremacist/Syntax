@@ -8,9 +8,9 @@
 
 import Foundation
 
-enum JSONParser {
+extension JSON {
 
-    public static func json(from input: String) throws -> JSON {
+    public static func parse(input: String) throws -> JSON {
         let tokens = try Lexer.tokenize(input: input)
         return try JSON(tokens: tokens)
     }

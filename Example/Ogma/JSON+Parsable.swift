@@ -10,6 +10,7 @@ import Foundation
 import Ogma
 
 extension JSON: Parsable {
+
     public static let parser: AnyParser<Token, JSON> = Bool.json ||
         Int.json ||
         Double.json ||
@@ -17,4 +18,5 @@ extension JSON: Parsable {
         Token.null.map { .null } ||
         Array<JSON>.json ||
         Dictionary<String, JSON>.json
+
 }
