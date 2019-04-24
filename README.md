@@ -6,9 +6,9 @@ Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complic
 
 Once you have an understanding what you want to parse (it helps to have a defined Context Free Grammar already written down), you need to implement:
 
-- Your Model: What the result of the Parser should look like
-- Your Lexer: A component to turn an input String into Tokens
-- Your Parser: The consumer of the Tokens from the Lexer. The Parser will take the Tokens as an input and output your Model
+- **Your Model:** What the result of the Parser should look like
+- **Your Lexer:** A component to turn an input String into Tokens
+- **Your Parser:** The consumer of the Tokens from the Lexer. The Parser will take the Tokens as an input and output your Model
 
 ## Example
 
