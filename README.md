@@ -168,7 +168,7 @@ extension Expression: Parsable {
 
 Now we can use our parser:
 
-```swift****
+```swift
 extension String {
 
     func calculate() throws -> Int {
