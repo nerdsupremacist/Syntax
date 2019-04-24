@@ -8,10 +8,6 @@
 
 import Foundation
 
-struct LexerCouldNotDecode: Error {
-    let character: Character?
-}
-
 public protocol LexerProtocol {
     associatedtype Token: TokenProtocol
     static func tokenize(input: String) throws -> [Token]
@@ -30,7 +26,9 @@ extension GeneratorLexer {
     private static func tokenize(input: String) throws -> [Token?] {
         let generated = try generator.take(text: input)
         guard let remaining = generated.remainingString else { return [generated.token] }
-        guard remaining.count != input.count else { throw LexerCouldNotDecode(character: remaining.first) }
+
+        guard remaining.count != input.count else { throw LexerError.couldNotDecode(remaining.first) }
+
         let rest = try tokenize(input: remaining) as [Token?]
         return [generated.token] + rest
     }

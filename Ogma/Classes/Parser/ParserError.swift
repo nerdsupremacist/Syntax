@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ParserError<Token: TokenProtocol>: Error {
+public enum ParserError<Token: TokenProtocol>: Error {
     case noMoreTokens
     case unexpectedToken(Token, expected: Token)
     case parsableValueDidNotConsumeAllTokens(Any.Type, remaining: [Token])

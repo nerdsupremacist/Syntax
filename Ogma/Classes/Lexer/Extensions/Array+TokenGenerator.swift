@@ -21,7 +21,7 @@ extension Array: TokenGenerator where Element: TokenGenerator {
             } catch let error as LexerError {
                 errors.append(error)
             } catch {
-                errors.append(.unknown(error))
+                errors.append(.custom(error))
             }
         }
 

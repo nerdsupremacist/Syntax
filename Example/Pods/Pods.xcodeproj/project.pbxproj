@@ -180,6 +180,24 @@
 			path = "Type Ereasure";
 			sourceTree = "<group>";
 		};
+		0E1AEE00227059B800E3C436 /* Helper Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				41959A99EFF3843DB65011C3C456BFFC /* RegexTokenGenerator.swift */,
+			);
+			path = "Helper Protocols";
+			sourceTree = "<group>";
+		};
+		0E1AEE01227059C700E3C436 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				B6FCF69F02D9AB0F15FBB0942AA9A694 /* Lexer.swift */,
+				A10E65034E7CE00B90EAD05DA92A57E5 /* TokenGenerator.swift */,
+				5D4569C444D7D0EF0CFD5CA6A6D492B6 /* TokenProtocol.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		3563E0579D1279E3AC7D37B6AE720C28 /* Manipulating */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,10 +424,8 @@
 			children = (
 				B06E283266AB70C52F0DC0779B296EB0 /* GeneratedToken.swift */,
 				0E1AEDFC227050A700E3C436 /* LexerError.swift */,
-				B6FCF69F02D9AB0F15FBB0942AA9A694 /* Lexer.swift */,
-				41959A99EFF3843DB65011C3C456BFFC /* RegexTokenGenerator.swift */,
-				A10E65034E7CE00B90EAD05DA92A57E5 /* TokenGenerator.swift */,
-				5D4569C444D7D0EF0CFD5CA6A6D492B6 /* TokenProtocol.swift */,
+				0E1AEE01227059C700E3C436 /* Protocols */,
+				0E1AEE00227059B800E3C436 /* Helper Protocols */,
 				37AAEBB20A898E72893ADE3D71F0B57A /* Extensions */,
 				F26F5206E3F8F1F7BD0CBB034657F21D /* Operatios */,
 				3DCDB02CC80217A183A31ADF53D28E93 /* StandardGenerators */,
