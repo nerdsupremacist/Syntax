@@ -11,11 +11,11 @@ import Foundation
 postfix operator *
 postfix operator +
 
-postfix func * <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
+public postfix func * <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
     return RepeatingParser(source: p).any()
 }
 
-postfix func + <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
+public postfix func + <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
     let parser = p && p*
     return parser.map { [$0] + $1 }
 }
