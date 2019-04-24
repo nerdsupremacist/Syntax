@@ -10,7 +10,6 @@ import Foundation
 import Ogma
 
 protocol JSONElement: Parsable where Token == JSON.Token {
-    static var parser: Parser { get }
     var json: JSON { get }
 }
 
