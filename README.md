@@ -172,9 +172,7 @@ Now we can use our parser:
 extension String {
 
     func calculate() throws -> Int {
-        let tokens = try Expression.Lexer.tokenize(input: self)
-        let expression = try Expression(tokens: tokens)
-        return expression.eval()
+        return try Expression.Lexer.parse(input: self, of: Expression.self).eval()
     }
 
 }
