@@ -14,7 +14,7 @@ extension Array: TokenGenerator where Element: TokenGenerator {
 
     public typealias Token = Element.Token
     
-   public func take(text: String) throws -> Generated<Token> {
+    public func take(text: String) throws -> Generated<Token> {
         var lastError: Error = EmptyTokenGeneratorError()
         for generator in self {
             do {
