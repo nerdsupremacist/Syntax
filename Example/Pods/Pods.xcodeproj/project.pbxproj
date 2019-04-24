@@ -98,24 +98,24 @@
 		5D4569C444D7D0EF0CFD5CA6A6D492B6 /* TokenProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TokenProtocol.swift; sourceTree = "<group>"; };
 		66AB368536BBA30B48CA46A789545DAF /* Parser+Map.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+Map.swift"; sourceTree = "<group>"; };
 		67AC9E15C1CF2F2F8CB3F363E103B703 /* Ogma-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Ogma-prefix.pch"; sourceTree = "<group>"; };
-		7976D2CC7E7EBDABFB137E822BE8D11E /* Ogma.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Ogma.framework; path = Ogma.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7976D2CC7E7EBDABFB137E822BE8D11E /* Ogma.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ogma.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D1DF7BB1C91A8068CBE6C8AF21C91CA /* Pods-Ogma_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Ogma_Example-umbrella.h"; sourceTree = "<group>"; };
 		8367CA2004C8FD89DA19B15AD6B7D12E /* Pods-Ogma_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Ogma_Tests-umbrella.h"; sourceTree = "<group>"; };
-		842496A8CD50BCF68822A86658D62504 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		842496A8CD50BCF68822A86658D62504 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		864C3D18C3DE4D7E40C2E8CF4FCD0775 /* Pods-Ogma_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ogma_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		887F104FD1F7F5063F73E75D2820F20F /* Parser+Or.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+Or.swift"; sourceTree = "<group>"; };
 		8BAAB098302C85756A6E7C1449345DCF /* Parser+And.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+And.swift"; sourceTree = "<group>"; };
 		8C66A1FC7458D0B77026F7BE37718AAF /* Optional+Parsable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Optional+Parsable.swift"; sourceTree = "<group>"; };
 		8E117F12B3A5811052B74A22B591703D /* Ogma.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Ogma.xcconfig; sourceTree = "<group>"; };
-		8E16B1C76F53537E846E30056D0EC116 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		8E16B1C76F53537E846E30056D0EC116 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		9355A90D52206603EB501323C44CCB15 /* Pods-Ogma_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ogma_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		97AB994677CDDF7761303CB250B98FFC /* Pods-Ogma_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Ogma_Example-frameworks.sh"; sourceTree = "<group>"; };
 		987E75DDE33DC1FC688DC3BCB986EF99 /* Parsable+Separated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parsable+Separated.swift"; sourceTree = "<group>"; };
 		9CD91B781833E518DEEADAE8D2CAE8E1 /* Pods-Ogma_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ogma_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		A0E197C9EDFA982CC527BB567928133F /* Pods_Ogma_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Ogma_Tests.framework; path = "Pods-Ogma_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0E197C9EDFA982CC527BB567928133F /* Pods_Ogma_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ogma_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10E65034E7CE00B90EAD05DA92A57E5 /* TokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TokenGenerator.swift; sourceTree = "<group>"; };
-		A1BB21BA00D843A24E477979612439C6 /* Ogma.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; path = Ogma.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A1BB21BA00D843A24E477979612439C6 /* Ogma.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; path = Ogma.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A6714D7B197538156A7DD74BB53F11E7 /* WhiteSpaceTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WhiteSpaceTokenGenerator.swift; sourceTree = "<group>"; };
 		A86318D437EB2ACBA47A24DE28D5B728 /* Ogma-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Ogma-umbrella.h"; sourceTree = "<group>"; };
 		AB23F469750B744BE84E8AB7E4054DB5 /* Pods-Ogma_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Ogma_Example.modulemap"; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 		D43F1D4B2D9C781282E9824CDE6BCF30 /* Pods-Ogma_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Ogma_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		D45A029656327F4CDD136FE14811DF6B /* Pods-Ogma_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Ogma_Tests-dummy.m"; sourceTree = "<group>"; };
 		E3BA0CD508327E70C55CE50ECDE183BB /* Parsable+Map.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parsable+Map.swift"; sourceTree = "<group>"; };
-		EBBF2FE5187627C623761ACA5A6A854E /* Pods_Ogma_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Ogma_Example.framework; path = "Pods-Ogma_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBBF2FE5187627C623761ACA5A6A854E /* Pods_Ogma_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ogma_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3BC9A85618AFF184CF764674B1E2BA0 /* Parser+Repeating.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+Repeating.swift"; sourceTree = "<group>"; };
 		F8DFCBCA7BE9EB41A2B32EFBF5C0C4C8 /* Parser+Separated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+Separated.swift"; sourceTree = "<group>"; };
 		FFFC8DCA32F31A47FA67EE425ECDFEE8 /* AnyParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyParser.swift; sourceTree = "<group>"; };
@@ -173,7 +173,6 @@
 				FFFC8DCA32F31A47FA67EE425ECDFEE8 /* AnyParser.swift */,
 				CBB1C2965784FD1999EFE8A673856202 /* Parser+AnyParser.swift */,
 			);
-			name = "Type Ereasure";
 			path = "Type Ereasure";
 			sourceTree = "<group>";
 		};
@@ -186,7 +185,6 @@
 				F8DFCBCA7BE9EB41A2B32EFBF5C0C4C8 /* Parser+Separated.swift */,
 				463DD2615E38B08282683F73BE6A47C2 /* Parser+Wrapped.swift */,
 			);
-			name = Manipulating;
 			path = Manipulating;
 			sourceTree = "<group>";
 		};
@@ -196,11 +194,10 @@
 				38B05A9E7F197AE25314DF6FC46740A5 /* Array+TokenGenerator.swift */,
 				350FAA2D5684379FF1031E251CA9E46C /* Swift+Range.swift */,
 			);
-			name = Extensions;
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		3DCDB02CC80217A183A31ADF53D28E93 /* StandardParsers */ = {
+		3DCDB02CC80217A183A31ADF53D28E93 /* StandardGenerators */ = {
 			isa = PBXGroup;
 			children = (
 				0F6DB5832606DD292E56D2591622CD36 /* DoubleTokenGenerator.swift */,
@@ -208,8 +205,7 @@
 				2D212D04C476A529992C0A4E0645D2FA /* StringTokenGenerator.swift */,
 				A6714D7B197538156A7DD74BB53F11E7 /* WhiteSpaceTokenGenerator.swift */,
 			);
-			name = StandardParsers;
-			path = StandardParsers;
+			path = StandardGenerators;
 			sourceTree = "<group>";
 		};
 		5BFE2026EBF3651F2180944001A7C58C /* Products */ = {
@@ -235,7 +231,6 @@
 			children = (
 				0ADFE10C490A016BD49FB01BAB958DA6 /* SingleTokenParser.swift */,
 			);
-			name = "Helper Protocols";
 			path = "Helper Protocols";
 			sourceTree = "<group>";
 		};
@@ -290,7 +285,6 @@
 				8BAAB098302C85756A6E7C1449345DCF /* Parser+And.swift */,
 				887F104FD1F7F5063F73E75D2820F20F /* Parser+Or.swift */,
 			);
-			name = Combining;
 			path = Combining;
 			sourceTree = "<group>";
 		};
@@ -299,7 +293,6 @@
 			children = (
 				43152718F5FDBD82319D4410C379B9A4 /* AnyTokenGenerator.swift */,
 			);
-			name = "Type Erasure";
 			path = "Type Erasure";
 			sourceTree = "<group>";
 		};
@@ -338,7 +331,6 @@
 				E3BA0CD508327E70C55CE50ECDE183BB /* Parsable+Map.swift */,
 				987E75DDE33DC1FC688DC3BCB986EF99 /* Parsable+Separated.swift */,
 			);
-			name = Parsable;
 			path = Parsable;
 			sourceTree = "<group>";
 		};
@@ -391,7 +383,6 @@
 				73B5EC6A6CEAC4074E1A4CFB07A3559F /* Combining */,
 				3563E0579D1279E3AC7D37B6AE720C28 /* Manipulating */,
 			);
-			name = Operations;
 			path = Operations;
 			sourceTree = "<group>";
 		};
@@ -402,7 +393,6 @@
 				39786604F1AF5284D3D7998028243EA9 /* TokenProtocol+Map.swift */,
 				C23140626C47B22FB9B684B31572FDEB /* TokenProtocol+Regex.swift */,
 			);
-			name = Operatios;
 			path = Operatios;
 			sourceTree = "<group>";
 		};
@@ -416,7 +406,7 @@
 				5D4569C444D7D0EF0CFD5CA6A6D492B6 /* TokenProtocol.swift */,
 				37AAEBB20A898E72893ADE3D71F0B57A /* Extensions */,
 				F26F5206E3F8F1F7BD0CBB034657F21D /* Operatios */,
-				3DCDB02CC80217A183A31ADF53D28E93 /* StandardParsers */,
+				3DCDB02CC80217A183A31ADF53D28E93 /* StandardGenerators */,
 				760B13E98AAB2F196C03FDDD2730136E /* Type Erasure */,
 			);
 			name = Lexer;
@@ -674,8 +664,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -707,8 +696,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
