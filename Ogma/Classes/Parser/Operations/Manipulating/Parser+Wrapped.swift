@@ -9,7 +9,8 @@
 import Foundation
 
 extension Parser {
-    
+
+    /// Find an occurrence of the parsers value wrapped by a start and end token
     public func wrapped(by start: Token, and end: Token) -> AnyParser<Token, Output> {
         return start && self && end
     }

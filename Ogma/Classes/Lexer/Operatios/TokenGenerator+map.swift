@@ -9,6 +9,7 @@ import Foundation
 
 extension TokenGenerator {
 
+    /// Map a Token Generator to create Tokens of another Type
     public func map<T: TokenProtocol>(_ transform: @escaping (Token) throws -> T) -> AnyTokenGenerator<T> {
         return MappedTokenGenerator(source: self, transform: transform).any()
     }

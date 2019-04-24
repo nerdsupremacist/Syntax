@@ -9,6 +9,7 @@ import Foundation
 
 extension Int {
 
+    /// Generator that returns an Int
     public static let generator: AnyTokenGenerator<Int> = IntTokenGenerator().any()
 
 }

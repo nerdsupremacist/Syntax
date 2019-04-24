@@ -9,6 +9,7 @@ import Foundation
 
 extension TokenProtocol {
 
+    /// Returns a TokenGenerator that generates the current Token when the regular expression matched
     public func generator(with pattern: String) -> AnyTokenGenerator<Self> {
         return StandardRegexTokenGenerator(pattern: pattern, token: self).any()
     }

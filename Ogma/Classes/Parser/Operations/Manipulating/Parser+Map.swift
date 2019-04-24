@@ -9,7 +9,8 @@
 import Foundation
 
 extension Parser {
-    
+
+    /// Map the output value of a Parser
     public func map<T>(_ transform: @escaping (Output) throws -> T) -> AnyParser<Token, T> {
         return MappedParser(source: self, transform: transform).any()
     }

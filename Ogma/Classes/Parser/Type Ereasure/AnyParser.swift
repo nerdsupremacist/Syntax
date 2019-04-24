@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Wrapper around another Parser for Type Erasure
 public struct AnyParser<Token: TokenProtocol, Output>: Parser {
     
     let _parse: ([Token]) throws -> ParserOutput<Token, Output>

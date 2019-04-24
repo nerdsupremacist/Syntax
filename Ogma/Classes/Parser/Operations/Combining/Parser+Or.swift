@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Create a Parser that return the first succesfull result from two Parsers
 public func ||<A: Parser, B: Parser>(lhs: A,
                                      rhs: B) -> AnyParser<A.Token, A.Output> where A.Output == B.Output, A.Token == B.Token {
 

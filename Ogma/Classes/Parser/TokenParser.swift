@@ -10,6 +10,7 @@ import Foundation
 
 extension TokenProtocol {
 
+    /// Parser that will consume the current Token
     public var parser: AnyParser<Self, Void> {
         return TokenParser(token: self).any()
     }

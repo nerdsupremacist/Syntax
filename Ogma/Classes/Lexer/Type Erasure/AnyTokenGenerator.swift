@@ -9,12 +9,14 @@ import Foundation
 
 extension TokenGenerator {
 
+    /// Cast a TokenGenerator to Any
     public func any() -> AnyTokenGenerator<Token> {
         return AnyTokenGenerator(self)
     }
 
 }
 
+/// Wrapper around another TokenGenerator for Type Erasure
 public class AnyTokenGenerator<Token: TokenProtocol>: TokenGenerator {
     let _take: (String) throws -> Generated<Token>
 

@@ -9,7 +9,8 @@
 import Foundation
 
 extension Parser {
-    
+
+    // Cast a Parser to an AnyParser
     public func any() -> AnyParser<Token, Output> {
         return AnyParser(self)
     }

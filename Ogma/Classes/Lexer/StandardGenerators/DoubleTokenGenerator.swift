@@ -9,6 +9,7 @@ import Foundation
 
 extension Double {
 
+    /// Generator that returns a Double
     public static let generator: AnyTokenGenerator<Double> = DoubleTokenGenerator().any()
 
 }

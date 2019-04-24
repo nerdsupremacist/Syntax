@@ -9,6 +9,7 @@ import Foundation
 
 extension TokenProtocol {
 
+    /// A Generator that skips white spaces
     public static var ignoringWhiteSpaces: AnyTokenGenerator<Self> {
         return WhiteSpaceTokenGenerator().any()
     }

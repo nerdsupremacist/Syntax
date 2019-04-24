@@ -9,7 +9,8 @@
 import Foundation
 
 extension Parsable {
-    
+
+    /// Indirect Parser for a Parsable Type. In order to avoid cycles during initialization
     public static var indirect: AnyParser<Token, Self> {
         return IndirectParsable<Self>().any()
     }

@@ -7,7 +7,9 @@
 
 import Foundation
 
+/// A GeneratorLexer is a Lexer that delegates its job to a TokenGenerator by running it multiple times
 public protocol GeneratorLexer: LexerProtocol {
+    /// Generator that should be called to generate Tokens
     static var generator: AnyTokenGenerator<Token> { get }
 }
 

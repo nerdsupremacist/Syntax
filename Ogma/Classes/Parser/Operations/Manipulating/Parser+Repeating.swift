@@ -11,10 +11,12 @@ import Foundation
 postfix operator *
 postfix operator +
 
+/// Attempt to read the value of the parser as many times as possible
 public postfix func * <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
     return RepeatingParser(source: p).any()
 }
 
+/// Atempt to read the value of the parser at least once
 public postfix func + <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
     let parser = p && p*
     return parser.map { [$0] + $1 }

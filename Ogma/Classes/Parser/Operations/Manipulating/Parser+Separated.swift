@@ -12,6 +12,7 @@ extension Parser {
     
     // [Self]([Separator][Self])* when empty is not allowed
     // [Self]([Separator][Self])*? when empty is allowed
+    /// Find n occurrences of the parsers value separated by a specific Token.
     public func separated(by separator: Token, allowsEmpty: Bool = false) -> AnyParser<Token, [Output]> {
 
         if allowsEmpty {

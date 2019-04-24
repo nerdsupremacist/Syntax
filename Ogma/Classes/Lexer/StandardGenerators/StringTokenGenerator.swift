@@ -9,6 +9,7 @@ import Foundation
 
 extension String {
 
+    /// Generator that returns a String surrounded by a specific delimiter
     public static func generator(delimiter: String) -> AnyTokenGenerator<String> {
         return StringTokenGenerator(delimiter: delimiter).any()
     }

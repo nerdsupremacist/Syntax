@@ -8,7 +8,9 @@
 
 import Foundation
 
+/// Parser that consumes one Token at a Time
 public protocol SingleTokenParser: Parser {
+    /// Attempt to read output from a single Token
     func parse(token: Token) throws -> Output
 }
 

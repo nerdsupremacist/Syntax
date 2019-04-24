@@ -9,7 +9,8 @@
 import Foundation
 
 extension Parsable {
-    
+
+    /// Initialize a value from a sequence of Tokens
     public init(tokens: [Token]) throws {
         let output = try Self.parser.parse(tokens: tokens)
         guard output.remaining.isEmpty else {

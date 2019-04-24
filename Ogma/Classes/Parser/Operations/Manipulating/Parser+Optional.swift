@@ -10,12 +10,14 @@ import Foundation
 
 postfix operator .?
 
+/// Make the value optional. If the value cannot be parsed it will return nil and not consume any tokens
 public postfix func .?<P: Parser>(_ p: P) -> AnyParser<P.Token, P.Output?> {
     return p.optional()
 }
 
 extension Parser {
-    
+
+    /// Make the value optional. If the value cannot be parsed it will return nil and not consume any tokens
     public func optional() -> AnyParser<Token, Output?> {
         return OptionalParser(source: self).any()
     }
