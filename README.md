@@ -185,3 +185,16 @@ Awesome! We just wrote a calculator and at no point did we use a state machine. 
 - A type can only implement `Parsable` once. And for one type of Tokens. So if you plan on writing more than one parser, you should not let types from the Standard Library implement `Parsable`.
 - Indirect enum tend to have the recursion issue mentioned earlier. A call stack based failsafe could be implemented, but it's not yet clear what it should look like.
 - Operator precedence does not work out of the box, yet.
+
+
+## Authors
+
+- [Mathias Quintero](https://github.com/nerdsupremacist)
+
+## Acknowledgements
+
+This project was made possible with the help, supervision and valuable feedback from:
+
+- [Stefan Koffler](https://github.com/grafele)
+- [Sebastian Sellmair](https://github.com/sellmair)
+- [QuickBird Studios](https://github.com/quickbirdstudios)
