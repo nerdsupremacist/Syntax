@@ -8,22 +8,24 @@
 
 import Foundation
 
-struct EmptyTokenGeneratorError: Error { }
-
 extension Array: TokenGenerator where Element: TokenGenerator {
 
     public typealias Token = Element.Token
     
     public func take(text: String) throws -> Generated<Token> {
-        var lastError: Error = EmptyTokenGeneratorError()
+        var errors: [LexerError] = []
+
         for generator in self {
             do {
                 return try generator.take(text: text)
+            } catch let error as LexerError {
+                errors.append(error)
             } catch {
-                lastError = error
+                errors.append(.unknown(error))
             }
         }
-        throw lastError
+
+        throw LexerError.noGeneratorMatched(text, errors: errors)
     }
     
 }

@@ -13,10 +13,6 @@ extension Int {
 
 }
 
-private struct InvalidNumberLiteralError: Error {
-    let text: String
-}
-
 private struct IntTokenGenerator: RegexTokenGenerator {
     typealias Token = Int
 
@@ -25,7 +21,7 @@ private struct IntTokenGenerator: RegexTokenGenerator {
     }
 
     func token(from matched: String) throws -> Token? {
-        guard let value = Int(matched) else { throw InvalidNumberLiteralError(text: matched) }
+        guard let value = Int(matched) else { throw LexerError.invalidLiteral(matched, type: Int.self) }
         return value
     }
 }

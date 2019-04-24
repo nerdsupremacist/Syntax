@@ -8,8 +8,6 @@
 
 import Foundation
 
-struct NoMoreTokensError: Error { }
-
 public protocol SingleTokenParser: Parser {
     func parse(token: Token) throws -> Output
 }
@@ -17,7 +15,7 @@ public protocol SingleTokenParser: Parser {
 extension SingleTokenParser {
     
     public func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
-        guard let token = tokens.first else { throw NoMoreTokensError() }
+        guard let token = tokens.first else { throw ParserError<Token>.noMoreTokens }
         let output = try parse(token: token)
         return ParserOutput(output: output, remaining: Array(tokens.dropFirst()))
     }

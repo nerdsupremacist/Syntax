@@ -13,10 +13,6 @@ extension Double {
 
 }
 
-private struct InvalidNumberLiteralError: Error {
-    let text: String
-}
-
 private struct DoubleTokenGenerator: RegexTokenGenerator {
     typealias Token = Double
 
@@ -25,7 +21,7 @@ private struct DoubleTokenGenerator: RegexTokenGenerator {
     }
 
     func token(from matched: String) throws -> Token? {
-        guard let value = Double(matched) else { throw InvalidNumberLiteralError(text: matched) }
+        guard let value = Double(matched) else { throw LexerError.invalidLiteral(matched, type: Double.self) }
         return value
     }
 }

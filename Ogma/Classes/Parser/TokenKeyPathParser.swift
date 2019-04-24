@@ -15,17 +15,12 @@ extension TokenProtocol {
 
 }
 
-private struct UnableToTransformTokenError<Token: TokenProtocol>: Error {
-    let token: Token
-    let type: Any.Type
-}
-
 private struct TokenKeyPathParser<Token: TokenProtocol, Output>: SingleTokenParser {
     let keyPath: KeyPath<Token, Output?>
 
     func parse(token: Token) throws -> Output {
         guard let value = token[keyPath: keyPath] else {
-            throw UnableToTransformTokenError(token: token, type: Output.self)
+            throw ParserError.tokenNotConvertibleTo(token, type: Output.self)
         }
         return value
     }

@@ -10,6 +10,7 @@ import Foundation
 import Ogma
 
 extension Dictionary: Parsable where Key == String, Value == JSON {
+
     public typealias Token = JSON.Token
 
     public static let parser: AnyParser<JSON.Token, Dictionary<String, JSON>> = {
@@ -23,10 +24,13 @@ extension Dictionary: Parsable where Key == String, Value == JSON {
             .map { $0 ?? [:] }
     }()
 
+}
+
+extension Dictionary: JSONElement where Key == String, Value == JSON {
+
     var json: JSON {
         return .dictionary(self)
     }
-}
 
-extension Dictionary: JSONElement where Key == String, Value == JSON { }
+}
 

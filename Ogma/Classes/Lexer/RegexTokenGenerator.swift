@@ -8,11 +8,6 @@
 
 import Foundation
 
-struct TextDoesNotMatchExpressionError: Error {
-    let pattern: String
-    let text: String
-}
-
 public protocol RegexTokenGenerator: TokenGenerator {
     var pattern: String { get }
     func token(from matched: String) throws -> Token?
@@ -28,13 +23,19 @@ extension RegexTokenGenerator {
             let range = Range(matchedRange, in: text),
             range.lowerBound == text.startIndex else {
             
-            throw TextDoesNotMatchExpressionError(pattern: pattern, text: text)
+            throw LexerError.noMatchFound(text, pattern: pattern)
         }
         
         let matched = String(text[range])
         let remaining = range.upperBound < text.endIndex ? String(text[range.upperBound...]) : nil
-        
-        return Generated(token: try token(from: matched), remainingString: remaining)
+
+        do {
+            return Generated(token: try token(from: matched), remainingString: remaining)
+        } catch let error as LexerError {
+            throw error
+        } catch {
+            throw LexerError.cannotMap(matched, dueTo: error, generator: Self.self)
+        }
     }
     
 }
