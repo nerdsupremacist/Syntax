@@ -23,8 +23,8 @@ public struct Generated<Token: TokenProtocol> {
 extension Generated {
 
     /// Convert Token type to a different Token type
-    public func map<T: TokenProtocol>(_ transform: (Token) throws -> T) rethrows -> Generated<T> {
-        return Generated<T>(token: try token.map(transform), remainingString: remainingString)
+    public func map<T: TokenProtocol>(_ transform: (Token) throws -> T?) rethrows -> Generated<T> {
+        return Generated<T>(token: try token.flatMap(transform), remainingString: remainingString)
     }
 
 }
