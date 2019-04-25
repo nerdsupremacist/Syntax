@@ -25,7 +25,7 @@ extension RegexTokenGeneratorProtocol {
 
 extension RegexTokenGeneratorProtocol {
 
-    public func take(text: String) throws -> Generated<Token> {
+    public func take(text: String) throws -> Result {
         let expression = try NSRegularExpression(pattern: "^\(pattern)")
         let match = expression.firstMatch(in: text, range: text.range)
 
@@ -42,7 +42,7 @@ extension RegexTokenGeneratorProtocol {
         let remaining = matchRange.upperBound < text.endIndex ? String(text[matchRange.upperBound...]) : nil
 
         do {
-            return Generated(token: try token(from: matched), remainingString: remaining)
+            return TokenResult(token: try token(from: matched), remainingString: remaining)
         } catch let error as LexerError {
             throw error
         } catch {

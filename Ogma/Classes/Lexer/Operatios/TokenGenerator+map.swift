@@ -24,7 +24,7 @@ private struct MappedTokenGenerator<Token: TokenProtocol, Source: TokenGenerator
     let source: Source
     let transform: (Source.Token) throws -> Token?
 
-    func take(text: String) throws -> Generated<Token> {
+    func take(text: String) throws -> Result {
         return try source.take(text: text).map(transform)
     }
 }

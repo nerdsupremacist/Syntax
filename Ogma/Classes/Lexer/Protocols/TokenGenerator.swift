@@ -15,6 +15,8 @@ public protocol TokenGenerator {
     /// Tokens that are generated
     associatedtype Token: TokenProtocol
 
+    typealias Result = TokenResult<Token>
+
     /// Attempt to generate a Token from the beginning of the String
-    func take(text: String) throws -> Generated<Token>
+    func take(text: String) throws -> Result
 }

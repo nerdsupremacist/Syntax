@@ -25,7 +25,7 @@
 		195EA484E62C4ED0BD10B02E07E87F72 /* Parser+Repeating.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BC9A85618AFF184CF764674B1E2BA0 /* Parser+Repeating.swift */; };
 		19E0E14D39C4A5484CA3200759247F3D /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5B84A22A16A4EC2665922995042C75 /* Parser.swift */; };
 		1F770356B890ABB307F629162EDC60A2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
-		24E738CAFD0D3342AE5567F1535F049B /* GeneratedToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06E283266AB70C52F0DC0779B296EB0 /* GeneratedToken.swift */; };
+		24E738CAFD0D3342AE5567F1535F049B /* TokenResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06E283266AB70C52F0DC0779B296EB0 /* TokenResult.swift */; };
 		2F3D581B05AE0976950946B390DA3D17 /* Parser+AnyParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBB1C2965784FD1999EFE8A673856202 /* Parser+AnyParser.swift */; };
 		3EFB14FBBFCD513EE91BB39F20828864 /* AnyTokenGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43152718F5FDBD82319D4410C379B9A4 /* AnyTokenGenerator.swift */; };
 		53F965612B3785CC4B3E098BEFA6BFE9 /* TokenKeyPathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6C0393734EA6C614C3F079FE761D80 /* TokenKeyPathParser.swift */; };
@@ -134,7 +134,7 @@
 		A6714D7B197538156A7DD74BB53F11E7 /* WhiteSpaceTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WhiteSpaceTokenGenerator.swift; sourceTree = "<group>"; };
 		A86318D437EB2ACBA47A24DE28D5B728 /* Ogma-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Ogma-umbrella.h"; sourceTree = "<group>"; };
 		AB23F469750B744BE84E8AB7E4054DB5 /* Pods-Ogma_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Ogma_Example.modulemap"; sourceTree = "<group>"; };
-		B06E283266AB70C52F0DC0779B296EB0 /* GeneratedToken.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GeneratedToken.swift; sourceTree = "<group>"; };
+		B06E283266AB70C52F0DC0779B296EB0 /* TokenResult.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TokenResult.swift; sourceTree = "<group>"; };
 		B3AB3BB0EF86ECAD5DDCF1607250DA13 /* Ogma.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Ogma.modulemap; sourceTree = "<group>"; };
 		B6FCF69F02D9AB0F15FBB0942AA9A694 /* Lexer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		B737D4DD6209E1B2989216F660BA757E /* Parsable+Init.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parsable+Init.swift"; sourceTree = "<group>"; };
@@ -437,7 +437,7 @@
 		F6FE7CCF0A21563D891F5F7D65DA7C8D /* Lexer */ = {
 			isa = PBXGroup;
 			children = (
-				B06E283266AB70C52F0DC0779B296EB0 /* GeneratedToken.swift */,
+				B06E283266AB70C52F0DC0779B296EB0 /* TokenResult.swift */,
 				0E1AEDFC227050A700E3C436 /* LexerError.swift */,
 				0E1AEE01227059C700E3C436 /* Protocols */,
 				0E1AEE00227059B800E3C436 /* Helper Protocols */,
@@ -621,7 +621,7 @@
 				3EFB14FBBFCD513EE91BB39F20828864 /* AnyTokenGenerator.swift in Sources */,
 				06FE757C01DFB856545E5FD9F55D7099 /* Array+TokenGenerator.swift in Sources */,
 				D96ACC22FF84A9F6962118E57C5F7CF1 /* DoubleLiteralTokenGenerator.swift in Sources */,
-				24E738CAFD0D3342AE5567F1535F049B /* GeneratedToken.swift in Sources */,
+				24E738CAFD0D3342AE5567F1535F049B /* TokenResult.swift in Sources */,
 				5F8F53F69268A26FA0FB005C0E0C5BDE /* IntLiteralTokenGenerator.swift in Sources */,
 				0E9DA8562271D31800078978 /* IndentationTokenGenerator.swift in Sources */,
 				A46B9857DEB28AA5112C24EA9D490360 /* Lexer.swift in Sources */,
