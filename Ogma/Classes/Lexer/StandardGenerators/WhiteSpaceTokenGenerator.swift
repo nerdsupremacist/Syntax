@@ -7,19 +7,16 @@
 
 import Foundation
 
-extension TokenProtocol {
+public struct WhiteSpace: TokenProtocol { }
 
-    /// A Generator that skips white spaces
-    public static var ignoringWhiteSpaces: AnyTokenGenerator<Self> {
-        return WhiteSpaceTokenGenerator().any()
-    }
+public struct WhiteSpaceTokenGenerator: RegexTokenGeneratorProtocol {
+    public typealias Token = WhiteSpace
 
-}
-
-public struct WhiteSpaceTokenGenerator<Token: TokenProtocol>: RegexTokenGenerator {
     public let pattern: String = "[ \t\n]+"
 
+    public init() { }
+
     public func token(from matched: String) throws -> Token? {
-        return nil
+        return WhiteSpace()
     }
 }

@@ -9,26 +9,37 @@
 import Foundation
 
 /// A TokenGenerator that matches the beginning of the String if it matches a Regular Expression
-public protocol RegexTokenGenerator: TokenGenerator {
+public protocol RegexTokenGeneratorProtocol: TokenGenerator {
     var pattern: String { get }
+    var group: Int { get }
     func token(from matched: String) throws -> Token?
 }
 
-extension RegexTokenGenerator {
+extension RegexTokenGeneratorProtocol {
+
+    public var group: Int {
+        return 0
+    }
+
+}
+
+extension RegexTokenGeneratorProtocol {
 
     public func take(text: String) throws -> Generated<Token> {
         let expression = try NSRegularExpression(pattern: "^\(pattern)")
-        let matchedRange = expression.rangeOfFirstMatch(in: text, range: text.range)
-        
-        guard matchedRange.location != NSNotFound,
-            let range = Range(matchedRange, in: text),
-            range.lowerBound == text.startIndex else {
+        let match = expression.firstMatch(in: text, range: text.range)
+
+        guard let groupRange = match?.range(at: group),
+            groupRange.location != NSNotFound,
+            let range = Range(groupRange, in: text),
+            let matchRange = (match?.range).flatMap({ Range($0, in: text) }),
+            matchRange.lowerBound == text.startIndex else {
             
             throw LexerError.noMatchFound(text, pattern: pattern)
         }
         
         let matched = String(text[range])
-        let remaining = range.upperBound < text.endIndex ? String(text[range.upperBound...]) : nil
+        let remaining = matchRange.upperBound < text.endIndex ? String(text[matchRange.upperBound...]) : nil
 
         do {
             return Generated(token: try token(from: matched), remainingString: remaining)
