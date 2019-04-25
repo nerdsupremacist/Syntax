@@ -15,6 +15,10 @@ public postfix func .?<P: Parser>(_ p: P) -> AnyParser<P.Token, P.Output?> {
     return p.optional()
 }
 
+public postfix func .?<T: TokenProtocol>(_ t: T) -> AnyParser<T, Void> {
+    return t.parser.optional().map { _ in () }
+}
+
 extension Parser {
 
     /// Make the value optional. If the value cannot be parsed it will return nil and not consume any tokens
