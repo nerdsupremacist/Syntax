@@ -9,8 +9,9 @@ import Foundation
 
 /// A GeneratorLexer is a Lexer that delegates its job to a TokenGenerator by running it multiple times
 public protocol GeneratorLexer: LexerProtocol {
+    typealias Generators = [AnyTokenGenerator<Token>]
     /// Generator that should be called to generate Tokens
-    static var generator: AnyTokenGenerator<Token> { get }
+    static var generators: Generators { get }
 }
 
 extension GeneratorLexer {
@@ -20,7 +21,7 @@ extension GeneratorLexer {
     }
 
     private static func tokenize(input: String) throws -> [Token?] {
-        let generated = try generator.take(text: input)
+        let generated = try generators.take(text: input)
         guard let remaining = generated.remainingString else { return [generated.token] }
 
         guard remaining.count != input.count else { throw LexerError.couldNotDecode(remaining.first) }
