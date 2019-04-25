@@ -7,11 +7,11 @@
 
 import Foundation
 
-extension TokenProtocol {
+extension AnyParser {
 
     /// Returns a Parser that will attempt to read a property from the Token.
     /// If the property has a value it will return the value, otherwise throw an error
-    public static func parser<Value>(for keyPath: KeyPath<Self, Value?>) -> AnyParser<Self, Value> {
+    public static func consuming(keyPath: KeyPath<Token, Output?>) -> AnyParser<Token, Output> {
         return TokenKeyPathParser(keyPath: keyPath).any()
     }
 
