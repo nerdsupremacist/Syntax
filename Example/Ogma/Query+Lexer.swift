@@ -15,7 +15,6 @@ extension Query {
 
         static let generators: Generators = [
             WhiteSpaceTokenGenerator().ignore(),
-            RegexTokenGenerator(pattern: "&").map(to: .and),
             RegexTokenGenerator(pattern: "#").map(to: .hashtag),
             RegexTokenGenerator(pattern: "=").map(to: .equals),
             RegexTokenGenerator(pattern: "\\w+\\b").map { .word($0) },
