@@ -10,9 +10,8 @@ import Foundation
 
 extension JSON {
 
-    public static func parse(input: String) throws -> JSON {
-        let tokens = try Lexer.tokenize(input: input)
-        return try JSON(tokens: tokens)
+    static func parse(_ input: String) throws -> JSON {
+        return try parse(input: input, using: Lexer.self)
     }
 
 }

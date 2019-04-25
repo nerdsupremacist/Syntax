@@ -17,7 +17,7 @@ extension Dictionary: Parsable where Key == String, Value == JSON {
         let element = String.self && .colon && JSON.self
 
         return element
-            .separated(by: .comma, allowsEmpty: true)
+            .separated(by: .comma, allowsTrailingSeparator: true, allowsEmpty: true)
             .map { Dictionary($0, uniquingKeysWith: { $1 }) }
             .wrapped(by: .openCurlyBracket, and: .closeCurlyBracket)
     }()

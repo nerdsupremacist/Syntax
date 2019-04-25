@@ -10,7 +10,7 @@ import Foundation
 import Ogma
 
 extension Int: JSONElement {
-    public static let parser: AnyParser<JSON.Token, Int> = Token.parser(for: \.int)
+    public static let parser: AnyParser<JSON.Token, Int> = .consuming(keyPath: \.int)
 
     var json: JSON {
         return .int(self)
