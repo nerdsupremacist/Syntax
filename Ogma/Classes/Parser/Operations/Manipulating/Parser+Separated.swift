@@ -9,11 +9,17 @@
 import Foundation
 
 extension Parser {
-    
-    // [Self]([Separator][Self])* when empty is not allowed
-    // [Self]([Separator][Self])*? when empty is allowed
+
     /// Find n occurrences of the parsers value separated by a specific Token.
-    public func separated(by separator: Token, allowsEmpty: Bool = false) -> AnyParser<Token, [Output]> {
+    public func separated(by separator: Token,
+                          allowsTrailingSeparator: Bool = false,
+                          allowsEmpty: Bool = false) -> AnyParser<Token, [Output]> {
+
+        if allowsTrailingSeparator {
+            return separated(by: separator,
+                             allowsTrailingSeparator: false,
+                             allowsEmpty: allowsEmpty) && separator.?
+        }
 
         if allowsEmpty {
             return separated(by: separator, allowsEmpty: false)
