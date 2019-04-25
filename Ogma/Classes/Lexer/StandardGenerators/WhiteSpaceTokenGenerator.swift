@@ -12,7 +12,7 @@ public struct WhiteSpace: TokenProtocol { }
 public struct WhiteSpaceTokenGenerator: RegexTokenGeneratorProtocol {
     public typealias Token = WhiteSpace
 
-    public let pattern: String = "[ \t\n]+"
+    public let pattern: String = "\\s+"
 
     public init() { }
 
