@@ -11,7 +11,7 @@ import Foundation
 extension JSON {
 
     static func parse(_ input: String) throws -> JSON {
-        return try parse(input: input, using: Lexer.self)
+        return try parse(input, using: Lexer.self)
     }
 
 }

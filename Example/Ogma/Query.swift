@@ -55,7 +55,7 @@ extension Query.Filter {
 extension Query {
 
     static func parse(_ input: String) throws -> Query {
-        return try parse(input: input, using: Lexer.self)
+        return try parse(input, using: Lexer.self)
     }
 
 }

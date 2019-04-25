@@ -16,7 +16,8 @@ public protocol GeneratorLexer: LexerProtocol {
 
 extension GeneratorLexer {
 
-    public static func tokenize(input: String) throws -> [Token] {
+    /// Turns an String into a sequence of Tokens
+    public static func tokenize(_ input: String) throws -> [Token] {
         return try tokenize(input: input).compactMap { $0 }
     }
 

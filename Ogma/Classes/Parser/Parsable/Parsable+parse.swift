@@ -10,10 +10,10 @@ import Foundation
 extension Parsable {
 
     /// Parse a Parsable value from a String
-    public static func parse<L: LexerProtocol>(input: String,
+    public static func parse<L: LexerProtocol>(_ input: String,
                                                using lexer: L.Type) throws -> Self where L.Token == Token {
 
-        let tokens = try lexer.tokenize(input: input)
+        let tokens = try lexer.tokenize(input)
         return try Self(tokens: tokens)
     }
 
