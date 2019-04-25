@@ -22,6 +22,16 @@ public postfix func + <P: Parser>(_ p: P) -> AnyParser<P.Token, [P.Output]> {
     return parser.map { [$0] + $1 }
 }
 
+/// Attempt to read the value of the parser as many times as possible
+public postfix func * <P: Parsable>(_ p: P.Type) -> AnyParser<P.Token, [P]> {
+    return p.indirect*
+}
+
+/// Atempt to read the value of the parser at least once
+public postfix func + <P: Parsable>(_ p: P.Type) -> AnyParser<P.Token, [P]> {
+    return p.indirect+
+}
+
 private struct RepeatingParser<Source: Parser>: Parser {
     typealias Token = Source.Token
     typealias Output = [Source.Output]
