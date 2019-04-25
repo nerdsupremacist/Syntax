@@ -14,8 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        let input = """
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+
+        var input = """
+        // Supports comments
+        /*
+            Also Multiline comments
+        */
         {
             "success": true,
             "people": [
@@ -47,9 +53,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         """
-
-        let json: JSON = try! .parse(input: input)
+        let json: JSON = try! .parse(input)
         print(json)
+
+        input = "king of the north #status = alive and #allegiance = Targaryen"
+        let query: Query = try! .parse(input)
+        print(query)
 
         return true
     }
