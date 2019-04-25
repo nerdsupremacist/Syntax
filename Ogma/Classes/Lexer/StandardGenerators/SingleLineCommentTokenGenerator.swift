@@ -17,7 +17,7 @@ public struct SingleLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
     let prefixPattern: String
 
     public var pattern: String {
-        return "\(prefixPattern)[ \t\n]+([^\\n]*)"
+        return "\(prefixPattern)\\s*([^\\n]*)"
     }
 
     public let group: Int = 1

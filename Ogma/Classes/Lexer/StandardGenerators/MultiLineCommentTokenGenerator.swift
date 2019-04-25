@@ -18,7 +18,7 @@ public struct MultiLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
     let postfixPattern: String
 
     public var pattern: String {
-        return "\(prefixPattern)[ \t\n]+([^\(postfixPattern)]*)[ \t\n]+\(postfixPattern)"
+        return "\(prefixPattern)\\s*((?:(?!\(postfixPattern))(.|\\n))*)\\s*\(postfixPattern)"
     }
 
     public let group: Int = 1
