@@ -14,17 +14,15 @@ extension Parsable {
         using lexer: L.Type
     ) throws -> AnnotatedString<Self> where L.Token == Token {
 
-        let annotations = try lexer
+        return try lexer
             .annotate(input)
-            .grouppingAnnotations()
-
-        return annotations
+            .groups()
             .flatMap { element -> AnnotatedString<Self> in
                 switch element {
                 case .text(let text):
                     return [.text(text)]
-                case .annotated(_, let tokenContext):
-                    return attempt(toParse: tokenContext)
+                case .annotations(let annotations):
+                    return attempt(parsing: annotations)
                 }
             }
             .clean()
@@ -34,38 +32,38 @@ extension Parsable {
 
 extension Parsable {
 
-    private static func attempt(toParse tokenContext: [AnnotationContext<Token?>]) -> AnnotatedString<Self> {
+    private typealias OptionalTokenGroup = [AnnotatedGroup<Token?>.Annotation]
+    private typealias TokenGroup = [AnnotatedGroup<Token>.Annotation]
 
-        if let first = tokenContext.first, first.value == nil {
-            return [.text(first.text)] + attempt(toParse: Array(tokenContext.dropFirst()))
+    private static func attempt(parsing group: OptionalTokenGroup) -> AnnotatedString<Self> {
+        let start = group.prefix { $0.annotation == nil }
+        let end = group.reversed().prefix { $0.annotation == nil }.reversed()
+        let group: TokenGroup = group.compactMap { element in
+            guard let annotation = element.annotation else { return nil }
+            return .init(text: element.text, annotation: annotation)
         }
-
-        let tokenContext = tokenContext.compactMap { context -> AnnotationContext<Token>? in
-            guard let value = context.value else { return nil }
-            return AnnotationContext(text: context.text, value: value)
-        }
-
-        return attempt(toParse: tokenContext)
+        return start.map { .text($0.text) } +
+            attempt(parsing: group) +
+            end.map { .text($0.text) }
     }
 
-    private static func attempt(toParse tokenContext: [AnnotationContext<Token>]) -> AnnotatedString<Self> {
-        let tokens = tokenContext.map { $0.value }
-
+    private static func attempt(parsing group: TokenGroup) -> AnnotatedString<Self> {
+        let tokens = group.map { $0.annotation }
         do {
             let output = try parser.parse(tokens: tokens)
             let tokensTaken = tokens.count - output.remaining.count
-            let text = tokenContext.dropLast(output.remaining.count).reduce("") { $0 + $1.text }
+            let text = group.dropLast(output.remaining.count).reduce("") { $0 + $1.text }
 
             if tokensTaken < tokens.count {
-                let remaining = tokensTaken != tokens.count ? Array(tokenContext.dropFirst(tokensTaken)) : []
-                return [.annotated(text, output.output)] + attempt(toParse: remaining)
+                let remaining = tokensTaken != tokens.count ? Array(group.dropFirst(tokensTaken)) : []
+                return [.annotated(text, output.output)] + attempt(parsing: remaining)
             } else {
                 return [.annotated(text, output.output)]
             }
         } catch {
-            guard let headContext = tokenContext.first else { return [] }
-            let remaining = Array(tokenContext.dropFirst())
-            return [.text(headContext.text)] + attempt(toParse: remaining)
+            guard let head = group.first else { return [] }
+            let remaining = Array(group.dropFirst())
+            return [.text(head.text)] + attempt(parsing: remaining)
         }
     }
 
