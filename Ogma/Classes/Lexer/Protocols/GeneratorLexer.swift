@@ -32,3 +32,11 @@ extension GeneratorLexer {
     }
 
 }
+
+extension GeneratorLexer {
+
+    public static func annotate(_ input: String) throws -> AnnotatedString<Token?> {
+        return try generators.annotate(text: input)
+    }
+
+}

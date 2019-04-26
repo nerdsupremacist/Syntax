@@ -14,4 +14,14 @@ public protocol LexerProtocol {
     associatedtype Token: TokenProtocol
     /// Get all the tokens from an input String
     static func tokenize(_ input: String) throws -> [Token]
+    /// Annotate the string with all the tokens
+    static func annotate(_ input: String) throws -> AnnotatedString<Token?>
+}
+
+extension LexerProtocol {
+
+    public static func annotate(_ input: String) throws -> AnnotatedString<Token> {
+        return try annotate(input).compactMap { $0 }
+    }
+
 }

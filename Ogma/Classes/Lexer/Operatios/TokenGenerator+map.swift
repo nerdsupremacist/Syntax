@@ -27,4 +27,8 @@ private struct MappedTokenGenerator<Token: TokenProtocol, Source: TokenGenerator
     func take(text: String) throws -> Result {
         return try source.take(text: text).map(transform)
     }
+
+    func annotate(text: String) throws -> [AnnotationElement<Token?>] {
+        return try source.annotate(text: text).map { try $0.flatMap(transform) }
+    }
 }

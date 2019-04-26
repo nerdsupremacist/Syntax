@@ -17,6 +17,7 @@
 		0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */; };
 		0E1AEE2D2271C5C300E3C436 /* AndFilter+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */; };
 		0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */; };
+		0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79976C22729F11003FC60D /* Twitter+Lexer.swift */; };
 		0E9DA8492271CE3900078978 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
 		0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* JSON+Token.swift */; };
 		0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */; };
@@ -61,6 +62,7 @@
 		0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Equality+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AndFilter+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+Parsable.swift"; sourceTree = "<group>"; };
+		0E79976C22729F11003FC60D /* Twitter+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twitter+Lexer.swift"; sourceTree = "<group>"; };
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
 		0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Lexer.swift"; sourceTree = "<group>"; };
@@ -163,6 +165,14 @@
 			name = Filter;
 			sourceTree = "<group>";
 		};
+		0E79976B22729F03003FC60D /* Twitter */ = {
+			isa = PBXGroup;
+			children = (
+				0E79976C22729F11003FC60D /* Twitter+Lexer.swift */,
+			);
+			name = Twitter;
+			sourceTree = "<group>";
+		};
 		0EB829A8226F486800F5B66D /* JSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,6 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				0E79976B22729F03003FC60D /* Twitter */,
 				0E1AEE1822719C3300E3C436 /* Search Queries */,
 				0EB829A8226F486800F5B66D /* JSON */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
@@ -475,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0E1AEE1722719A6A00E3C436 /* Query.swift in Sources */,
+				0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */,
 				0E9DA8492271CE3900078978 /* JSON.swift in Sources */,
 				0E1AEE272271BAB900E3C436 /* Value+Parsable.swift in Sources */,
 				0E9DA8512271CE3900078978 /* Int+JSONElement.swift in Sources */,

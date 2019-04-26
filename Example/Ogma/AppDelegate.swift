@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Ogma
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -59,6 +60,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         input = "king of the north #status = alive and #allegiance = Targaryen"
         let query: Query = try! .parse(input)
         print(query)
+
+
+        input = """
+        Hello, here's some JSON { \"Hello\": \"World\" }.
+        As you can see test 1234.
+        I can inline a "String". That's true. Not false
+        Even arrays [1, 2, 3, 4]
+        """
+
+        let annotated = try! JSON.annotate(input, using: JSON.Lexer.self)
+        print(annotated)
+
+        input = """
+        Awesome #hackathon with @adnan! Such an awesome time #tum #hackatum
+        """
+
+        let tweet = try! Twitter.Lexer.annotate(input) as AnnotatedString<Twitter.Token>
+        print(tweet)
 
         return true
     }

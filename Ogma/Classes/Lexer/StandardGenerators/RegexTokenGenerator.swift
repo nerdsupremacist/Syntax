@@ -11,9 +11,11 @@ public struct RegexTokenGenerator: RegexTokenGeneratorProtocol {
     public typealias Token = String
 
     public let pattern: String
+    public let group: Int
 
-    public init(pattern: String) {
+    public init(pattern: String, group: Int = 0) {
         self.pattern = pattern
+        self.group = group
     }
 
     public func token(from matched: String) throws -> String? {

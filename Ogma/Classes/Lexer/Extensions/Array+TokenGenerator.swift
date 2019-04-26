@@ -27,5 +27,9 @@ extension Array: TokenGenerator where Element: TokenGenerator {
 
         throw LexerError.noGeneratorMatched(text, errors: errors)
     }
+
+    public func annotate(text: String) throws -> [AnnotationElement<Element.Token?>] {
+        return try reduce([.text(text)]) { try $1.annotate($0) }
+    }
     
 }

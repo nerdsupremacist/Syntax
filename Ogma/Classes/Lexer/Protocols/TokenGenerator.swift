@@ -19,4 +19,18 @@ public protocol TokenGenerator {
 
     /// Attempt to generate a Token from the beginning of the String
     func take(text: String) throws -> Result
+
+    /// Attempt to annotate the string with the Tokens from this string
+    func annotate(text: String) throws -> AnnotatedString<Token?>
+}
+
+extension TokenGenerator {
+
+    public func annotate(_ annotated: AnnotatedString<Token?>) throws -> AnnotatedString<Token?> {
+        return try annotated.flatMap { element -> AnnotatedString<Token?> in
+            guard case .text(let text) = element else { return [element] }
+            return try annotate(text: text)
+        }
+    }
+
 }
