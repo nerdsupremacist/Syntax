@@ -18,7 +18,7 @@ public struct MultiLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
     let postfixPattern: String
 
     public var pattern: String {
-        return "\(prefixPattern)\\s*((?:(?!\(postfixPattern))(.|\\n))*)\\s*\(postfixPattern)"
+        return "\(prefixPattern)\\s*((?:(?!\(postfixPattern))(.|\\n))*)\(postfixPattern)"
     }
 
     public let group: Int = 1
@@ -29,6 +29,10 @@ public struct MultiLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
     }
 
     public func token(from matched: String) throws -> MultiLineComment? {
-        return MultiLineComment(text: matched)
+        let withoutExtraSpacing = matched
+            .replacingOccurrences(of: "\\n[ \\t]+", with: "\n", options: .regularExpression)
+            .replacingOccurrences(of: "\\n+$", with: "", options: .regularExpression)
+
+        return MultiLineComment(text: withoutExtraSpacing)
     }
 }
