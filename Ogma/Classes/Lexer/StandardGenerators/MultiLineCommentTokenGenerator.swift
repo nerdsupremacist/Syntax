@@ -31,7 +31,7 @@ public struct MultiLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
     public func token(from matched: String) throws -> MultiLineComment? {
         let withoutExtraSpacing = matched
             .replacingOccurrences(of: "\\n[ \\t]+", with: "\n", options: .regularExpression)
-            .replacingOccurrences(of: "\\n+$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\\s$", with: "", options: .regularExpression)
 
         return MultiLineComment(text: withoutExtraSpacing)
     }
