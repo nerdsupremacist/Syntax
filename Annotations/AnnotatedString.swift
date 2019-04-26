@@ -18,6 +18,19 @@ extension Array {
         return try map { try $0.map(transform) }
     }
 
+    public func map<Annotation>(_ transform: (Annotation) throws -> String) rethrows -> String where Element == AnnotationElement<Annotation> {
+
+        return try map { element in
+            switch element {
+            case .text(let text):
+                return text
+            case .annotated(_, let value):
+                return try transform(value)
+            }
+        }
+        .joined()
+    }
+
     public func compactMap<Annotation, T>(
         _ transform: (Annotation) throws -> T?
     ) rethrows -> AnnotatedString<T> where Element == AnnotationElement<Annotation> {
