@@ -64,9 +64,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         input = """
         Hello, here's some JSON { \"Hello\": \"World\" }.
-        As you can see test 1234.
-        I can inline a "String". That's true. Not false
-        Even arrays [1, 2, 3, 4]
+        It will parse numbers like 1234.
+        I can inline a "String".
+        And bools like true or false. Neat right?
+        Even arrays [1, 2, 3, 4].
         """
 
         let annotated = try! JSON.annotate(input, using: JSON.Lexer.self)
