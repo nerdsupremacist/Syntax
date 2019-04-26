@@ -88,9 +88,9 @@ extension Expression {
 
         static let generator: AnyTokenGenerator<Token> = {
             return [
-                Int.generator.map(Token.int),
-                Token.plus.generator(with: "\\+"),
-                Token.times.generator(with: "\\*"),
+                IntLiteralTokenGenerator().map(Token.int),
+                RegexTokenGenerator(pattern: "\\+").map(to: .plus),
+                RegexTokenGenerator(pattern: "\\*").map(to: .times),
             ].any()
         }()
     }
@@ -101,8 +101,8 @@ extension Expression {
 
 Now there's a lot of stuff going on here. We're mainly using two things:
 
-- `Int.generator` as a TokenGenerator already implemented by Ogma. It will take a string and attempt to parse an Int. We are then just mapping that generator to return the Tokens we modeled before.
-- `Token.generator(with:)` creates a TokenGenerator that will return the Token when the start of the string matches a Regular Expression. So if we find a `+` we return `Token.plus`
+- `IntLiteralTokenGenerator` is a TokenGenerator already implemented by Ogma. It will take a string and attempt to parse an Int. We are then just mapping that generator to return the Tokens we modeled before.
+- `RegexTokenGenerator` is a TokenGenerator that will return a String matching the pattern. Then we map every instance to `.plus`.  So if we find a `+` we return `Token.plus`
 
 ### Parser
 
@@ -124,7 +124,7 @@ And give the key path to a parser:
 extension Int: Parsable {
     public typealias Token = Expression.Token
 
-    public static let parser: AnyParser<Expression.Token, Int> = Token.parser(for: \.int)
+    public static let parser: AnyParser<Expression.Token, Int> = .consuming(keyPath: \.int)
 }
 ```
 
@@ -172,7 +172,7 @@ Now we can use our parser:
 extension String {
 
     func calculate() throws -> Int {
-        return try Expression.Lexer.parse(input: self, of: Expression.self).eval()
+        return try Expression.parse(self, using: Expression.Lexer.self).eval()
     }
 
 }
