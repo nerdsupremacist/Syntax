@@ -21,19 +21,17 @@ enum AnnotatedGroup<T> {
 extension Array {
 
     func groups<Annotation>() -> [AnnotatedGroup<Annotation>] where Element == AnnotationElement<Annotation> {
-
-        fatalError()
-//            return map { $0.group }
-//                .merge { previous, current in
-//                    switch (previous, current) {
-//                    case (.text(let lhs), .text(let rhs)):
-//                        return .text(lhs + rhs)
-//                    case (.annotations(let lhs), .annotations(let rhs)):
-//                        return .annotations(lhs + rhs)
-//                    default:
-//                        return nil
-//                    }
-//            }
+        return map { $0.group }
+            .merge { previous, current in
+                switch (previous, current) {
+                case (.text(let lhs), .text(let rhs)):
+                    return .text(lhs + rhs)
+                case (.annotations(let lhs), .annotations(let rhs)):
+                    return .annotations(lhs + rhs)
+                default:
+                    return nil
+                }
+            }
     }
 
 }
