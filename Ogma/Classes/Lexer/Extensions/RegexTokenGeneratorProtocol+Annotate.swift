@@ -10,61 +10,83 @@ import Foundation
 extension RegexTokenGeneratorProtocol {
 
     public func annotate(text: String) throws -> AnnotatedString<Token?> {
+        let annotations = try self.annotations(in: text)
+
+        guard !annotations.isEmpty else { return [.text(text)] }
+
+        let lastRange = annotations
+            .last
+            .filter { $0.range.upperBound < text.endIndex }
+            .map { $0.range.upperBound..<text.endIndex }
+
+        let string = annotations.flatMap { $0.annotatedString }
+
+        return string +
+            [lastRange.map { .text(String(text[$0])) }].compactMap { $0 }
+    }
+
+}
+
+extension RegexTokenGeneratorProtocol {
+
+    private func annotations(in text: String) throws -> [Annotation<Token?>] {
         let expression = try NSRegularExpression(pattern: pattern)
         let matches = expression.matches(in: text, range: text.range)
 
-        let annotations = try matches
+        return try matches
             .map { ($0, try token(in: $0, for: text)) }
             .collect { lastAnnotation, tuple -> Annotation<Token?> in
 
                 let (match, token) = tuple
 
-                guard let rangeOfText = Range(match.range, in: text) else {
+                guard let range = Range(match.range, in: text) else {
                     throw LexerError.noMatchFound(text, pattern: pattern)
                 }
 
-                let rangeOfLastText: Range<String.Index>?
-                switch lastAnnotation {
-
-                case .none where text.startIndex < rangeOfText.lowerBound:
-                    rangeOfLastText = text.startIndex..<rangeOfText.lowerBound
-
-                case .some(let annotation) where annotation.rangeOfText.upperBound < rangeOfText.lowerBound:
-                    rangeOfLastText = annotation.rangeOfText.upperBound..<rangeOfText.lowerBound
-
-                default:
-                    rangeOfLastText = nil
-
-                }
-
-                return Annotation(rangeOfLastText: rangeOfLastText,
-                                  rangeOfText: rangeOfText,
-                                  text: String(text[rangeOfText]),
+                return Annotation(lastText: text[between: lastAnnotation?.range, and: range],
+                                  range: range,
+                                  text: String(text[range]),
                                   token: token)
-        }
-
-        guard !annotations.isEmpty else { return [.text(text)] }
-
-        return annotations.enumerated().flatMap { item -> AnnotatedString<Token?> in
-            let annotation = item.element
-
-            let isLast = item.offset == annotations.count - 1
-            let hasNotReachedTheEnd = annotation.rangeOfText.upperBound < text.endIndex
-            let endString = isLast && hasNotReachedTheEnd ? String(text[annotation.rangeOfText.upperBound...]) : nil
-
-            return [
-                annotation.rangeOfLastText.map { .text(String(text[$0])) },
-                AnnotationElement.annotated(annotation.text, annotation.token),
-                endString.map { .text($0) },
-            ].compactMap { $0 }
         }
     }
 
 }
 
 private struct Annotation<Token> {
-    let rangeOfLastText: Range<String.Index>?
-    let rangeOfText: Range<String.Index>
+    let lastText: String?
+    let range: Range<String.Index>
     let text: String
     let token: Token
+}
+
+extension Annotation {
+
+    var annotatedString: AnnotatedString<Token> {
+        return [
+            lastText.map { .text($0) },
+            AnnotationElement.annotated(text, token),
+        ].compactMap { $0 }
+    }
+
+}
+
+extension String {
+
+    fileprivate subscript(between last: Range<String.Index>?, and next: Range<String.Index>) -> String? {
+        return range(between: last, and: next).map { String(self[$0]) }
+    }
+
+    fileprivate func range(between last: Range<String.Index>?,
+                           and next: Range<String.Index>) -> Range<String.Index>? {
+
+        switch last {
+        case .none where startIndex < next.lowerBound:
+            return startIndex..<next.lowerBound
+        case .some(let last) where last.upperBound < next.lowerBound:
+            return last.upperBound..<next.lowerBound
+        default:
+            return nil
+        }
+    }
+
 }

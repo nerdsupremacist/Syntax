@@ -38,10 +38,12 @@ extension Parsable {
     private static func attempt(parsing group: OptionalTokenGroup) -> AnnotatedString<Self> {
         let start = group.prefix { $0.annotation == nil }
         let end = group.reversed().prefix { $0.annotation == nil }.reversed()
+
         let group: TokenGroup = group.compactMap { element in
             guard let annotation = element.annotation else { return nil }
             return .init(text: element.text, annotation: annotation)
         }
+
         return start.map { .text($0.text) } +
             attempt(parsing: group) +
             end.map { .text($0.text) }
