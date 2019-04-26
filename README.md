@@ -86,13 +86,11 @@ extension Expression {
     enum Lexer: GeneratorLexer {
         typealias Token = Expression.Token
 
-        static let generator: AnyTokenGenerator<Token> = {
-            return [
+        static let generators: Generators = [
                 IntLiteralTokenGenerator().map(Token.int),
                 RegexTokenGenerator(pattern: "\\+").map(to: .plus),
                 RegexTokenGenerator(pattern: "\\*").map(to: .times),
-            ].any()
-        }()
+            ]
     }
 
 
@@ -179,6 +177,89 @@ extension String {
 ```
 
 Awesome! We just wrote a calculator and at no point did we use a state machine. In fact all of our functions are completely pure and can easily be extended.
+
+## Other cool features
+
+### Ignoring Tokens
+
+Some languages choose to ignore certain characters and expressions entirely. 
+These are Tokens that should never make it to the Parser in the first place. For example: Comments and Whitespaces.
+
+If you already have a TokenGenerator that consumes this, you simply call `ignore` in your Lexer.
+For example if we want to ignore Whitespaces in our calculator:
+
+```swift
+enum Lexer: GeneratorLexer {
+	...
+
+    static let generators: Generators = [
+			WhiteSpaceTokenGenerator().ignore(),
+			...
+		]
+}
+```
+
+
+### String Annotation
+ 
+Sometimes you're not expecting all of the user's input to be valid. Maybe you want them to be able to inline your languange inside of some other text. For that there's `AnnotatedString<T>`. An annotated string is actually just an array of the enum:
+
+```swift
+public enum AnnotationElement<Annotation> {
+    case text(String)
+    case annotated(String, Annotation)
+}
+```
+
+Where it can be some text that wasn't matched of an annotated section with a parsed value.
+
+Now you can support cool features like parsing inlined JSON:
+
+```
+Hello, here's some JSON: { "Hello": "World" }
+``` 
+
+Which would output:
+
+```swift
+[
+	.text("Hello, here's some JSON:"),
+	.annotated("{ \"Hello\": \"World\" }",
+		 	   .dictionary(["Hello": .string("World"])),
+]
+```
+
+In fact you don't even need a full Parser architecture to enjoy this feature. If you just want to annotate this expressible by a Regular Expression, a Lexer will be enough. 
+
+For example if you're parsing mentions and hashtags in a tweet:
+
+**First:** Build a lexer.
+
+```swift
+enum Twitter {
+
+    enum Token: TokenProtocol {
+        case mention(String)
+        case hashtag(String)
+    }
+
+    enum Lexer: GeneratorLexer {
+        typealias Token = Twitter.Token
+
+        static let generators: Generators = [
+            RegexTokenGenerator(pattern: "@(\\w+)", group: 1).map { .mention($0) },
+            RegexTokenGenerator(pattern: "#(\\w+)", group: 1).map { .hashtag($0) },
+        ]
+    }
+
+}
+```
+
+**Second:** Call annotate:
+
+```swift
+let tweet = try Twitter.Lexer.annotate(input) as AnnotatedString<Twitter.Token>
+```
 
 ## Future Topics and Known Issues
 
