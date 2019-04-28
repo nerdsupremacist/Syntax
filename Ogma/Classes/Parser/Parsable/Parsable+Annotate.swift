@@ -22,7 +22,7 @@ extension Parsable {
                 case .text(let text):
                     return [.text(text)]
                 case .annotations(let annotations):
-                    return attempt(parsing: annotations)
+                    return string(parsing: annotations)
                 }
             }
             .clean()
@@ -33,23 +33,21 @@ extension Parsable {
 extension Parsable {
 
     private typealias OptionalTokenGroup = [AnnotatedGroup<Token?>.Annotation]
-    private typealias TokenGroup = [AnnotatedGroup<Token>.Annotation]
 
-    private static func attempt(parsing group: OptionalTokenGroup) -> AnnotatedString<Self> {
+    private static func string(parsing group: OptionalTokenGroup) -> AnnotatedString<Self> {
         let start = group.prefix { $0.annotation == nil }
         let end = group.reversed().prefix { $0.annotation == nil }.reversed()
 
-        let group: TokenGroup = group.compactMap { element in
-            guard let annotation = element.annotation else { return nil }
-            return .init(text: element.text, annotation: annotation)
-        }
+        guard start.count < group.count else { return group.map { .text($0.text) } }
+
+        let group = Array(group.dropFirst(start.count).dropLast(end.count))
 
         return start.map { .text($0.text) } +
             attempt(parsing: group) +
             end.map { .text($0.text) }
     }
 
-    private static func attempt(parsing group: TokenGroup) -> AnnotatedString<Self> {
+    private static func attempt(parsing group: OptionalTokenGroup) -> AnnotatedString<Self> {
         let tokens = group.map { $0.annotation }
         do {
             let output = try parser.parse(tokens: tokens)
