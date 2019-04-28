@@ -47,3 +47,43 @@ extension Array {
     }
 
 }
+
+extension Array {
+
+    public func string<Annotation>(
+        attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
+        _ attributesHandler: (String, Annotation) throws -> [NSAttributedString.Key : Any]
+    ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
+
+        let strings: [NSAttributedString] = try map { element in
+
+            let annotationAttributes = try element.annotation.map { annotation in
+                return try attributesHandler(element.text, annotation)
+                    .merging([.annotationValue : annotation]) { $1 }
+            }
+
+            let attributes = defaultAttributes?
+                .merging(annotationAttributes ?? [:]) { $1 }
+
+            return NSAttributedString(string: element.text,
+                                      attributes: attributes)
+        }
+
+        return strings.reduce(into: NSMutableAttributedString()) { $0.append($1) }
+    }
+
+    public func string<Annotation>(
+        attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
+        _ attributesHandler: (Annotation) throws -> [NSAttributedString.Key : Any]
+    ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
+
+        return try string(attributes: defaultAttributes) { try attributesHandler($1) }
+    }
+
+}
+
+extension NSAttributedString.Key {
+
+    public static let annotationValue = NSAttributedString.Key("Ogma.AnnotationValue")
+
+}
