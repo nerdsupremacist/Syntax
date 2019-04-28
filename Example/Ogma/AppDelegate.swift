@@ -18,68 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        var input = """
-        // Supports comments
-        /*
-            Also Multiline comments
-        */
-        {
-            "success": true,
-            "people": [
-                {
-                    "name": "Matt Mathias",
-                    "age": 32,
-                    "spouse": true
-                },
-                {
-                    "name": "Sergeant Pepper",
-                    "age": 25,
-                    "spouse": false
-                }
-            ],
-            "jobs": [
-                "teacher",
-                "judge"
-            ],
-            "states": {
-                "Georgia": [
-                    30301,
-                    30302,
-                    30303
-                ],
-                "Wisconsin": [
-                    53000,
-                    53001
-                ]
-            }
-        }
-        """
-        let json: JSON = try! .parse(input)
-        print(json)
-
-        input = "king of the north #status = alive and #allegiance = Targaryen"
-        let query: Query = try! .parse(input)
-        print(query)
-
-
-        input = """
-        Hello, here's some JSON { \"greeting\": /* Test test */ \"Hello World\" }.
-        It will parse numbers like 1234.
-        I can inline a "String".
-        And bools like true or false. Neat right?
-        Even arrays [1, 2, 3, 4].
-        """
-
-        let annotated = try! JSON.annotate(input, using: JSON.Lexer.self)
-        print(annotated)
-
-        input = """
-        Awesome #hackathon with @adnan! Such an awesome time #tum #hackatum
-        """
-
-        let tweet = try! Twitter.Lexer.annotate(input) as AnnotatedString<Twitter.Token>
-        print(tweet)
-
         return true
     }
 
