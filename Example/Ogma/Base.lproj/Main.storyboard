@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ZCc-3i-fba">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Editor-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Ogma_Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -20,11 +20,60 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bFO-fk-hZv">
+                                <rect key="frame" x="20" y="50" width="335" height="567"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <mutableString key="text">This editor has support for evaluating JSON instantly.  For example I can at any time type a "String" and it will be highlited as being valid JSON.
+
+It also works with boolean values such as true of false.  It recognizes null, integer literals such as 42, and double literals such as 1.2e10.  Heck! You can even inline objects!  {
+	"success": true,
+        "people": [ 		{ "name": "Foo bar", "age": 42 },
+              	{ "name": "Bar Baz", "age": 25 }
+  	]
+}
+
+Now you give it a try...
+
+</mutableString>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                            </textView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="bFO-fk-hZv" secondAttribute="trailing" constant="20" id="JvI-yx-L5G"/>
+                            <constraint firstItem="bFO-fk-hZv" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="50" id="Mug-2a-PJ1"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="bFO-fk-hZv" secondAttribute="bottom" constant="50" id="S95-bY-cuM"/>
+                            <constraint firstItem="bFO-fk-hZv" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="aLt-d9-Yyh"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Editor" largeTitleDisplayMode="never" id="GgW-0n-Jky"/>
+                    <connections>
+                        <outlet property="textView" destination="bFO-fk-hZv" id="RlR-wZ-53N"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="932" y="687"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="RbE-EL-bxj">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZCc-3i-fba" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ij9-d2-C9s">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="laI-1M-puh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wKp-cl-63b" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53.600000000000001" y="686.80659670164926"/>
         </scene>
     </scenes>
 </document>
