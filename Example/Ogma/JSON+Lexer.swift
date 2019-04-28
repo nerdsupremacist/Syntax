@@ -15,7 +15,6 @@ extension JSON {
         typealias Token = JSON.Token
 
         static let generators: Generators = [
-            WhiteSpaceTokenGenerator().ignore(),
             SingleLineCommentTokenGenerator(prefixPattern: "\\/\\/").ignore(),
             MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").ignore(),
 
@@ -31,7 +30,9 @@ extension JSON {
 
             StringLiteralTokenGenerator().map(Token.string),
             DoubleLiteralTokenGenerator().map(Token.double),
-            IntLiteralTokenGenerator().map(Token.int)
+            IntLiteralTokenGenerator().map(Token.int),
+
+            WhiteSpaceTokenGenerator().ignore(),
         ]
     }
 
