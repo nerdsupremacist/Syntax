@@ -10,7 +10,7 @@ import Foundation
 public struct DoubleLiteralTokenGenerator: RegexTokenGeneratorProtocol {
     public typealias Token = Double
 
-    public let pattern: String = "-?\\d+(,\\d+)*\\.\\d+(e\\d+)?\\b"
+    public let pattern: String = "-?\\d+(,\\d+)*\\.\\d+(e((-|\\+)?)\\d+)?\\b"
     let numberFormatter = NumberFormatter()
 
     public init() { }
