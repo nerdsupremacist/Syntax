@@ -14,6 +14,24 @@ public enum AnnotationElement<Annotation> {
 
 extension AnnotationElement {
 
+    public var annotation: Annotation? {
+        guard case .annotated(_, let value) = self else { return nil }
+        return value
+    }
+    
+    public var text: String {
+        switch self {
+        case .text(let text):
+            return text
+        case .annotated(let text, _):
+            return text
+        }
+    }
+
+}
+
+extension AnnotationElement {
+
     public func map<T>(_ transform: (String, Annotation) throws -> T) rethrows -> AnnotationElement<T> {
         switch self {
         case .text(let text):
