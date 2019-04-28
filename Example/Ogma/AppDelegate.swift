@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
         input = """
-        Hello, here's some JSON { \"Hello\": \"World\" }.
+        Hello, here's some JSON { \"greeting\": /* Test test */ \"Hello World\" }.
         It will parse numbers like 1234.
         I can inline a "String".
         And bools like true or false. Neat right?
