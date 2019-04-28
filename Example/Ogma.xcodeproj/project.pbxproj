@@ -17,6 +17,10 @@
 		0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */; };
 		0E1AEE2D2271C5C300E3C436 /* AndFilter+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */; };
 		0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */; };
+		0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F4494227657EB00BDD3B0 /* JSONTableViewController.swift */; };
+		0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */; };
+		0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */; };
+		0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */; };
 		0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79976C22729F11003FC60D /* Twitter+Lexer.swift */; };
 		0E9DA8492271CE3900078978 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
 		0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* JSON+Token.swift */; };
@@ -62,6 +66,10 @@
 		0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Equality+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AndFilter+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+Parsable.swift"; sourceTree = "<group>"; };
+		0E6F4494227657EB00BDD3B0 /* JSONTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTableViewController.swift; sourceTree = "<group>"; };
+		0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueTableViewCell.swift; sourceTree = "<group>"; };
+		0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSingleValueViewController.swift; sourceTree = "<group>"; };
+		0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+JSON.swift"; sourceTree = "<group>"; };
 		0E79976C22729F11003FC60D /* Twitter+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twitter+Lexer.swift"; sourceTree = "<group>"; };
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
@@ -165,6 +173,17 @@
 			name = Filter;
 			sourceTree = "<group>";
 		};
+		0E6F44A022766E6E00BDD3B0 /* JSON + Views */ = {
+			isa = PBXGroup;
+			children = (
+				0E6F4494227657EB00BDD3B0 /* JSONTableViewController.swift */,
+				0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */,
+				0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */,
+				0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */,
+			);
+			name = "JSON + Views";
+			sourceTree = "<group>";
+		};
 		0E79976B22729F03003FC60D /* Twitter */ = {
 			isa = PBXGroup;
 			children = (
@@ -245,6 +264,7 @@
 				0E1AEE1822719C3300E3C436 /* Search Queries */,
 				0EB829A8226F486800F5B66D /* JSON */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				0E6F44A022766E6E00BDD3B0 /* JSON + Views */,
 				0E1AEE0322705F0D00E3C436 /* Calculator */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -493,14 +513,17 @@
 				0E1AEE232271B6CB00E3C436 /* Keyword+Parsable.swift in Sources */,
 				0E9DA8522271CE3900078978 /* Double+JSONElement.swift in Sources */,
 				0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */,
+				0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */,
 				0E9DA8502271CE3900078978 /* String+JSONElement.swift in Sources */,
 				0E1AEE292271BBA700E3C436 /* Filter+Parsable.swift in Sources */,
 				0E9DA84D2271CE3900078978 /* JSON+Parsable.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				0E1AEE1B22719CCF00E3C436 /* Query+Token.swift in Sources */,
+				0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */,
 				0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */,
 				0E1AEE252271B8AB00E3C436 /* Property+Parsable.swift in Sources */,
 				0E9DA84E2271CE3900078978 /* JSONElement.swift in Sources */,
+				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
 				0E1AEE2D2271C5C300E3C436 /* AndFilter+Parsable.swift in Sources */,
 				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
 				0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */,
@@ -509,6 +532,7 @@
 				0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */,
 				0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */,
 				0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */,
+				0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */,
 				0E9DA84F2271CE3900078978 /* Bool+JSONElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -598,7 +622,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -646,7 +670,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
