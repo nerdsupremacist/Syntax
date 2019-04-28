@@ -24,9 +24,9 @@ extension JSON {
             RegexTokenGenerator(pattern: "\\]").map(to: .closeSquareBracket),
             RegexTokenGenerator(pattern: ",").map(to: .comma),
             RegexTokenGenerator(pattern: ":").map(to: .colon),
-            RegexTokenGenerator(pattern: "true").map(to: .true),
-            RegexTokenGenerator(pattern: "false").map(to: .false),
-            RegexTokenGenerator(pattern: "null").map(to: .null),
+            RegexTokenGenerator(pattern: "true\\b").map(to: .true),
+            RegexTokenGenerator(pattern: "false\\b").map(to: .false),
+            RegexTokenGenerator(pattern: "null\\b").map(to: .null),
 
             StringLiteralTokenGenerator().map(Token.string),
             DoubleLiteralTokenGenerator().map(Token.double),
