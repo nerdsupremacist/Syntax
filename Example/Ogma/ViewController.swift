@@ -23,8 +23,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         textView.delegate = self
 
+        textView.linkTextAttributes = [.foregroundColor : UIColor.orange]
         defaultAttributes = textView.typingAttributes
         evaluateInput()
+        textView.becomeFirstResponder()
     }
 
 }
@@ -50,7 +52,8 @@ extension ViewController: UITextViewDelegate {
                        at: characterRange.location,
                        effectiveRange: nil) as? JSON else { return true }
 
-        present(json: json)
+        let rect = textView.rect(for: characterRange).map { textView.convert($0, to: view) }
+        present(json: json, rect: rect ?? .zero)
         return false
     }
 
@@ -72,6 +75,18 @@ extension ViewController {
 
         textView.attributedText = string
         textView.selectedRange = selectedRange
+    }
+
+}
+
+extension UITextView {
+
+    func rect(for range: NSRange) -> CGRect? {
+        guard let start = position(from: beginningOfDocument, offset: range.location),
+            let end = position(from: start, offset: range.length),
+            let range = textRange(from: start, to: end) else { return nil }
+
+        return firstRect(for: range)
     }
 
 }

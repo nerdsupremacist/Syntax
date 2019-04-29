@@ -26,6 +26,7 @@ class JSONSingleValueViewController: UIViewController {
         view.backgroundColor = .white
 
         let textLabel = UILabel()
+        textLabel.textAlignment = .center
         textLabel.text = json.valueDescription
 
         textLabel.numberOfLines = 0
@@ -33,9 +34,11 @@ class JSONSingleValueViewController: UIViewController {
 
         view.addSubview(textLabel)
         textLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        textLabel.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -20)
+        textLabel.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -20).isActive = true
         view.centerXAnchor.constraint(equalTo: textLabel.centerXAnchor).isActive = true
         view.centerYAnchor.constraint(equalTo: textLabel.centerYAnchor).isActive = true
+
+        preferredContentSize = CGSize(width: 200, height: 100)
     }
 
 }

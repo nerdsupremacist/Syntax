@@ -13,12 +13,12 @@ class JSONObjectTableViewController: UITableViewController {
 
     init(json: [String : JSON]) {
         self.values = json.map { $0 }
-        super.init(style: .plain)
+        super.init(style: .grouped)
     }
 
     init(json: [JSON]) {
         self.values = json.enumerated().map { (String($0), $1) }
-        super.init(style: .plain)
+        super.init(style: .grouped)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -48,7 +48,10 @@ class JSONObjectTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        present(json: values[indexPath.row].value)
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        let rect = cell.convert(cell.bounds, to: tableView)
+
+        present(json: values[indexPath.row].value, rect: rect)
     }
 
 }
