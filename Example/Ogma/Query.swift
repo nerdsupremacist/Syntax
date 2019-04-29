@@ -27,7 +27,7 @@ extension Query {
     indirect enum Filter {
         case equality(Equality)
         case wrapped(Query.Filter)
-        case operation(BinaryOperation<Operator>)
+        case operation(BinaryOperation<Query.Filter>)
     }
 
 }

@@ -18,9 +18,7 @@ extension Query.Filter {
 
 }
 
-extension Query.Filter.Operator: ParsableBinaryOperator {
-    typealias Member = Query.Filter
-    
+extension Query.Filter.Operator: BinaryOperator {
     var token: Query.Token {
         switch self {
         case .and:
@@ -32,7 +30,7 @@ extension Query.Filter.Operator: ParsableBinaryOperator {
 }
 
 extension Query.Filter: MemberOfBinaryOperation {
-    init(from operation: BinaryOperation<Operator>) {
+    init(from operation: BinaryOperation<Query.Filter>) {
         self = .operation(operation)
     }
 }
