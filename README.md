@@ -203,9 +203,9 @@ enum Lexer: GeneratorLexer {
 
 Another common scenario when writing a Parser is handling operator precedence. Even as in mentioned in the example above, with the precendence between `+` and `-`. Ogma already comes with a model for writing Binary Operations and handling the precendence between operators. 
 
-*Note:* for now this only works when you know all possible operators before hand. If you're planning on writing a language that supports custom operators, sorry. This API can't handle this case yet.
+*Note:* for now this only works when you know all possible operators before hand. If you're planning on writing a language that supports custom operators, this API isn't for you.
 
-To use the Binary Operator API you have to implement to protocols: 
+To use the Binary Operator API you have to implement two protocols: 
 
 - `BinaryOperator`: basically an Identifier for the operator that will run. This has to be comparable so that we know the precedence. The smaller the value, the higher the precedence.
 - and `MemberOfBinaryOperation`: This is basically the left and right hand side of your operator. The Member also knows which operators it supports, and can be instantiated from an Operation.
