@@ -2,7 +2,7 @@
 
 Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complicated state machines! Now you can easily write a Parser using only pure functions.
 
-## How do I write a Parser
+## How do I write a Parser?
 
 Once you have an understanding what you want to parse (it helps to have a defined Context Free Grammar already written down), you need to implement:
 
@@ -133,7 +133,7 @@ extension Expression.Addition: Parsable {
     public typealias Token = Expression.Token
 
     public static let parser: AnyParser<Expression.Token, Expression.Addition> = {
-        let parser = Int.self && .plus && Expression.self
+        let parser = Expression.self && .plus && Expression.self
         return parser.map { Expression.Addition(lhs: .int($0), rhs: $1) }
     }()
 }
@@ -142,13 +142,13 @@ extension Expression.Multiplication: Parsable {
     public typealias Token = Expression.Token
 
     public static let parser: AnyParser<Expression.Token, Expression.Multiplication> = {
-        let parser = Int.self && .times && Expression.self
+        let parser = Expression.self && .times && Expression.self
         return parser.map { Expression.Multiplication(lhs: .int($0), rhs: $1) }
     }()
 }
 ```
 
-In this scenario we are always expecting the first member of an operation to be an Int. This is to avoid an endless recursion looking like `Expression` -> `Addition` -> `Expression`.
+You can see that we are stating that the multiplication expression consists of an Expression a times operator and another Expression. Dogma will automatically match it correctly ;).  
 
 And finally we make the expression `Parsable`. This time using the `||` operator to signal that it should take the result from the first Parser that succeeds:
 
@@ -196,6 +196,74 @@ enum Lexer: GeneratorLexer {
 			WhiteSpaceTokenGenerator().ignore(),
 			...
 		]
+}
+```
+
+### Binary Operators and Operator Precedence
+
+Another common scenario when writing a Parser is handling operator precedence. Even as in mentioned in the example above, with the precendence between `+` and `-`. Ogma already comes with a model for writing Binary Operations and handling the precendence between operators. 
+
+*Note:* for now this only works when you know all possible operators before hand. If you're planning on writing a language that supports custom operators, sorry. This API can't handle this case yet.
+
+To use the Binary Operator API you have to implement to protocols: 
+
+- `BinaryOperator`: basically an Identifier for the operator that will run. This has to be comparable so that we know the precedence. The smaller the value, the higher the precedence.
+- and `MemberOfBinaryOperation`: This is basically the left and right hand side of your operator. The Member also knows which operators it supports, and can be instantiated from an Operation.
+
+#### Example
+
+Back in our calculator case we can now ditch the `Addition` and `Multiplication` structs in favor of `BinaryOperation`. We begin by implementing the Operator:
+
+```swift
+extension Expression {
+
+	public enum Operator: Int, BinaryOperator {
+		case multiplication
+		case addition
+		
+		var token: Expression.Token {
+			switch self {
+			case .multiplication:
+				return .times
+			case .addition:
+				return .plus
+			}
+		}
+	} 
+
+}
+```
+
+Please note that `multiplication` was written before `addition`. This means that now, since `Operator` is `RawRepresentable` by `Int`, the de facto precedence is multiplication before addition.
+We make a few adjustments to our expression
+
+```swift
+public indirect enum Expression {
+   	case int(Int)
+	case operation(BinaryOperation<Expression>) 
+}
+```
+
+and implement `MemberOfBinaryOperation`:
+
+```swift
+extension Expression: MemberOfBinaryOperation {
+
+	public init(from operation: BinaryOperation<Expression>) {
+		self = .operation(operation)
+	}
+
+}
+```
+
+We're almost done, now we just have to update the parser for the new model:
+
+```swift
+extension Expression: Parsable {
+
+    public static let parser: AnyParser<Expression.Token, Expression> = BinaryOperation<Expression>.map(Expression.operation) ||
+        Int.map(Expression.int)
+
 }
 ```
 
