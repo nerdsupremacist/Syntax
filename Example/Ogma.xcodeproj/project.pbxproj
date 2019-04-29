@@ -33,6 +33,7 @@
 		0E9DA8522271CE3900078978 /* Double+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D1226F584500F5B66D /* Double+JSONElement.swift */; };
 		0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D3226F588900F5B66D /* Array+JSONElement.swift */; };
 		0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */; };
+		0EB8C18B2276C7AE005B5850 /* Query+Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C18A2276C7AE005B5850 /* Query+Operator.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -81,6 +82,7 @@
 		0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Parsable.swift"; sourceTree = "<group>"; };
 		0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+JSONElement.swift"; sourceTree = "<group>"; };
 		0EB829D9226F5C9100F5B66D /* JSON+Parse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Parse.swift"; sourceTree = "<group>"; };
+		0EB8C18A2276C7AE005B5850 /* Query+Operator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+Operator.swift"; sourceTree = "<group>"; };
 		36E89E92650B90DC7F4A6CB5 /* Pods-Ogma_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ogma_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Ogma_Tests/Pods-Ogma_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5C89AAAC7200BA3C50C55859 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Ogma_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ogma_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				0E1AEE1622719A6A00E3C436 /* Query.swift */,
+				0EB8C18A2276C7AE005B5850 /* Query+Operator.swift */,
 				0E1AEE1922719CB900E3C436 /* Parser */,
 			);
 			name = "Search Queries";
@@ -523,6 +526,7 @@
 				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
 				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
 				0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */,
+				0EB8C18B2276C7AE005B5850 /* Query+Operator.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				0E1AEE1D22719D8500E3C436 /* Query+Lexer.swift in Sources */,
 				0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */,

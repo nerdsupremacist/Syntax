@@ -32,42 +32,6 @@ extension Query {
 
 }
 
-extension Query.Filter: MemberOfBinaryOperation {
-    init(from operation: BinaryOperation<Operator>) {
-        self = .operation(operation)
-    }
-}
-
-extension Query.Filter {
-
-    enum Operator: CaseIterable, ParsableBinaryOperator {
-        typealias Member = Query.Filter
-        typealias Token = Query.Token
-
-        case and
-        case or
-
-        var token: Query.Token {
-            switch self {
-            case .and:
-                return .and
-            case .or:
-                return .or
-            }
-        }
-
-        var priority: Int {
-            switch self {
-            case .and:
-                return 2
-            case .or:
-                return 1
-            }
-        }
-    }
-
-}
-
 extension Query.Filter {
 
     struct Property: RawRepresentable {

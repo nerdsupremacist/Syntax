@@ -12,7 +12,7 @@ import Foundation
 public func && <A: Parser, B: Parser>(lhs: A,
                                       rhs: B) -> AnyParser<A.Token, (A.Output, B.Output)> where A.Token == B.Token {
 
-    return AndParser(first: lhs, second: rhs).any()
+    return AndParser(first: lhs, second: rhs).excludingRecursion()
 }
 
 /// Combine two Parsers sequentially
@@ -70,25 +70,14 @@ public func && <A: Parsable, Token>(lhs: A.Type, rhs: Token) -> AnyParser<A.Toke
     return lhs.indirect && rhs.parser
 }
 
-private class AndParser<A: Parser, B: Parser>: Parser where A.Token == B.Token {
+private struct AndParser<A: Parser, B: Parser>: Parser where A.Token == B.Token {
     typealias Token = A.Token
     typealias Output = (A.Output, B.Output)
     
     let first: A
     let second: B
-
-    init(first: A, second: B) {
-        self.first = first
-        self.second = second
-    }
-
     func parse(tokens: [A.Token], stack: [AnyObject]) throws -> ParserOutput<A.Token, (A.Output, B.Output)> {
-
-        guard !stack.contains(where: { $0 === self }) else {
-            throw ParserError<Token>.recursiveCall(to: self)
-        }
-
-        let firstOutput = try first.parse(tokens: tokens, stack: stack + [self])
+        let firstOutput = try first.parse(tokens: tokens, stack: stack)
         return try second.parse(tokens: firstOutput.remaining, stack: []).map { (firstOutput.output, $0) }
     }
 }
