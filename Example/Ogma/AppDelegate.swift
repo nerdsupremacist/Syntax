@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        let query = "checking #status = 0 or #status = 42 and #status = 30"
+        let parsed = try! Query.parse(query)
+        print(parsed)
+
         return true
     }
 

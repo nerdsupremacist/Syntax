@@ -12,6 +12,7 @@ import Ogma
 extension Query.Filter: Parsable {
     typealias Token = Query.Token
 
-    static let parser: AnyParser<Query.Token, Query.Filter> = Query.Filter.AndFilter.map(Query.Filter.and) ||
-        Query.Filter.Equality.map(Query.Filter.equality)
+    static let parser: AnyParser<Query.Token, Query.Filter> = BinaryOperation.map(Query.Filter.operation) ||
+        Query.Filter.Equality.map(Query.Filter.equality) ||
+        Query.Filter.wrapped(by: .openParenthesis, and: .closeParenthesis).map { .wrapped($0) }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Ogma
 
 struct Query {
     let keywords: [Keyword]
@@ -25,7 +26,44 @@ extension Query {
 
     indirect enum Filter {
         case equality(Equality)
-        case and(AndFilter)
+        case wrapped(Query.Filter)
+        case operation(BinaryOperation<Operator>)
+    }
+
+}
+
+extension Query.Filter: MemberOfBinaryOperation {
+    init(from operation: BinaryOperation<Operator>) {
+        self = .operation(operation)
+    }
+}
+
+extension Query.Filter {
+
+    enum Operator: CaseIterable, ParsableBinaryOperator {
+        typealias Member = Query.Filter
+        typealias Token = Query.Token
+
+        case and
+        case or
+
+        var token: Query.Token {
+            switch self {
+            case .and:
+                return .and
+            case .or:
+                return .or
+            }
+        }
+
+        var priority: Int {
+            switch self {
+            case .and:
+                return 2
+            case .or:
+                return 1
+            }
+        }
     }
 
 }
@@ -44,12 +82,6 @@ extension Query.Filter {
         let property: Property
         let value: Value
     }
-
-    struct AndFilter {
-        let lhs: Query.Filter
-        let rhs: Query.Filter
-    }
-
 }
 
 extension Query {

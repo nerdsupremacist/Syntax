@@ -15,8 +15,12 @@ extension Query {
 
         static let generators: Generators = [
             WhiteSpaceTokenGenerator().ignore(),
+            
+            RegexTokenGenerator(pattern: "\\(").map(to: .openParenthesis),
+            RegexTokenGenerator(pattern: "\\)").map(to: .closeParenthesis),
             RegexTokenGenerator(pattern: "#").map(to: .hashtag),
             RegexTokenGenerator(pattern: "=").map(to: .equals),
+
             RegexTokenGenerator(pattern: "\\w+\\b").map { .word($0) },
             StringLiteralTokenGenerator().map { .string($0) },
         ]

@@ -17,4 +17,8 @@ public enum ParserError<Token: TokenProtocol>: Error {
     case parsableValueDidNotConsumeAllTokens(Any.Type, remaining: [Token])
     /// The token cannot be converted to the Desired Type
     case tokenNotConvertibleTo(Token, type: Any.Type)
+    /// Parser is calling itself recursively
+    case recursiveCall(to: Any)
+    /// Parsing a binary operation still resulted in a single member being parsed
+    case expectedABinaryOperation
 }

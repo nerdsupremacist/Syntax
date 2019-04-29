@@ -21,12 +21,12 @@ private struct OrParser<A: Parser, B: Parser>: Parser where A.Output == B.Output
     
     let first: A
     let second: B
-    
-    func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
+
+    func parse(tokens: [A.Token], stack: [AnyObject]) throws -> ParserOutput<A.Token, A.Output> {
         do {
-            return try first.parse(tokens: tokens)
+            return try first.parse(tokens: tokens, stack: stack)
         } catch {
-            return try second.parse(tokens: tokens)
+            return try second.parse(tokens: tokens, stack: stack)
         }
     }
 }

@@ -10,14 +10,15 @@ import Foundation
 
 /// Wrapper around another Parser for Type Erasure
 public struct AnyParser<Token: TokenProtocol, Output>: Parser {
-    
-    let _parse: ([Token]) throws -> ParserOutput<Token, Output>
-    
+    let _parse: ([Token], [AnyObject]) throws -> ParserOutput<Token, Output>
+    let _source: Any
+
     init<P: Parser>(_ parser: P) where P.Token == Token, P.Output == Output {
         self._parse = parser.parse
+        self._source = parser
     }
-    
-    public func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
-        return try _parse(tokens)
+
+    public func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
+        return try _parse(tokens, stack)
     }
 }

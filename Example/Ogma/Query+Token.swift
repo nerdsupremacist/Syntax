@@ -13,6 +13,8 @@ extension Query {
     enum Token: TokenProtocol {
         case hashtag
         case equals
+        case openParenthesis
+        case closeParenthesis
         case word(String)
         case string(String)
     }
@@ -22,6 +24,7 @@ extension Query {
 extension Query.Token {
 
     static let and = Query.Token.word("and")
+    static let or = Query.Token.word("or")
 
     var word: String? {
         guard case .word(let word) = self else { return nil }

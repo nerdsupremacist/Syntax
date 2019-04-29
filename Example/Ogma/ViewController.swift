@@ -36,9 +36,7 @@ extension ViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         timer?.invalidate()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [unowned self] _ in
-            self.evaluateInput()
-        }
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [unowned self] _ in self.evaluateInput() }
     }
 
     func textView(_ textView: UITextView,

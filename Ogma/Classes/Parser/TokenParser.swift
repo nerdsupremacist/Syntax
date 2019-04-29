@@ -20,8 +20,8 @@ extension TokenProtocol {
 private struct TokenParser<Token: TokenProtocol>: SingleTokenParser {
     typealias Output = Void
     let token: Token
-    
-    func parse(token: Token) throws -> Void {
+
+    func parse(token: Token, stack: [AnyObject]) throws -> Void {
         guard token == self.token else { throw ParserError.unexpectedToken(token, expected: self.token) }
     }
 }

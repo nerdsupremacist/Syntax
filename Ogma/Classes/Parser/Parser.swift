@@ -10,10 +10,21 @@ import Foundation
 
 /// A Parser consumes Tokens to return an Output
 public protocol Parser {
+
     /// Tokens that it should consume
     associatedtype Token: TokenProtocol
+
     /// Output of the Parser
     associatedtype Output
+
     /// Parse the Tokens. And Return the output with the remaining Tokens
-    func parse(tokens: [Token]) throws -> ParserOutput<Token, Output>
+    func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output>
+}
+
+extension Parser {
+
+    public func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
+        return try parse(tokens: tokens, stack: [])
+    }
+
 }

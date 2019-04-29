@@ -15,7 +15,6 @@
 		0E1AEE272271BAB900E3C436 /* Value+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE262271BAB900E3C436 /* Value+Parsable.swift */; };
 		0E1AEE292271BBA700E3C436 /* Filter+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE282271BBA700E3C436 /* Filter+Parsable.swift */; };
 		0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */; };
-		0E1AEE2D2271C5C300E3C436 /* AndFilter+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */; };
 		0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */; };
 		0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F4494227657EB00BDD3B0 /* JSONTableViewController.swift */; };
 		0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */; };
@@ -64,7 +63,6 @@
 		0E1AEE262271BAB900E3C436 /* Value+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Value+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE282271BBA700E3C436 /* Filter+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Filter+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Equality+Parsable.swift"; sourceTree = "<group>"; };
-		0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AndFilter+Parsable.swift"; sourceTree = "<group>"; };
 		0E1AEE2E2271C68200E3C436 /* Query+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+Parsable.swift"; sourceTree = "<group>"; };
 		0E6F4494227657EB00BDD3B0 /* JSONTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTableViewController.swift; sourceTree = "<group>"; };
 		0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueTableViewCell.swift; sourceTree = "<group>"; };
@@ -167,7 +165,6 @@
 				0E1AEE242271B8AB00E3C436 /* Property+Parsable.swift */,
 				0E1AEE262271BAB900E3C436 /* Value+Parsable.swift */,
 				0E1AEE2A2271C4E200E3C436 /* Equality+Parsable.swift */,
-				0E1AEE2C2271C5C300E3C436 /* AndFilter+Parsable.swift */,
 				0E1AEE282271BBA700E3C436 /* Filter+Parsable.swift */,
 			);
 			name = Filter;
@@ -524,7 +521,6 @@
 				0E1AEE252271B8AB00E3C436 /* Property+Parsable.swift in Sources */,
 				0E9DA84E2271CE3900078978 /* JSONElement.swift in Sources */,
 				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
-				0E1AEE2D2271C5C300E3C436 /* AndFilter+Parsable.swift in Sources */,
 				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
 				0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

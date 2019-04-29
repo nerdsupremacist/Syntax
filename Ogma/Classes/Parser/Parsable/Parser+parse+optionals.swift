@@ -7,11 +7,12 @@
 
 import Foundation
 
+
 extension Parser {
 
     func parse(tokens: [Token?]) throws -> ParserOutput<Token?, Output> {
         let parsable = tokens.compactMap { $0 }
-        let parsed = try parse(tokens: parsable)
+        let parsed = try parse(tokens: parsable, stack: [])
         return ParserOutput(output: parsed.output,
                             remaining: tokens.postfix(containing: parsed.remaining))
     }

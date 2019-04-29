@@ -11,18 +11,23 @@ import Foundation
 extension Parser {
 
     /// Map the output value of a Parser
-    public func map<T>(_ transform: @escaping (Output) throws -> T) -> AnyParser<Token, T> {
-        return MappedParser(source: self, transform: transform).any()
+    public func map<T>(file: StaticString = #file,
+                       line: Int = #line,
+                       _ transform: @escaping (Output) throws -> T) -> AnyParser<Token, T> {
+
+        return MappedParser(file: file, line: line, source: self, transform: transform).any()
     }
     
 }
 
 private struct MappedParser<Source: Parser, Output>: Parser {
     typealias Token = Source.Token
+    let file: StaticString
+    let line: Int
     let source: Source
     let transform: (Source.Output) throws -> Output
-    
-    func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
-        return try source.parse(tokens: tokens).map(transform)
+
+    func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, Output> {
+        return try source.parse(tokens: tokens, stack: stack).map(transform)
     }
 }

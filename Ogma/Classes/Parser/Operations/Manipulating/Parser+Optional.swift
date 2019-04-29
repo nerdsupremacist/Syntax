@@ -33,10 +33,10 @@ private struct OptionalParser<Source: Parser>: Parser {
     typealias Output = Source.Output?
     
     let source: Source
-    
-    func parse(tokens: [Token]) throws -> ParserOutput<Token, Output> {
+
+    func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, Source.Output?> {
         do {
-            return try source.parse(tokens: tokens).map(Optional.some)
+            return try source.parse(tokens: tokens, stack: stack).map(Optional.some)
         } catch {
             return ParserOutput(output: nil, remaining: tokens)
         }

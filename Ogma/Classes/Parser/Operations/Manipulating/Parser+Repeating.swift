@@ -37,16 +37,16 @@ private struct RepeatingParser<Source: Parser>: Parser {
     typealias Output = [Source.Output]
 
     let source: Source
-    
-    func parse(tokens: [Token]) throws -> ParserOutput<Token, [Source.Output]> {
+
+    func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, [Source.Output]> {
         let current: ParserOutput<Token, Source.Output>
         do {
-            current = try source.parse(tokens: tokens)
+            current = try source.parse(tokens: tokens, stack: stack)
         } catch {
             return ParserOutput(output: [], remaining: tokens)
         }
-        
-        let remaining = try parse(tokens: current.remaining)
+
+        let remaining = try parse(tokens: current.remaining, stack: [])
         return remaining.map { [current.output] + $0 }
     }
 }

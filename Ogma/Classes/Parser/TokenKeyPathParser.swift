@@ -20,7 +20,7 @@ extension AnyParser {
 private struct TokenKeyPathParser<Token: TokenProtocol, Output>: SingleTokenParser {
     let keyPath: KeyPath<Token, Output?>
 
-    func parse(token: Token) throws -> Output {
+    func parse(token: Token, stack: [AnyObject]) throws -> Output {
         guard let value = token[keyPath: keyPath] else {
             throw ParserError.tokenNotConvertibleTo(token, type: Output.self)
         }

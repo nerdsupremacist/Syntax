@@ -17,11 +17,13 @@ extension Parsable {
     
 }
 
-private struct IndirectParsable<P: Parsable>: Parser {
+private class IndirectParsable<P: Parsable>: Parser {
     typealias Token = P.Token
     typealias Output = P
 
-    func parse(tokens: [P.Token]) throws -> ParserOutput<P.Token, P> {
-        return try P.parser.parse(tokens: tokens)
+    private lazy var parser = P.parser
+
+    func parse(tokens: [P.Token], stack: [AnyObject]) throws -> ParserOutput<P.Token, P> {
+        return try parser.parse(tokens: tokens, stack: stack)
     }
 }
