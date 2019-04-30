@@ -16,17 +16,14 @@ extension UIViewController {
         switch json {
         case .dictionary(let dictionary):
             let viewController = JSONObjectTableViewController(json: dictionary)
-            viewController.title = json.typeTitle
             navigationController?.pushViewController(viewController, animated: true)
         case .array(let array):
             let viewController = JSONObjectTableViewController(json: array)
-            viewController.title = json.typeTitle
             navigationController?.pushViewController(viewController, animated: true)
         default:
             let viewController = JSONSingleValueViewController(json: json)
 
             viewController.modalPresentationStyle = .popover
-            viewController.title = json.typeTitle
             viewController.popoverPresentationController?.delegate = popOverDelegate
             viewController.popoverPresentationController?.sourceView = view
             viewController.popoverPresentationController?.sourceRect = rect

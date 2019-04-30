@@ -14,11 +14,13 @@ class JSONObjectTableViewController: UITableViewController {
     init(json: [String : JSON]) {
         self.values = json.map { $0 }
         super.init(style: .grouped)
+        title = "Object"
     }
 
     init(json: [JSON]) {
         self.values = json.enumerated().map { (String($0), $1) }
         super.init(style: .grouped)
+        title = "Array"
     }
 
     required init?(coder aDecoder: NSCoder) {
