@@ -18,7 +18,7 @@ extension Parser {
         if allowsTrailingSeparator {
             return separated(by: separator,
                              allowsTrailingSeparator: false,
-                             allowsEmpty: allowsEmpty) && separator.?
+                             allowsEmpty: allowsEmpty) && separator.optional()
         }
 
         if allowsEmpty {

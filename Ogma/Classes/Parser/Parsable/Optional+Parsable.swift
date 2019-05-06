@@ -12,6 +12,6 @@ extension Optional: Parsable where Wrapped: Parsable {
     public typealias Token = Wrapped.Token
     
     public static var parser: AnyParser<Token, Wrapped?> {
-        return Wrapped.parser.?
+        return Wrapped.parser.optional()
     }
 }
