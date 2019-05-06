@@ -14,4 +14,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Ogma/Classes/**/*'
+
+  s.swift_version = '4.2'
 end
