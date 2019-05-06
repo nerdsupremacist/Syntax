@@ -157,7 +157,7 @@
 		AB23F469750B744BE84E8AB7E4054DB5 /* Pods-Ogma_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Ogma_Example.modulemap"; sourceTree = "<group>"; };
 		AFCB0FC1BB6D0B5889B1B94174C4942A /* AnyParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnyParser.swift; sourceTree = "<group>"; };
 		B12C80A90ABAE84E99C28D4A6C57C6AC /* Array+collect.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Array+collect.swift"; sourceTree = "<group>"; };
-		BD4646D13112BB1690091D678E5C564D /* Ogma.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; path = Ogma.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		BD4646D13112BB1690091D678E5C564D /* Ogma.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; path = Ogma.podspec; sourceTree = "<group>"; };
 		C5D3071F5D2C0B1DE5B616A49A7F838B /* AnnotatedElement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnnotatedElement.swift; sourceTree = "<group>"; };
 		C9CA192DF7A10D70329DBDE0649A8CF8 /* Pods-Ogma_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Ogma_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		CC93267E7B302C288765AF5CD4B3DE61 /* DoubleLiteralTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DoubleLiteralTokenGenerator.swift; sourceTree = "<group>"; };

@@ -1,42 +1,17 @@
-#
-# Be sure to run `pod lib lint Ogma.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = 'Ogma'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of Ogma.'
+  s.summary          = 'Framework for Parsing in Swift using pure functions'
 
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.description      = 'Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complicated state machines! Now you can easily write a Parser using only pure functions.'
 
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
-
-  s.homepage         = 'https://github.com/mathiasquintero/Ogma'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://github.com/nerdsupremacist/Ogma'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'mathiasquintero' => 'me@quintero.io' }
-  s.source           = { :git => 'https://github.com/mathiasquintero/Ogma.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => 'https://github.com/nerdsupremacist/Ogma.git', :tag => s.version.to_s }
+  s.social_media_url = 'https://twitter.com/nerdsupremacist'
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Ogma/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'Ogma' => ['Ogma/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end
