@@ -10,6 +10,20 @@ Once you have an understanding what you want to parse (it helps to have a define
 - **Your Lexer:** A component to turn an input String into Tokens
 - **Your Parser:** The consumer of the Tokens from the Lexer. The Parser will take the Tokens as an input and output your Model
 
+## Installation
+
+Ogma is available using Cocoapods. To include Ogma into your project add it to your Podfile:
+
+```ruby
+pod 'Ogma', '~> 0.1'
+```
+
+And run:
+
+```
+$ pod install
+```
+
 ## Example
 
 Right now, to make it easy we will write a simple calculator using Ogma. Our calculator will only support addition and multiplication. For now we will not be doing multiplication before addition. That's a story for another time.
