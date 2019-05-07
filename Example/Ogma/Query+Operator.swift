@@ -34,11 +34,3 @@ extension Query.Filter: MemberOfBinaryOperation {
         self = .operation(operation)
     }
 }
-
-extension RawRepresentable where RawValue: Comparable {
-
-    static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.rawValue < rhs.rawValue
-    }
-
-}

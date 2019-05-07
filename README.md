@@ -346,9 +346,6 @@ let tweet = try Twitter.Lexer.annotate(input) as AnnotatedString<Twitter.Token>
 ## Future Topics and Known Issues
 
 - A type can only implement `Parsable` once. And for one type of Tokens. So if you plan on writing more than one parser, you should not let types from the Standard Library implement `Parsable`.
-- Indirect enum tend to have the recursion issue mentioned earlier. A call stack based failsafe could be implemented, but it's not yet clear what it should look like.
-- Operator precedence does not work out of the box, yet.
-
 
 ## Authors
 
