@@ -18,6 +18,10 @@ extension JSON {
             SingleLineCommentTokenGenerator(prefixPattern: "\\/\\/").ignore(),
             MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").ignore(),
 
+            StringLiteralTokenGenerator().map(Token.string),
+            DoubleLiteralTokenGenerator().map(Token.double),
+            IntLiteralTokenGenerator().map(Token.int),
+
             RegexTokenGenerator(pattern: "\\{").map(to: .openCurlyBracket),
             RegexTokenGenerator(pattern: "\\}").map(to: .closeCurlyBracket),
             RegexTokenGenerator(pattern: "\\[").map(to: .openSquareBracket),
@@ -27,10 +31,6 @@ extension JSON {
             RegexTokenGenerator(pattern: "true\\b").map(to: .true),
             RegexTokenGenerator(pattern: "false\\b").map(to: .false),
             RegexTokenGenerator(pattern: "null\\b").map(to: .null),
-
-            StringLiteralTokenGenerator().map(Token.string),
-            DoubleLiteralTokenGenerator().map(Token.double),
-            IntLiteralTokenGenerator().map(Token.int),
 
             WhiteSpaceTokenGenerator().ignore(),
         ]
