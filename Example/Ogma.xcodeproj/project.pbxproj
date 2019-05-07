@@ -21,6 +21,7 @@
 		0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */; };
 		0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */; };
 		0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79976C22729F11003FC60D /* Twitter+Lexer.swift */; };
+		0E80576B2281FEAA00C9948C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E80576A2281FEAA00C9948C /* CHANGELOG.md */; };
 		0E9DA8492271CE3900078978 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
 		0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A9226F487100F5B66D /* JSON+Token.swift */; };
 		0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */; };
@@ -70,6 +71,7 @@
 		0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSingleValueViewController.swift; sourceTree = "<group>"; };
 		0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+JSON.swift"; sourceTree = "<group>"; };
 		0E79976C22729F11003FC60D /* Twitter+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twitter+Lexer.swift"; sourceTree = "<group>"; };
+		0E80576A2281FEAA00C9948C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
 		0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Lexer.swift"; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 			children = (
 				C9E679AD308CFB91729B2A8E /* Ogma.podspec */,
 				5C89AAAC7200BA3C50C55859 /* README.md */,
+				0E80576A2281FEAA00C9948C /* CHANGELOG.md */,
 				E762E7D36BBD5EE9AA04EB66 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
@@ -419,6 +422,7 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				0E80576B2281FEAA00C9948C /* CHANGELOG.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
