@@ -10,7 +10,7 @@ import Foundation
 struct StringLiteralEscapedSectionTokenGenerator: RegexTokenGeneratorProtocol {
     typealias Token = String
 
-    let pattern: String = "\\\\([^\\\\ \\s]+|\\\\)?"
+    let pattern: String = "\\\\(([^\\\\ \\s]+|\\\\)?)"
     let group: Int = 1
     
     let delimiter: String
