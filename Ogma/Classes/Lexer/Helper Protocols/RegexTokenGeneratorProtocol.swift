@@ -48,7 +48,11 @@ extension RegexTokenGeneratorProtocol {
     func token(in match: NSTextCheckingResult, for text: String) throws -> Token? {
         let groupRange = match.range(at: group)
 
-        let matched = Range(groupRange, in: text).map { String(text[$0]) } ?? ""
+        guard let range = Range(groupRange, in: text) else {
+            throw LexerError.noMatchFound(text, pattern: pattern)
+        }
+
+        let matched = String(text[range])
 
         do {
             return try token(from: matched)
