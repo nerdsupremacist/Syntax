@@ -63,15 +63,20 @@ extension ViewController {
         guard let input = textView.text else { return }
         let selectedRange = textView.selectedRange
 
-        let string = try! JSON
-            .annotate(input, using: JSON.Lexer.self)
-            .string(attributes: defaultAttributes) { json in
-                return [
-                    .link: URL(string: "json://")!,
-                ]
+        do {
+            let string = try JSON
+                .annotate(input, using: JSON.Lexer.self)
+                .string(attributes: defaultAttributes) { json in
+                    return [
+                        .link: URL(string: "json://")!,
+                    ]
             }
 
-        textView.attributedText = string
+            textView.attributedText = string
+        } catch {
+            print(error)
+        }
+
         textView.selectedRange = selectedRange
     }
 
