@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Ogma'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Framework for Parsing in Swift using pure functions'
 
   s.description      = 'Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complicated state machines! Now you can easily write a Parser using only pure functions.'
