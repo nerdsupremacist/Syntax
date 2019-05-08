@@ -19,9 +19,9 @@ public protocol MemberOfBinaryOperation: Parsable {
 }
 
 public struct BinaryOperation<Member: MemberOfBinaryOperation> {
-    let lhs: Member
-    let rhs: Member
-    let `operator`: Member.Operator
+    public let lhs: Member
+    public let rhs: Member
+    public let `operator`: Member.Operator
 }
 
 extension BinaryOperation: Parsable {
