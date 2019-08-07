@@ -11,12 +11,13 @@ import Ogma
 
 extension JSON: Parsable {
 
-    public static let parser: AnyParser<Token, JSON> = Bool.json ||
+    public static let parser: AnyParser<Token, JSON> = [
+        .openSquareBracket : Array<JSON>.json,
+        .openCurlyBracket : Dictionary<String, JSON>.json,
+        ] as PrefixLookupParser ||
+        Bool.json ||
         Int.json ||
         Double.json ||
         String.json ||
-        Token.null.map { .null } ||
-        Array<JSON>.json ||
-        Dictionary<String, JSON>.json
-
+        Token.null.map { .null }
 }

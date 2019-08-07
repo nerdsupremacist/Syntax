@@ -13,11 +13,12 @@ extension Array: TokenGenerator where Element: TokenGenerator {
     public typealias Token = Element.Token
     
     public func take(text: String) throws -> Result {
+        var results: [Result] = []
         var errors: [LexerError] = []
 
         for generator in self {
             do {
-                return try generator.take(text: text)
+                results.append(try generator.take(text: text))
             } catch let error as LexerError {
                 errors.append(error)
             } catch {
@@ -25,7 +26,12 @@ extension Array: TokenGenerator where Element: TokenGenerator {
             }
         }
 
-        throw LexerError.noGeneratorMatched(text, errors: errors)
+        let sortedResults = results.sorted { $0.remainingString?.count ?? 0 < $1.remainingString?.count ?? 0 }
+        guard let result = sortedResults.first else {
+            throw LexerError.noGeneratorMatched(text, errors: errors)
+        }
+
+        return result
     }
 
     public func annotate(text: String) throws -> [AnnotationElement<Element.Token?>] {
