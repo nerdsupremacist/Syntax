@@ -11,13 +11,27 @@ import Ogma
 
 extension JSON: Parsable {
 
-    public static let parser: AnyParser<Token, JSON> = [
-        .openSquareBracket : Array<JSON>.json,
-        .openCurlyBracket : Dictionary<String, JSON>.json,
-        ] as PrefixLookupParser ||
-        Bool.json ||
-        Int.json ||
-        Double.json ||
-        String.json ||
-        Token.null.map { .null }
+    public static let parser: AnyParser<Token, JSON> = .lookAhead { token in
+        switch token {
+        case .openSquareBracket:
+            return Array<JSON>.indirect.map(JSON.array)
+        case .openCurlyBracket:
+            return Dictionary<String, JSON>.indirect.map(JSON.dictionary)
+        case .true:
+            return .with(value: .bool(true))
+        case .false:
+            return .with(value: .bool(false))
+        case .int(let int):
+            return .with(value: .int(int))
+        case .double(let double):
+            return .with(value: .double(double))
+        case .string(let string):
+            return .with(value: .string(string))
+        case .null:
+            return .with(value: .null)
+        case .closeSquareBracket, .closeCurlyBracket, .comma, .colon:
+            return nil
+        }
+    }
+
 }

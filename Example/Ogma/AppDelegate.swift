@@ -18,9 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        let query = "checking #status = 42 and #status = 30 or #status = 0 and #status = 1"
-        let parsed = try! Query.parse(query)
-        print(parsed)
+//        let query = "checking #status = 42 and #status = 30 or #status = 0 and #status = 1"
+//        let parsed = try! Query.parse(query)
+//        print(parsed)
+
+        let json = """
+        { "hello": "world" }
+        """
+        let parsedJSON = try! JSON.parse(json)
+        print(json)
 
         return true
     }

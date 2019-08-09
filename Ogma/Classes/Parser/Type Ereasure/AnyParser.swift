@@ -22,3 +22,11 @@ public struct AnyParser<Token: TokenProtocol, Output>: Parser {
         return try _parse(tokens, stack)
     }
 }
+
+extension AnyParser {
+
+    public static func with(value: Output) -> AnyParser<Token, Output> {
+        return AnyParser(ConstantParser(value: value))
+    }
+
+}

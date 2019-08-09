@@ -13,6 +13,8 @@ public enum ParserError<Token: TokenProtocol>: Error {
     case noMoreTokens
     /// Expected a specific Token but received another one
     case unexpectedToken(Token, expected: Token)
+    /// Expected a specific Token but received another one
+    case lookaheadFailedToReturnSubParser(basedOn: [Token])
     /// Attempted to Parse a value but did not consume all tokens provided
     case parsableValueDidNotConsumeAllTokens(Any.Type, remaining: [Token])
     /// The token cannot be converted to the Desired Type

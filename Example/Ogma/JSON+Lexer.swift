@@ -19,6 +19,7 @@ extension JSON {
             MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").ignore(),
 
             StringLiteralTokenGenerator().map(Token.string),
+            StringLiteralTokenGenerator(delimiter: "`", allowsMultiline: true).map(Token.string),
             DoubleLiteralTokenGenerator().map(Token.double),
             IntLiteralTokenGenerator().map(Token.int),
 

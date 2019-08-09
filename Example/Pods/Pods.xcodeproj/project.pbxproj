@@ -12,6 +12,7 @@
 		08846EFD8A4B7832204C4055B559E5F7 /* Optional+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC919DDA750D2C171CA1E5E3D623757 /* Optional+Parsable.swift */; };
 		0DAD33BF9C4A49F8F6725C45FE763393 /* Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771E1EF9EFCA650D2CE20AF45EAE6EF7 /* Parsable.swift */; };
 		0E161ADE2273519800CC22B5 /* Optional+Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E161ADD2273519800CC22B5 /* Optional+Filter.swift */; };
+		0E3DD5DE22FDC9350044665C /* ConstantParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E3DD5DD22FDC9350044665C /* ConstantParser.swift */; };
 		0E59797922FB960B00DD92F8 /* PrefixLookupParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E59797822FB960B00DD92F8 /* PrefixLookupParser.swift */; };
 		0E6F449D22766DF300BDD3B0 /* Collection+prefix+postfix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449C22766DF300BDD3B0 /* Collection+prefix+postfix.swift */; };
 		0E6F449F22766E3800BDD3B0 /* Parser+parse+optionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449E22766E3800BDD3B0 /* Parser+parse+optionals.swift */; };
@@ -105,6 +106,7 @@
 		051A3C413610BC805CB05B4B87EAF3A3 /* IntLiteralTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = IntLiteralTokenGenerator.swift; sourceTree = "<group>"; };
 		05E3D7DAECF3A55F99844B1B8ED888BD /* AnnotatedString.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnnotatedString.swift; sourceTree = "<group>"; };
 		0E161ADD2273519800CC22B5 /* Optional+Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Filter.swift"; sourceTree = "<group>"; };
+		0E3DD5DD22FDC9350044665C /* ConstantParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantParser.swift; sourceTree = "<group>"; };
 		0E59797822FB960B00DD92F8 /* PrefixLookupParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefixLookupParser.swift; sourceTree = "<group>"; };
 		0E6F449C22766DF300BDD3B0 /* Collection+prefix+postfix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+prefix+postfix.swift"; sourceTree = "<group>"; };
 		0E6F449E22766E3800BDD3B0 /* Parser+parse+optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parser+parse+optionals.swift"; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 				3870B9467ACFAD6D6693D307EF2FCA90 /* ParserOutput.swift */,
 				14893B3127EC41E54BC5C3E27DB11EB1 /* TokenKeyPathParser.swift */,
 				3A1D104327FCBAC2C1D738122D5BCA99 /* TokenParser.swift */,
+				0E3DD5DD22FDC9350044665C /* ConstantParser.swift */,
 				E635728ADECB7E9B520B8EC08678115B /* Helper Protocols */,
 				DEA02207883B93F3356F344962D62C30 /* Operations */,
 				710B77E6AEA2D37E7504D0F8D6C905EE /* Parsable */,
@@ -721,6 +724,7 @@
 				A6A8001224532183A730474D7A092C4A /* Lexer.swift in Sources */,
 				E737DAEB87FB2ADB978814B1E298A516 /* LexerError.swift in Sources */,
 				0EC100F122809647003CDF0B /* SwiftStringLiteralEscapingStrategy.swift in Sources */,
+				0E3DD5DE22FDC9350044665C /* ConstantParser.swift in Sources */,
 				0E6F44AC22768E3E00BDD3B0 /* BinaryOperation.swift in Sources */,
 				16B34F82F4A563ED63F1E1ABA53192DA /* MultiLineCommentTokenGenerator.swift in Sources */,
 				129DFFEE6B9999F1A96A0EB21E4F64B4 /* Ogma-dummy.m in Sources */,

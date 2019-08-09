@@ -16,11 +16,3 @@ extension Array: Parsable where Element == JSON {
         .separated(by: .comma, allowsTrailingSeparator: true, allowsEmpty: true)
         .wrapped(by: .openSquareBracket, and: .closeSquareBracket)
 }
-
-extension Array: JSONElement where Element == JSON {
-
-    var json: JSON {
-        return .array(self)
-    }
-
-}

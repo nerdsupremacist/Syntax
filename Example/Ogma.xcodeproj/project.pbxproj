@@ -27,11 +27,6 @@
 		0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */; };
 		0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D9226F5C9100F5B66D /* JSON+Parse.swift */; };
 		0E9DA84D2271CE3900078978 /* JSON+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */; };
-		0E9DA84E2271CE3900078978 /* JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C5226F51CD00F5B66D /* JSONElement.swift */; };
-		0E9DA84F2271CE3900078978 /* Bool+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C7226F520100F5B66D /* Bool+JSONElement.swift */; };
-		0E9DA8502271CE3900078978 /* String+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829C9226F53CC00F5B66D /* String+JSONElement.swift */; };
-		0E9DA8512271CE3900078978 /* Int+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829CD226F556C00F5B66D /* Int+JSONElement.swift */; };
-		0E9DA8522271CE3900078978 /* Double+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D1226F584500F5B66D /* Double+JSONElement.swift */; };
 		0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D3226F588900F5B66D /* Array+JSONElement.swift */; };
 		0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */; };
 		0EB8C18B2276C7AE005B5850 /* Query+Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C18A2276C7AE005B5850 /* Query+Operator.swift */; };
@@ -75,11 +70,6 @@
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
 		0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Lexer.swift"; sourceTree = "<group>"; };
-		0EB829C5226F51CD00F5B66D /* JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONElement.swift; sourceTree = "<group>"; };
-		0EB829C7226F520100F5B66D /* Bool+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bool+JSONElement.swift"; sourceTree = "<group>"; };
-		0EB829C9226F53CC00F5B66D /* String+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+JSONElement.swift"; sourceTree = "<group>"; };
-		0EB829CD226F556C00F5B66D /* Int+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+JSONElement.swift"; sourceTree = "<group>"; };
-		0EB829D1226F584500F5B66D /* Double+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+JSONElement.swift"; sourceTree = "<group>"; };
 		0EB829D3226F588900F5B66D /* Array+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+JSONElement.swift"; sourceTree = "<group>"; };
 		0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Parsable.swift"; sourceTree = "<group>"; };
 		0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+JSONElement.swift"; sourceTree = "<group>"; };
@@ -226,11 +216,6 @@
 		0EB829E1226F725100F5B66D /* Elements */ = {
 			isa = PBXGroup;
 			children = (
-				0EB829C5226F51CD00F5B66D /* JSONElement.swift */,
-				0EB829C7226F520100F5B66D /* Bool+JSONElement.swift */,
-				0EB829C9226F53CC00F5B66D /* String+JSONElement.swift */,
-				0EB829CD226F556C00F5B66D /* Int+JSONElement.swift */,
-				0EB829D1226F584500F5B66D /* Double+JSONElement.swift */,
 				0EB829D3226F588900F5B66D /* Array+JSONElement.swift */,
 				0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */,
 			);
@@ -513,12 +498,9 @@
 				0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */,
 				0E9DA8492271CE3900078978 /* JSON.swift in Sources */,
 				0E1AEE272271BAB900E3C436 /* Value+Parsable.swift in Sources */,
-				0E9DA8512271CE3900078978 /* Int+JSONElement.swift in Sources */,
 				0E1AEE232271B6CB00E3C436 /* Keyword+Parsable.swift in Sources */,
-				0E9DA8522271CE3900078978 /* Double+JSONElement.swift in Sources */,
 				0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */,
 				0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */,
-				0E9DA8502271CE3900078978 /* String+JSONElement.swift in Sources */,
 				0E1AEE292271BBA700E3C436 /* Filter+Parsable.swift in Sources */,
 				0E9DA84D2271CE3900078978 /* JSON+Parsable.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
@@ -526,7 +508,6 @@
 				0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */,
 				0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */,
 				0E1AEE252271B8AB00E3C436 /* Property+Parsable.swift in Sources */,
-				0E9DA84E2271CE3900078978 /* JSONElement.swift in Sources */,
 				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
 				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
 				0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */,
@@ -537,7 +518,6 @@
 				0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */,
 				0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */,
 				0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */,
-				0E9DA84F2271CE3900078978 /* Bool+JSONElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
