@@ -7,28 +7,11 @@
 
 import Foundation
 
-struct PrefixLookupParser<Token: TokenProtocol, Output>: Parser {
-    private let depth: Int
-    private let parsers: ([Token]) -> AnyParser<Token, Output>?
-
-    init(depth: Int, _ parsers: @escaping ([Token]) -> AnyParser<Token, Output>?) {
-        self.depth = depth
-        self.parsers = parsers
-    }
-
-    func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
-        guard !tokens.isEmpty else { throw ParserError<Token>.noMoreTokens }
-        let tokens = tokens.first(depth)
-        guard let parser = parsers(tokens) else { throw ParserError.lookaheadFailedToReturnSubParser(basedOn: tokens) }
-        return try parser.parse(tokens: tokens, stack: stack)
-    }
-}
-
 extension AnyParser {
     public static func lookAhead(_ depth: Int,
                                  _ parsers: @escaping ([Token]) -> AnyParser<Token, Output>?) -> AnyParser<Token, Output> {
 
-        return PrefixLookupParser(depth: depth, parsers).any()
+        return PrefixLookAheadParser(depth: depth, parsers).any()
     }
 
     public static func lookAhead(_ parsers: @escaping (Token) -> AnyParser<Token, Output>?) -> AnyParser<Token, Output> {
@@ -64,4 +47,21 @@ extension Array {
         return Array(dropLast(count - n))
     }
 
+}
+
+private struct PrefixLookAheadParser<Token: TokenProtocol, Output>: Parser {
+    private let depth: Int
+    private let parsers: ([Token]) -> AnyParser<Token, Output>?
+
+    init(depth: Int, _ parsers: @escaping ([Token]) -> AnyParser<Token, Output>?) {
+        self.depth = depth
+        self.parsers = parsers
+    }
+
+    func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
+        guard !tokens.isEmpty else { throw ParserError<Token>.noMoreTokens }
+        let tokens = tokens.first(depth)
+        guard let parser = parsers(tokens) else { throw ParserError.lookaheadFailedToReturnSubParser(basedOn: tokens) }
+        return try parser.parse(tokens: tokens, stack: stack)
+    }
 }

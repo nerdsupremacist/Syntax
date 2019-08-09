@@ -8,7 +8,6 @@
 import Foundation
 
 extension Parsable {
-
     /// Parse a Parsable value from a String
     public static func parse<L: LexerProtocol>(_ input: String,
                                                using lexer: L.Type) throws -> Self where L.Token == Token {
@@ -16,5 +15,4 @@ extension Parsable {
         let tokens = try lexer.tokenize(input)
         return try Self(tokens: tokens)
     }
-
 }
