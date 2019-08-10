@@ -26,8 +26,6 @@ extension JSON.Token {
             return .orange
         case .null:
             return .blue
-        case .comment:
-            return UIColor.gray.withAlphaComponent(0.75)
         }
     }
 

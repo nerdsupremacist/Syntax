@@ -15,8 +15,8 @@ extension JSON {
         typealias Token = JSON.Token
 
         static let generators: Generators = [
-            SingleLineCommentTokenGenerator(prefixPattern: "\\/\\/").map { _ in .comment },
-            MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").map { _ in .comment },
+            SingleLineCommentTokenGenerator(prefixPattern: "\\/\\/").ignore(),
+            MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").ignore(),
 
             StringLiteralTokenGenerator().map(Token.string),
             StringLiteralTokenGenerator(delimiter: "`", allowsMultiline: true).map(Token.string),
