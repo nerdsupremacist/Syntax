@@ -49,8 +49,7 @@ private class OrParser<Token: Hashable, Output>: Parser {
     }()
 
     var prefixes: Set<[Token]> {
-        return [[]]
-//        return parsers.flatMap { $0.prefixes }
+        return parsers.reduce([]) { $0.union($1.prefixes) }
     }
 
     init(parsers: [AnyParser<Token, Output>]) {
