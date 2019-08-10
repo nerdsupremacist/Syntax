@@ -38,7 +38,7 @@ private class OrParser<Token: Hashable, Output>: Parser {
     fileprivate let parsers: [AnyParser<Token, Output>]
 
     fileprivate private(set) lazy var parser: AnyParser<Token, Output> = { [unowned self] in
-        let prefixes = self.parsers.flatMap { parser in parser.prefixes.map { ($0, parser) } }
+        let prefixes = self.parsers.flatMap { parser in parser.prefixes(stack: []).map { ($0, parser) } }
         let count = prefixes.map { $0.0.count }.max() ?? 0
         let parserMap = Dictionary(grouping: prefixes, by: { $0.0 }).mapValues { $0.map { $0.1 } }
 
@@ -48,8 +48,8 @@ private class OrParser<Token: Hashable, Output>: Parser {
         }
     }()
 
-    var prefixes: Set<[Token]> {
-        return parsers.reduce([]) { $0.union($1.prefixes) }
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
+        return parsers.reduce([]) { $0.union($1.prefixes(stack: stack)) }
     }
 
     init(parsers: [AnyParser<Token, Output>]) {
@@ -57,15 +57,15 @@ private class OrParser<Token: Hashable, Output>: Parser {
     }
 
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
-        return try parser.parse(tokens: tokens)
+        return try parser.parse(tokens: tokens, stack: stack)
     }
 }
 
 private struct BacktrackingOrParser<Token: TokenProtocol, Output>: Parser {
     let parsers: [AnyParser<Token, Output>]
 
-    var prefixes: Set<[Token]> {
-        return parsers.reduce([]) { $0.union($1.prefixes) }
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
+        return parsers.reduce([]) { $0.union($1.prefixes(stack: stack)) }
     }
 
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {

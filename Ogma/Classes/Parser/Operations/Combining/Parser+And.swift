@@ -77,11 +77,11 @@ private struct AndParser<A: Parser, B: Parser>: Parser where A.Token == B.Token 
     let first: A
     let second: B
 
-    var prefixes: Set<[A.Token]> {
-        let first = self.first.prefixes
+    func prefixes(stack: [AnyObject]) -> Set<[A.Token]> {
+        let first = self.first.prefixes(stack: stack)
 
         if first.contains([]) {
-            return first.subtracting([[]]).union(second.prefixes)
+            return first.subtracting([[]]).union(second.prefixes(stack: stack))
         }
 
         return first

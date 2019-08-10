@@ -10,7 +10,7 @@ import Foundation
 struct ConstantParser<Token: TokenProtocol, Output>: SingleTokenParser {
     let value: Output
 
-    var prefixes: Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
         return [[]]
     }
 

@@ -58,7 +58,7 @@ private struct PrefixLookAheadParser<Token: TokenProtocol, Output>: Parser {
         self.parsers = parsers
     }
 
-    var prefixes: Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
         return [[]]
     }
 

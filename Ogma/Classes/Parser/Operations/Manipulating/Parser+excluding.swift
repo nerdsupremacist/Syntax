@@ -25,12 +25,16 @@ private class SelfExcludingParser<Source: Parser>: Parser {
         self.source = source
     }
 
-    var prefixes: Set<[Source.Token]> {
-        return source.prefixes
+    func prefixes(stack: [AnyObject]) -> Set<[Source.Token]> {
+        // In case of recursion pretend there are no available prefixes
+        guard !stack.contains(where: { $0 === self }) else { return [[]] }
+        return source.prefixes(stack: stack + [self])
     }
 
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
-        guard !stack.contains(where: { $0 === self }) else { throw ParserError<Token>.recursiveCall(to: source) }
+        guard !stack.contains(where: { $0 === self }) else {
+            throw ParserError<Token>.recursiveCall(to: source)
+        }
         return try source.parse(tokens: tokens, stack: stack + [self])
     }
 }

@@ -21,7 +21,7 @@ private struct TokenParser<Token: TokenProtocol>: SingleTokenParser {
     typealias Output = Void
     let token: Token
 
-    var prefixes: Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
         return [[token]]
     }
 

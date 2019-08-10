@@ -26,7 +26,7 @@ extension AnyParser {
 private struct ConsumerParser<Token: TokenProtocol, Output>: SingleTokenParser {
     let closure: (Token) throws -> Output?
 
-    var prefixes: Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
         return [[]]
     }
 

@@ -33,8 +33,8 @@ private struct OptionalParser<Source: Parser>: Parser {
     
     let source: Source
 
-    var prefixes: Set<[Source.Token]> {
-        return source.prefixes
+    func prefixes(stack: [AnyObject]) -> Set<[Source.Token]> {
+        return source.prefixes(stack: stack)
     }
 
     func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, Source.Output?> {

@@ -23,8 +23,8 @@ private class IndirectParsable<P: Parsable>: Parser {
 
     private lazy var parser = P.parser
 
-    var prefixes: Set<[P.Token]> {
-        return parser.prefixes
+    func prefixes(stack: [AnyObject]) -> Set<[P.Token]> {
+        return parser.prefixes(stack: stack)
     }
 
     func parse(tokens: [P.Token], stack: [AnyObject]) throws -> ParserOutput<P.Token, P> {
