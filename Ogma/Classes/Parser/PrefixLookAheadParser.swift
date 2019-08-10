@@ -58,10 +58,24 @@ private struct PrefixLookAheadParser<Token: TokenProtocol, Output>: Parser {
         self.parsers = parsers
     }
 
+    var prefixes: Set<[Token]> {
+        return [[]]
+    }
+
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
         guard !tokens.isEmpty else { throw ParserError<Token>.noMoreTokens }
-        let tokens = tokens.first(depth)
-        guard let parser = parsers(tokens) else { throw ParserError.lookaheadFailedToReturnSubParser(basedOn: tokens) }
+        let prefix = tokens.first(depth)
+        guard let parser = parsers(prefix) else { throw ParserError.lookaheadFailedToReturnSubParser(basedOn: prefix) }
         return try parser.parse(tokens: tokens, stack: stack)
     }
+}
+
+extension Dictionary {
+
+    func get<SubKey: Hashable>(prefix: [SubKey]) -> [Value] where Array<SubKey> == Key {
+        let values = filter { prefix.hasPrefix($0.key) }
+            .values
+        return Array(values)
+    }
+
 }

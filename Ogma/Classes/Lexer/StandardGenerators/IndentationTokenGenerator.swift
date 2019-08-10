@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Indentation: Equatable {
+public struct Indentation: TokenProtocol {
     public let level: UInt
 }
 

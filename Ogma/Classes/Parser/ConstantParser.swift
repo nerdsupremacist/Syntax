@@ -10,6 +10,10 @@ import Foundation
 struct ConstantParser<Token: TokenProtocol, Output>: SingleTokenParser {
     let value: Output
 
+    var prefixes: Set<[Token]> {
+        return [[]]
+    }
+
     func parse(token: Token, stack: [AnyObject]) throws -> Output {
         return value
     }

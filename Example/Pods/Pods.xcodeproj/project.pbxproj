@@ -42,7 +42,7 @@
 		485C73FD1B053E18C17633C9B6347673 /* Array+TokenGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8263CDA3B82F101719798A368827A343 /* Array+TokenGenerator.swift */; };
 		4989AC0B4BF64379810DF13C140C143C /* SingleTokenParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C3FC871DEC77FB98F56847F0592069 /* SingleTokenParser.swift */; };
 		58E55E39EC5C49323D2BD276A3FB8D96 /* Parser+Wrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177BD59AFA435063334EB45B044A43CD /* Parser+Wrapped.swift */; };
-		639E000E67BE0FA2880E7BCE6B531B3C /* TokenKeyPathParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14893B3127EC41E54BC5C3E27DB11EB1 /* TokenKeyPathParser.swift */; };
+		639E000E67BE0FA2880E7BCE6B531B3C /* ConsumerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14893B3127EC41E54BC5C3E27DB11EB1 /* ConsumerParser.swift */; };
 		7296C5B4E6CC13174776AA044AD47FB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
 		7645321DBB6501386D112B04E85101D4 /* Parser+Or.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01583EEA4B47B75CAB7E840D50FE2692 /* Parser+Or.swift */; };
 		7895D95EFFC250F38D040F2E00C4AF52 /* AnnotatedString+Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF6D41398ECE3D41809E5A51613C468 /* AnnotatedString+Groups.swift */; };
@@ -124,7 +124,7 @@
 		0F254664BCE534FAF113423667C70509 /* MultiLineCommentTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MultiLineCommentTokenGenerator.swift; sourceTree = "<group>"; };
 		112D1A067B8566EDBAD341A898D7C718 /* Ogma-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Ogma-dummy.m"; sourceTree = "<group>"; };
 		12CDC5142905FEDA47F3F5F58132B60C /* Pods-Ogma_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Ogma_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		14893B3127EC41E54BC5C3E27DB11EB1 /* TokenKeyPathParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TokenKeyPathParser.swift; sourceTree = "<group>"; };
+		14893B3127EC41E54BC5C3E27DB11EB1 /* ConsumerParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConsumerParser.swift; sourceTree = "<group>"; };
 		177BD59AFA435063334EB45B044A43CD /* Parser+Wrapped.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Parser+Wrapped.swift"; sourceTree = "<group>"; };
 		19F2236C1314CC67C12C8C6CE981156D /* StringLiteralTokenGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StringLiteralTokenGenerator.swift; sourceTree = "<group>"; };
 		1A3AB86194AC4E39EBD7EB0B6488A6BE /* ParserError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ParserError.swift; sourceTree = "<group>"; };
@@ -516,7 +516,7 @@
 				0E59797822FB960B00DD92F8 /* PrefixLookAheadParser.swift */,
 				1A3AB86194AC4E39EBD7EB0B6488A6BE /* ParserError.swift */,
 				3870B9467ACFAD6D6693D307EF2FCA90 /* ParserOutput.swift */,
-				14893B3127EC41E54BC5C3E27DB11EB1 /* TokenKeyPathParser.swift */,
+				14893B3127EC41E54BC5C3E27DB11EB1 /* ConsumerParser.swift */,
 				3A1D104327FCBAC2C1D738122D5BCA99 /* TokenParser.swift */,
 				0E3DD5DD22FDC9350044665C /* ConstantParser.swift */,
 				E635728ADECB7E9B520B8EC08678115B /* Helper Protocols */,
@@ -764,7 +764,7 @@
 				B15FBD5DD2ADDE767FDEC6CF828C95A0 /* TokenGenerator+map.swift in Sources */,
 				0E71E3722281CFEC0007DE13 /* UnicodeStringLiteralEscapingStrategy.swift in Sources */,
 				79B6FB865B77DDD24A7639EBA8C85297 /* TokenGenerator.swift in Sources */,
-				639E000E67BE0FA2880E7BCE6B531B3C /* TokenKeyPathParser.swift in Sources */,
+				639E000E67BE0FA2880E7BCE6B531B3C /* ConsumerParser.swift in Sources */,
 				9C37E3F691D446924BEF6247B27B6365 /* TokenParser.swift in Sources */,
 				E9AF72CB35476D340F81245DA8E8968E /* TokenProtocol+Map.swift in Sources */,
 				92BFF4102B641EBCC8648133C14C48EC /* TokenProtocol.swift in Sources */,

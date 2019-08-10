@@ -23,4 +23,6 @@ public enum ParserError<Token: TokenProtocol>: Error {
     case recursiveCall(to: Any)
     /// Parsing a binary operation still resulted in a single member being parsed
     case expectedABinaryOperation
+    /// Backtracking failed to gather any values
+    case backtrackingFailed(parsers: [Any], tokens: [Token])
 }

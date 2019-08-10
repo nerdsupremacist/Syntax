@@ -11,7 +11,7 @@ import Ogma
 
 extension JSON {
 
-    public enum Token: TokenProtocol, Hashable {
+    public enum Token: TokenProtocol {
         case openCurlyBracket
         case closeCurlyBracket
 

@@ -12,21 +12,79 @@ import Foundation
 public func ||<A: Parser, B: Parser>(lhs: A,
                                      rhs: B) -> AnyParser<A.Token, A.Output> where A.Output == B.Output, A.Token == B.Token {
 
-    return OrParser(first: lhs, second: rhs).any()
+    return OrParser(parsers: lhs.underlyingParsers() + rhs.underlyingParsers()).any()
 }
 
-private struct OrParser<A: Parser, B: Parser>: Parser where A.Output == B.Output, A.Token == B.Token {
-    typealias Token = A.Token
-    typealias Output = A.Output
-    
-    let first: A
-    let second: B
+fileprivate extension Parser {
 
-    func parse(tokens: [A.Token], stack: [AnyObject]) throws -> ParserOutput<A.Token, A.Output> {
+    func underlyingParsers() -> [AnyParser<Token, Output>] {
+        if let parser = self as? OrParser<Token, Output> {
+            return parser.parsers
+        }
+        guard let any = self as? AnyParser<Token, Output> else {
+            return [self.any()]
+        }
+
+        if let parser = any._source as? OrParser<Token, Output> {
+            return parser.parsers
+        }
+
+        return [any]
+    }
+
+}
+
+private class OrParser<Token: Hashable, Output>: Parser {
+    fileprivate let parsers: [AnyParser<Token, Output>]
+
+    fileprivate private(set) lazy var parser: AnyParser<Token, Output> = { [unowned self] in
+        let prefixes = self.parsers.flatMap { parser in parser.prefixes.map { ($0, parser) } }
+        let count = prefixes.map { $0.0.count }.max() ?? 0
+        let parserMap = Dictionary(grouping: prefixes, by: { $0.0 }).mapValues { $0.map { $0.1 } }
+
+        return .lookAhead(count) { tokens in
+            let parsers = parserMap.get(prefix: tokens).flatMap { $0 }
+            return BacktrackingOrParser(parsers: parsers).any()
+        }
+    }()
+
+    var prefixes: Set<[Token]> {
+        return [[]]
+//        return parsers.flatMap { $0.prefixes }
+    }
+
+    init(parsers: [AnyParser<Token, Output>]) {
+        self.parsers = parsers
+    }
+
+    func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
+        return try parser.parse(tokens: tokens)
+    }
+}
+
+private struct BacktrackingOrParser<Token: TokenProtocol, Output>: Parser {
+    let parsers: [AnyParser<Token, Output>]
+
+    var prefixes: Set<[Token]> {
+        return parsers.reduce([]) { $0.union($1.prefixes) }
+    }
+
+    func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
+        return try parse(tokens: tokens, stack: stack, parsers: parsers)
+    }
+
+    private func parse(tokens: [Token],
+                       stack: [AnyObject],
+                       parsers: [AnyParser<Token, Output>]) throws -> ParserOutput<Token, Output> {
+
+        guard let first = parsers.first else {
+            throw ParserError.backtrackingFailed(parsers: self.parsers, tokens: tokens)
+        }
+
         do {
             return try first.parse(tokens: tokens, stack: stack)
         } catch {
-            return try second.parse(tokens: tokens, stack: stack)
+            return try parse(tokens: tokens, stack: stack, parsers: Array(parsers.dropFirst()))
         }
     }
 }

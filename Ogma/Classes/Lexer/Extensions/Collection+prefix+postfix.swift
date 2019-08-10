@@ -23,4 +23,14 @@ extension Collection where Element: Equatable {
         return reversed().prefix(containing: collection).reversed()
     }
 
+    func hasPrefix<C: Collection>(_ collection: C) -> Bool where Element == C.Element {
+        guard let first = collection.first else { return true }
+
+        if self.first != first {
+            return false
+        }
+
+        return dropFirst().hasPrefix(collection.dropFirst())
+    }
+
 }

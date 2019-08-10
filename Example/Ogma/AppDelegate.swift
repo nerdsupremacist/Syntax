@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         { "hello": "world" }
         """
         let parsedJSON = try! JSON.parse(json)
-        print(json)
+        print(parsedJSON)
 
         return true
     }

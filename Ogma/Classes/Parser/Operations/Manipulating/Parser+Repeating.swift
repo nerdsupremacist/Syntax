@@ -38,6 +38,10 @@ private struct RepeatingParser<Source: Parser>: Parser {
 
     let source: Source
 
+    var prefixes: Set<[Source.Token]> {
+        return source.prefixes
+    }
+
     func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, [Source.Output]> {
         let current: ParserOutput<Token, Source.Output>
         do {

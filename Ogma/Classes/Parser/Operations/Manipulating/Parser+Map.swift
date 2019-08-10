@@ -27,6 +27,10 @@ private struct MappedParser<Source: Parser, Output>: Parser {
     let source: Source
     let transform: (Source.Output) throws -> Output
 
+    var prefixes: Set<[Source.Token]> {
+        return source.prefixes
+    }
+
     func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, Output> {
         return try source.parse(tokens: tokens, stack: stack).map(transform)
     }
