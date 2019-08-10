@@ -20,6 +20,8 @@
 		0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */; };
 		0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */; };
 		0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */; };
+		0E77755122FEE0DD004A875C /* YAML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755022FEE0DD004A875C /* YAML.swift */; };
+		0E77755522FEEEE5004A875C /* JSON+SyntaxColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755422FEEEE5004A875C /* JSON+SyntaxColor.swift */; };
 		0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79976C22729F11003FC60D /* Twitter+Lexer.swift */; };
 		0E80576B2281FEAA00C9948C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E80576A2281FEAA00C9948C /* CHANGELOG.md */; };
 		0E9DA8492271CE3900078978 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829A6226F480700F5B66D /* JSON.swift */; };
@@ -65,6 +67,8 @@
 		0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueTableViewCell.swift; sourceTree = "<group>"; };
 		0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSingleValueViewController.swift; sourceTree = "<group>"; };
 		0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+JSON.swift"; sourceTree = "<group>"; };
+		0E77755022FEE0DD004A875C /* YAML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAML.swift; sourceTree = "<group>"; };
+		0E77755422FEEEE5004A875C /* JSON+SyntaxColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+SyntaxColor.swift"; sourceTree = "<group>"; };
 		0E79976C22729F11003FC60D /* Twitter+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twitter+Lexer.swift"; sourceTree = "<group>"; };
 		0E80576A2281FEAA00C9948C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
@@ -172,8 +176,17 @@
 				0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */,
 				0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */,
 				0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */,
+				0E77755422FEEEE5004A875C /* JSON+SyntaxColor.swift */,
 			);
 			name = "JSON + Views";
+			sourceTree = "<group>";
+		};
+		0E77754F22FEE0C9004A875C /* YAML */ = {
+			isa = PBXGroup;
+			children = (
+				0E77755022FEE0DD004A875C /* YAML.swift */,
+			);
+			path = YAML;
 			sourceTree = "<group>";
 		};
 		0E79976B22729F03003FC60D /* Twitter */ = {
@@ -249,6 +262,7 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				0E79976B22729F03003FC60D /* Twitter */,
 				0E1AEE1822719C3300E3C436 /* Search Queries */,
+				0E77754F22FEE0C9004A875C /* YAML */,
 				0EB829A8226F486800F5B66D /* JSON */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				0E6F44A022766E6E00BDD3B0 /* JSON + Views */,
@@ -503,13 +517,15 @@
 				0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */,
 				0E1AEE292271BBA700E3C436 /* Filter+Parsable.swift in Sources */,
 				0E9DA84D2271CE3900078978 /* JSON+Parsable.swift in Sources */,
+				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
+				0E77755522FEEEE5004A875C /* JSON+SyntaxColor.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				0E1AEE1B22719CCF00E3C436 /* Query+Token.swift in Sources */,
 				0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */,
+				0E77755122FEE0DD004A875C /* YAML.swift in Sources */,
 				0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */,
 				0E1AEE252271B8AB00E3C436 /* Property+Parsable.swift in Sources */,
 				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
-				0E9DA84A2271CE3900078978 /* JSON+Token.swift in Sources */,
 				0E9DA84C2271CE3900078978 /* JSON+Parse.swift in Sources */,
 				0EB8C18B2276C7AE005B5850 /* Query+Operator.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

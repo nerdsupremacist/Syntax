@@ -69,13 +69,3 @@ private struct PrefixLookAheadParser<Token: TokenProtocol, Output>: Parser {
         return try parser.parse(tokens: tokens, stack: stack)
     }
 }
-
-extension Dictionary {
-
-    func get<SubKey: Hashable>(prefix: [SubKey]) -> [Value] where Array<SubKey> == Key {
-        let values = filter { prefix.hasPrefix($0.key) }
-            .values
-        return Array(values)
-    }
-
-}

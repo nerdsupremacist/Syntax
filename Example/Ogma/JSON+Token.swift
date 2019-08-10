@@ -30,6 +30,7 @@ extension JSON {
         case int(Int)
 
         case null
+        case comment
     }
 
 }

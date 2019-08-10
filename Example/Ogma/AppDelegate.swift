@@ -9,6 +9,8 @@
 import UIKit
 import Ogma
 
+private let runBenchmarks = false
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -18,10 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        guard runBenchmarks else { return true }
+
         let query = "checking #status = 42 and #status = 30 or #status = 0 and #status = 1"
         let parsed = try! Query.parse(query)
         print(parsed)
-        
+
         let jsonData = jsonString.data(using: .utf8)!
         let timeForFoundation = timeElapsedInSecondsWhenRunningCode(times: 20) {
             try! JSONSerialization.jsonObject(with: jsonData)

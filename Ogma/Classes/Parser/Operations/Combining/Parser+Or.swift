@@ -35,9 +35,9 @@ fileprivate extension Parser {
 }
 
 private class OrParser<Token: Hashable, Output>: Parser {
-    fileprivate let parsers: [AnyParser<Token, Output>]
+    let parsers: [AnyParser<Token, Output>]
 
-    fileprivate private(set) lazy var parser: AnyParser<Token, Output> = { [unowned self] in
+    private(set) lazy var parser: AnyParser<Token, Output> = { [unowned self] in
         let prefixes = self.parsers.flatMap { parser in parser.prefixes(stack: []).map { ($0, parser) } }
         let count = prefixes.map { $0.0.count }.max() ?? 0
         let parserMap = Dictionary(grouping: prefixes, by: { $0.0 }).mapValues { $0.map { $0.1 } }
@@ -86,4 +86,14 @@ private struct BacktrackingOrParser<Token: TokenProtocol, Output>: Parser {
             return try parse(tokens: tokens, stack: stack, parsers: Array(parsers.dropFirst()))
         }
     }
+}
+
+extension Dictionary {
+
+    fileprivate func get<SubKey: Hashable>(prefix: [SubKey]) -> [Value] where Array<SubKey> == Key {
+        let values = filter { prefix.hasPrefix($0.key) }
+            .values
+        return Array(values)
+    }
+
 }

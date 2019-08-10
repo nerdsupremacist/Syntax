@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         textView.delegate = self
 
-        textView.linkTextAttributes = [.foregroundColor : UIColor.orange]
+        textView.linkTextAttributes = [:]
         defaultAttributes = textView.typingAttributes
         evaluateInput()
         textView.becomeFirstResponder()
@@ -65,10 +65,12 @@ extension ViewController {
 
         do {
             let string = try JSON
-                .annotate(input, using: JSON.Lexer.self)
-                .string(attributes: defaultAttributes) { json in
+                .detailedAnnotation(input, using: JSON.Lexer.self)
+                .string(attributes: defaultAttributes) { (_, token: JSON.Token) in
                     return [
                         .link: URL(string: "json://")!,
+                        .foregroundColor: token.color,
+                        .font: font,
                     ]
             }
 
@@ -93,3 +95,5 @@ extension UITextView {
     }
 
 }
+
+private let font = UIFont(name: "Menlo-Regular", size: 14.0)!
