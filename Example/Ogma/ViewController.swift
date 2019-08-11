@@ -12,13 +12,6 @@ import Ogma
 class ViewController: UIViewController {
     @IBOutlet weak var textView: EditorTextView!
 
-    var timer: Timer?
-    var defaultAttributes: [NSAttributedString.Key : Any]?
-
-    deinit {
-        timer?.invalidate()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.delegate = self

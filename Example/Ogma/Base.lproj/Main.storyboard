@@ -21,9 +21,9 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bFO-fk-hZv" customClass="EditorTextView" customModule="Ogma">
-                                <rect key="frame" x="20" y="50" width="335" height="567"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">This editor has support for evaluating JSON instantly.  For example I can at any time type a "String" and it will be highlited as being valid JSON.
+                                <mutableString key="text">This editor has support for evaluating JSON instantly.  For example I can at any time type a "String" and it will be highlited as being valid JSON.
 
 It also works with boolean values such as true of false.  It recognizes null, integer literals such as 42, and double literals such as 1.2e10.  Heck! You can even inline objects!  {
 	"success": true,
@@ -34,17 +34,17 @@ It also works with boolean values such as true of false.  It recognizes null
 
 Now you give it a try...
 
-</string>
+</mutableString>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="bFO-fk-hZv" secondAttribute="trailing" constant="20" id="JvI-yx-L5G"/>
-                            <constraint firstItem="bFO-fk-hZv" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="50" id="Mug-2a-PJ1"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="bFO-fk-hZv" secondAttribute="bottom" constant="50" id="S95-bY-cuM"/>
-                            <constraint firstItem="bFO-fk-hZv" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="aLt-d9-Yyh"/>
+                            <constraint firstAttribute="trailing" secondItem="bFO-fk-hZv" secondAttribute="trailing" id="JvI-yx-L5G"/>
+                            <constraint firstItem="bFO-fk-hZv" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="Mug-2a-PJ1"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="bFO-fk-hZv" secondAttribute="bottom" id="S95-bY-cuM"/>
+                            <constraint firstItem="bFO-fk-hZv" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="aLt-d9-Yyh"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Editor" largeTitleDisplayMode="never" id="GgW-0n-Jky"/>
