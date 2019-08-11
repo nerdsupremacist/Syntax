@@ -22,6 +22,7 @@
 		0E71E3722281CFEC0007DE13 /* UnicodeStringLiteralEscapingStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E71E3712281CFEC0007DE13 /* UnicodeStringLiteralEscapingStrategy.swift */; };
 		0E71E3742281D04C0007DE13 /* JSONStringLiteralEscapingStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E71E3732281D04C0007DE13 /* JSONStringLiteralEscapingStrategy.swift */; };
 		0E77755322FEE35D004A875C /* Parser+ignoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755222FEE35D004A875C /* Parser+ignoring.swift */; };
+		0E77755922FF6F91004A875C /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755822FF6F91004A875C /* EditorTextView.swift */; };
 		0E9204602281ED730047F56D /* StringLiteralTokenGenerator+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E92045F2281ED730047F56D /* StringLiteralTokenGenerator+Error.swift */; };
 		0EB8C1892276C679005B5850 /* Parsable+Wrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C1882276C679005B5850 /* Parsable+Wrapped.swift */; };
 		0EB8C18D2276D0D1005B5850 /* Parser+excluding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C18C2276D0D1005B5850 /* Parser+excluding.swift */; };
@@ -117,6 +118,7 @@
 		0E71E3712281CFEC0007DE13 /* UnicodeStringLiteralEscapingStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeStringLiteralEscapingStrategy.swift; sourceTree = "<group>"; };
 		0E71E3732281D04C0007DE13 /* JSONStringLiteralEscapingStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONStringLiteralEscapingStrategy.swift; sourceTree = "<group>"; };
 		0E77755222FEE35D004A875C /* Parser+ignoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parser+ignoring.swift"; sourceTree = "<group>"; };
+		0E77755822FF6F91004A875C /* EditorTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		0E7CB07FEB49CCAB0B480DF80E292E7D /* Pods-Ogma_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ogma_Example.release.xcconfig"; sourceTree = "<group>"; };
 		0E92045F2281ED730047F56D /* StringLiteralTokenGenerator+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringLiteralTokenGenerator+Error.swift"; sourceTree = "<group>"; };
 		0EB8C1882276C679005B5850 /* Parsable+Wrapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parsable+Wrapped.swift"; sourceTree = "<group>"; };
@@ -259,6 +261,14 @@
 			);
 			name = Annotations;
 			path = Ogma/Classes/Annotations;
+			sourceTree = "<group>";
+		};
+		0E77755A22FF6F9C004A875C /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				0E77755822FF6F91004A875C /* EditorTextView.swift */,
+			);
+			path = Editor;
 			sourceTree = "<group>";
 		};
 		0EC100ED22809621003CDF0B /* String Literals */ = {
@@ -539,6 +549,7 @@
 				EAA900F3F5FBD3CB5B8F68B49C5DB588 /* Parser */,
 				94FB49C5431B6A7590799DC40C278967 /* Pod */,
 				C0336FB4A4DA378F93B558F8744925A9 /* Support Files */,
+				0E77755A22FF6F9C004A875C /* Editor */,
 			);
 			name = Ogma;
 			path = ../..;
@@ -727,6 +738,7 @@
 				A6A8001224532183A730474D7A092C4A /* Lexer.swift in Sources */,
 				E737DAEB87FB2ADB978814B1E298A516 /* LexerError.swift in Sources */,
 				0EC100F122809647003CDF0B /* SwiftStringLiteralEscapingStrategy.swift in Sources */,
+				0E77755922FF6F91004A875C /* EditorTextView.swift in Sources */,
 				0E3DD5DE22FDC9350044665C /* ConstantParser.swift in Sources */,
 				0E6F44AC22768E3E00BDD3B0 /* BinaryOperation.swift in Sources */,
 				16B34F82F4A563ED63F1E1ABA53192DA /* MultiLineCommentTokenGenerator.swift in Sources */,
@@ -880,7 +892,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -940,7 +952,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Ogma/Ogma-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Ogma/Ogma-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/Ogma/Ogma.modulemap";
 				PRODUCT_MODULE_NAME = Ogma;
@@ -1008,7 +1020,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Ogma/Ogma-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Ogma/Ogma-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/Ogma/Ogma.modulemap";
 				PRODUCT_MODULE_NAME = Ogma;
@@ -1077,7 +1089,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

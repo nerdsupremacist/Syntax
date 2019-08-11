@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,10 +20,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bFO-fk-hZv">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bFO-fk-hZv" customClass="EditorTextView" customModule="Ogma">
                                 <rect key="frame" x="20" y="50" width="335" height="567"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <mutableString key="text">This editor has support for evaluating JSON instantly.  For example I can at any time type a "String" and it will be highlited as being valid JSON.
+                                <string key="text">This editor has support for evaluating JSON instantly.  For example I can at any time type a "String" and it will be highlited as being valid JSON.
 
 It also works with boolean values such as true of false.  It recognizes null, integer literals such as 42, and double literals such as 1.2e10.  Heck! You can even inline objects!  {
 	"success": true,
@@ -35,7 +34,7 @@ It also works with boolean values such as true of false.  It recognizes null
 
 Now you give it a try...
 
-</mutableString>
+</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                             </textView>

@@ -7,10 +7,10 @@
 //
 
 import UIKit
+import Ogma
 
 class ViewController: UIViewController {
-
-    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var textView: EditorTextView!
 
     var timer: Timer?
     var defaultAttributes: [NSAttributedString.Key : Any]?
@@ -22,78 +22,36 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.delegate = self
-
-        textView.linkTextAttributes = [:]
-        defaultAttributes = textView.typingAttributes
-        evaluateInput()
-        textView.becomeFirstResponder()
+        textView.editorDelegate = self
     }
-
 }
 
 extension ViewController: UITextViewDelegate {
 
-    func textViewDidChange(_ textView: UITextView) {
-        timer?.invalidate()
-
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [unowned self] _ in self.evaluateInput() }
-    }
-
-    func textView(_ textView: UITextView,
-                  shouldInteractWith url: URL,
-                  in characterRange: NSRange,
-                  interaction: UITextItemInteraction) -> Bool {
-
-        guard let json = textView
-            .attributedText
-            .attribute(.annotationValue,
-                       at: characterRange.location,
-                       effectiveRange: nil) as? JSON else { return true }
-
-        let rect = textView.rect(for: characterRange).map { textView.convert($0, to: view) }
-        present(json: json, rect: rect ?? .zero)
-        return false
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        textView.resignFirstResponder()
     }
 
 }
 
-extension ViewController {
+extension ViewController: EditorDelegate {
+    typealias Value = JSON
+    typealias Lexer = JSON.Lexer
 
-    private func evaluateInput() {
-        guard let input = textView.text else { return }
-        let selectedRange = textView.selectedRange
-
-        do {
-            let string = try JSON
-                .detailedAnnotation(input, using: JSON.Lexer.self)
-                .string(attributes: defaultAttributes) { (_, token: JSON.Token) in
-                    return [
-                        .link: URL(string: "json://")!,
-                        .foregroundColor: token.color,
-                        .font: font,
-                    ]
-            }
-
-            textView.attributedText = string
-        } catch {
-            print(error)
-        }
-
-        textView.selectedRange = selectedRange
+    var linkTextAttributes: [NSAttributedString.Key : Any]? {
+        return [:]
     }
 
-}
-
-extension UITextView {
-
-    func rect(for range: NSRange) -> CGRect? {
-        guard let start = position(from: beginningOfDocument, offset: range.location),
-            let end = position(from: start, offset: range.length),
-            let range = textRange(from: start, to: end) else { return nil }
-
-        return firstRect(for: range)
+    func attributes(for value: JSON, token: JSON.Token) -> [NSAttributedString.Key : Any] {
+        return [
+            .foregroundColor: token.color,
+            .font: font,
+        ]
     }
 
+    func didTap(value: JSON, token: JSON.Token, rect: CGRect) {
+        present(json: value, rect: textView.convert(rect, to: view))
+    }
 }
 
 private let font = UIFont(name: "Menlo-Regular", size: 14.0)!
