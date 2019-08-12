@@ -52,6 +52,23 @@ extension Array {
 
     public func string<Value, Token>(
         attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
+        _ attributedString: (String, Value, Token) throws -> NSAttributedString
+    ) rethrows -> NSAttributedString where Element == AnnotationElement<ParsedAnnotation<Value, Token>> {
+
+        let annotated = flatMap { annotation -> AnnotatedString<(Value, Token)> in
+            switch annotation {
+            case .annotated(_, let annotation):
+                return annotation.annotatedString.map { (annotation.value, $0) }
+            case .text(let string):
+                return [.text(string)]
+            }
+        }
+
+        return try annotated.string(attributes: defaultAttributes) { try attributedString($0, $1.0, $1.1) }
+    }
+
+    public func string<Value, Token>(
+        attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
         _ attributesHandler: (String, Value, Token) throws -> [NSAttributedString.Key : Any]
     ) rethrows -> NSAttributedString where Element == AnnotationElement<ParsedAnnotation<Value, Token>> {
 
@@ -105,21 +122,28 @@ extension Array {
 extension Array {
 
     private func _string<Annotation>(
-        attributes defaultAttributes: [NSAttributedString.Key : Any]?,
+        attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
         _ attributesHandler: (String, Annotation) throws -> [NSAttributedString.Key : Any]
+    ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
+        return try string(attributes: defaultAttributes) { text, annotation in
+            return NSAttributedString(string: text,
+                                      attributes: try attributesHandler(text, annotation))
+        }
+    }
+
+    public func string<Annotation>(
+        attributes defaultAttributes: [NSAttributedString.Key : Any]?,
+        _ attributedString: (String, Annotation) throws -> NSAttributedString
     ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
 
         let strings: [NSAttributedString] = try map { element in
 
-            let annotationAttributes = try element.annotation.map { annotation in
-                return try attributesHandler(element.text, annotation)
+            switch element {
+            case .text(let text):
+                return NSAttributedString(string: text, attributes: defaultAttributes)
+            case .annotated(let string, let annotation):
+                return try attributedString(string, annotation)
             }
-
-            let attributes = defaultAttributes?
-                .merging(annotationAttributes ?? [:]) { $1 }
-
-            return NSAttributedString(string: element.text,
-                                      attributes: attributes)
         }
 
         return strings.reduce(into: NSMutableAttributedString()) { $0.append($1) }

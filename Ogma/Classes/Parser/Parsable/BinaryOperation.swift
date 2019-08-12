@@ -7,9 +7,23 @@
 
 import Foundation
 
+public enum Associativity {
+    case left
+    case right
+}
+
 public protocol BinaryOperator: CaseIterable, Comparable {
     associatedtype Token
     var token: Token { get }
+    var associativity: Associativity { get }
+}
+
+extension BinaryOperator {
+
+    public var associativity: Associativity {
+        return .left
+    }
+
 }
 
 public protocol MemberOfBinaryOperation: Parsable {
@@ -62,9 +76,35 @@ extension BinaryOperation {
     private static func parser(using parser: AnyParser<Token, Output>,
                                for operator: Member.Operator) -> AnyParser<Token, Output> {
 
+        switch `operator`.associativity {
+        case .left:
+            return parserLeft(using: parser, for: `operator`)
+        case .right:
+            return parserRight(using: parser, for: `operator`)
+        }
+    }
+
+    private static func parserLeft(using parser: AnyParser<Token, Output>,
+                                    for operator: Member.Operator) -> AnyParser<Token, Output> {
+
         let parser = parser && (`operator`.token && parser)*
         return parser.map {
             $1.reduce($0) { lhs, rhs in
+                return .operation(BinaryOperation(lhs: lhs.member,
+                                                  rhs: rhs.member,
+                                                  operator: `operator`))
+            }
+        }
+    }
+
+    private static func parserRight(using parser: AnyParser<Token, Output>,
+                                   for operator: Member.Operator) -> AnyParser<Token, Output> {
+
+        let parser = parser && (`operator`.token && parser)*
+        return parser.map {
+            let reversed = ([$0] + $1).reversed()
+            let rightMost = reversed.first!
+            return reversed.dropFirst().reduce(rightMost) { rhs, lhs in
                 return .operation(BinaryOperation(lhs: lhs.member,
                                                   rhs: rhs.member,
                                                   operator: `operator`))

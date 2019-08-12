@@ -11,7 +11,7 @@ public struct MultiLineComment: TokenProtocol {
     public let text: String
 }
 
-public struct MultiLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
+public struct MultiLineCommentTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = MultiLineComment
 
     let prefixPattern: String

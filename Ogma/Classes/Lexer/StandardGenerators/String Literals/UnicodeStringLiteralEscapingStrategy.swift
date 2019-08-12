@@ -44,7 +44,7 @@ extension UnicodeStringLiteralEscapingStrategy {
     }
 }
 
-private struct UnicodeStringLiteralEscapeTokenGenerator: RegexTokenGeneratorProtocol {
+private struct UnicodeStringLiteralEscapeTokenGenerator: SingleGroupRegexTokenGenerator {
     typealias Token = String
 
     let pattern: String

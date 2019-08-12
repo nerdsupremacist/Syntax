@@ -9,7 +9,7 @@ import Foundation
 
 public struct WhiteSpace: TokenProtocol { }
 
-public struct WhiteSpaceTokenGenerator: RegexTokenGeneratorProtocol {
+public struct WhiteSpaceTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = WhiteSpace
 
     public let pattern: String = "\\s+"

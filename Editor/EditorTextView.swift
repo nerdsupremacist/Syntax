@@ -12,7 +12,7 @@ private let parsedURL = URL(string: "parsed://")!
 public protocol EditorDelegateProtocol: class {
     var linkTextAttributes: [NSAttributedString.Key : Any]? { get }
 
-    func string(for input: String, textView: UITextView) throws -> NSAttributedString
+    func string(for input: String, defaultAttributes: [NSAttributedString.Key : Any]) throws -> NSAttributedString
     func didTap(value: Any, token: Any, rect: CGRect)
 }
 
@@ -20,8 +20,12 @@ public protocol EditorDelegate: EditorDelegateProtocol {
     associatedtype Value: Parsable
     associatedtype Lexer: LexerProtocol where Lexer.Token == Value.Token
 
-    func attributes(for value: Value, token: Value.Token) -> [NSAttributedString.Key : Any]
+    func string(text: String, value: Value, token: Value.Token) -> NSAttributedString
     func didTap(value: Value, token: Value.Token, rect: CGRect)
+}
+
+public protocol AttributesEditorDelegate: EditorDelegate {
+    func attributes(for value: Value, token: Value.Token) -> [NSAttributedString.Key : Any]
 }
 
 extension EditorDelegate {
@@ -29,18 +33,47 @@ extension EditorDelegate {
         return nil
     }
 
-    public func string(for input: String, textView: UITextView) throws -> NSAttributedString {
+    public func string(for input: String, defaultAttributes: [NSAttributedString.Key : Any]) throws -> NSAttributedString {
         return try Value
             .detailedAnnotation(input, using: Lexer.self)
-            .string(attributes: textView.typingAttributes) { (value: Value, token: Value.Token) in
-                let attributes = self.attributes(for: value, token: token)
-                return attributes.merging([.link: parsedURL]) { $1 }
+            .string(attributes: defaultAttributes) { text, value, token in
+                return string(text: text, value: value, token: token)
             }
     }
 
     public func didTap(value: Any, token: Any, rect: CGRect) {
         didTap(value: value as! Value, token: token as! Value.Token, rect: rect)
     }
+}
+
+extension AttributesEditorDelegate {
+
+    public func string(text: String, value: Value, token: Value.Token) -> NSAttributedString {
+        return NSAttributedString(string: text, attributes: attributes(for: value, token: token))
+    }
+
+}
+
+public protocol AttributesAndAttachmentsEditorDelegate: EditorDelegate {
+    func attachments(for value: Value, token: Value.Token) -> [NSTextAttachment]
+    func attributes(for value: Value, token: Value.Token) -> [NSAttributedString.Key : Any]
+}
+
+extension AttributesAndAttachmentsEditorDelegate {
+
+    public func string(text: String, value: Value, token: Value.Token) -> NSAttributedString {
+        let attributes = NSAttributedString(string: text, attributes: self.attributes(for: value, token: token))
+        let attachments: [NSAttributedString] = self.attachments(for: value, token: token).map { NSAttributedString(attachment: $0) }
+
+        let all = [
+            [attributes],
+            attachments
+        ]
+        
+        return all.flatMap { $0 }
+            .reduce(into: NSMutableAttributedString()) { $0.append($1) }
+    }
+
 }
 
 @objc
@@ -65,6 +98,9 @@ open class EditorTextView: UITextView {
 
     private lazy var delegator: DelegateDelegator = DelegateDelegator(editor: self)
     private var timer: Timer?
+    private lazy var defaultAttributes: [NSAttributedString.Key : Any] = {
+        return typingAttributes
+    }()
 
     public override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -82,7 +118,7 @@ open class EditorTextView: UITextView {
 
     fileprivate func didChange() {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [unowned self] _ in self.evaluateInput() }
+        timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { [unowned self] _ in self.evaluateInput() }
     }
 
     fileprivate func shouldInteractWith(url: URL,
@@ -112,12 +148,12 @@ extension EditorTextView {
         let selectedRange = self.selectedRange
 
         do {
-            let string = try editorDelegate?.string(for: input, textView: self)
+            let string = try editorDelegate?.string(for: input, defaultAttributes: defaultAttributes)
             if let string = string {
                 attributedText = string
             }
         } catch {
-            print(error)
+            attributedText = NSAttributedString(string: input, attributes: defaultAttributes)
         }
 
         self.selectedRange = selectedRange

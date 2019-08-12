@@ -11,7 +11,7 @@ public struct Indentation: TokenProtocol {
     public let level: UInt
 }
 
-public struct IndentationTokenGenerator: RegexTokenGeneratorProtocol {
+public struct IndentationTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = Indentation
 
     let width: UInt

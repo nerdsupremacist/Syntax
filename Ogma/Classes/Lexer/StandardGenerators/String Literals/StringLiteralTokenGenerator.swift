@@ -7,31 +7,41 @@
 
 import Foundation
 
-public struct StringLiteralTokenGenerator: RegexTokenGeneratorProtocol {
+public struct StringLiteralTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = String
 
     let subGenerator: AnyTokenGenerator<String>
-    let delimiter: String
+    let start: String
+    let end: String
     let allowsMultiline: Bool
 
     public var pattern: String {
         if allowsMultiline {
-            return "\(delimiter)((\\\\.|[^\(delimiter)])*)\(delimiter)"
+            return "\(start)((\\\\.|[^\(end)])*)\(end)"
         } else {
-            return "\(delimiter)((\\\\.|[^\(delimiter)\\n])*)\(delimiter)"
+            return "\(start)((\\\\.|[^\(end)\\n])*)\(end)"
         }
     }
 
     public let group: Int = 1
 
+    public init(start: String,
+                end: String,
+                allowsMultiline: Bool = false,
+                escapingStrategy: StringLiteralEscapingStrategy.Type = SwiftStringLiteralEscapingStrategy.self) {
+
+        self.start = start
+        self.end = end
+        self.allowsMultiline = allowsMultiline
+        self.subGenerator = StringLiteralEscapedSectionTokenGenerator(delimiter: end,
+                                                                      strategy: escapingStrategy).any()
+    }
+
     public init(delimiter: String = "\"",
                 allowsMultiline: Bool = false,
                 escapingStrategy: StringLiteralEscapingStrategy.Type = SwiftStringLiteralEscapingStrategy.self) {
 
-        self.delimiter = delimiter
-        self.allowsMultiline = allowsMultiline
-        self.subGenerator = StringLiteralEscapedSectionTokenGenerator(delimiter: delimiter,
-                                                                      strategy: escapingStrategy).any()
+        self.init(start: delimiter, end: delimiter, allowsMultiline: allowsMultiline, escapingStrategy: escapingStrategy)
     }
 
     public func token(from matched: String) throws -> Token? {

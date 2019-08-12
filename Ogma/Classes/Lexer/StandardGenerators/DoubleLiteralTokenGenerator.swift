@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct DoubleLiteralTokenGenerator: RegexTokenGeneratorProtocol {
+public struct DoubleLiteralTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = Double
 
     public let pattern: String = "-?\\d+(,\\d+)*\\.\\d+(e((-|\\+)?)\\d+)?\\b"

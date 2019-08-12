@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StringLiteralEscapedSectionTokenGenerator: RegexTokenGeneratorProtocol {
+struct StringLiteralEscapedSectionTokenGenerator: SingleGroupRegexTokenGenerator {
     typealias Token = String
 
     let pattern: String = "\\\\(([^\\\\ \\s]+|\\\\)?)"

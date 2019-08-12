@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RegexTokenGenerator: RegexTokenGeneratorProtocol {
+public struct RegexTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = String
 
     public let pattern: String

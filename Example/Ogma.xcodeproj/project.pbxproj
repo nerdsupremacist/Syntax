@@ -20,7 +20,7 @@
 		0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */; };
 		0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */; };
 		0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */; };
-		0E77755122FEE0DD004A875C /* YAML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755022FEE0DD004A875C /* YAML.swift */; };
+		0E77755122FEE0DD004A875C /* Markdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755022FEE0DD004A875C /* Markdown.swift */; };
 		0E77755522FEEEE5004A875C /* JSON+SyntaxColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755422FEEEE5004A875C /* JSON+SyntaxColor.swift */; };
 		0E79976D22729F11003FC60D /* Twitter+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79976C22729F11003FC60D /* Twitter+Lexer.swift */; };
 		0E80576B2281FEAA00C9948C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E80576A2281FEAA00C9948C /* CHANGELOG.md */; };
@@ -31,6 +31,8 @@
 		0E9DA84D2271CE3900078978 /* JSON+Parsable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D5226F589C00F5B66D /* JSON+Parsable.swift */; };
 		0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D3226F588900F5B66D /* Array+JSONElement.swift */; };
 		0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB829D7226F59C200F5B66D /* Dictionary+JSONElement.swift */; };
+		0EA231C22301A0EA001A3C00 /* MarkdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA231C12301A0EA001A3C00 /* MarkdownViewController.swift */; };
+		0EA4F42D230016BE00BB7669 /* Markdown+Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA4F42C230016BE00BB7669 /* Markdown+Lexer.swift */; };
 		0EB8C18B2276C7AE005B5850 /* Query+Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C18A2276C7AE005B5850 /* Query+Operator.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -67,10 +69,12 @@
 		0E6F44962276585800BDD3B0 /* JSONValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueTableViewCell.swift; sourceTree = "<group>"; };
 		0E6F449822765B5100BDD3B0 /* JSONSingleValueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSingleValueViewController.swift; sourceTree = "<group>"; };
 		0E6F449A22765C3700BDD3B0 /* ViewController+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+JSON.swift"; sourceTree = "<group>"; };
-		0E77755022FEE0DD004A875C /* YAML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAML.swift; sourceTree = "<group>"; };
+		0E77755022FEE0DD004A875C /* Markdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Markdown.swift; sourceTree = "<group>"; };
 		0E77755422FEEEE5004A875C /* JSON+SyntaxColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+SyntaxColor.swift"; sourceTree = "<group>"; };
 		0E79976C22729F11003FC60D /* Twitter+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Twitter+Lexer.swift"; sourceTree = "<group>"; };
 		0E80576A2281FEAA00C9948C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		0EA231C12301A0EA001A3C00 /* MarkdownViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewController.swift; sourceTree = "<group>"; };
+		0EA4F42C230016BE00BB7669 /* Markdown+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Markdown+Lexer.swift"; sourceTree = "<group>"; };
 		0EB829A6226F480700F5B66D /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		0EB829A9226F487100F5B66D /* JSON+Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Token.swift"; sourceTree = "<group>"; };
 		0EB829B5226F4BAD00F5B66D /* JSON+Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSON+Lexer.swift"; sourceTree = "<group>"; };
@@ -181,12 +185,13 @@
 			name = "JSON + Views";
 			sourceTree = "<group>";
 		};
-		0E77754F22FEE0C9004A875C /* YAML */ = {
+		0E77754F22FEE0C9004A875C /* Markdown */ = {
 			isa = PBXGroup;
 			children = (
-				0E77755022FEE0DD004A875C /* YAML.swift */,
+				0E77755022FEE0DD004A875C /* Markdown.swift */,
+				0EA4F42C230016BE00BB7669 /* Markdown+Lexer.swift */,
 			);
-			path = YAML;
+			path = Markdown;
 			sourceTree = "<group>";
 		};
 		0E79976B22729F03003FC60D /* Twitter */ = {
@@ -262,9 +267,10 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				0E79976B22729F03003FC60D /* Twitter */,
 				0E1AEE1822719C3300E3C436 /* Search Queries */,
-				0E77754F22FEE0C9004A875C /* YAML */,
+				0E77754F22FEE0C9004A875C /* Markdown */,
 				0EB829A8226F486800F5B66D /* JSON */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				0EA231C12301A0EA001A3C00 /* MarkdownViewController.swift */,
 				0E6F44A022766E6E00BDD3B0 /* JSON + Views */,
 				0E1AEE0322705F0D00E3C436 /* Calculator */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -513,6 +519,7 @@
 				0E9DA8492271CE3900078978 /* JSON.swift in Sources */,
 				0E1AEE272271BAB900E3C436 /* Value+Parsable.swift in Sources */,
 				0E1AEE232271B6CB00E3C436 /* Keyword+Parsable.swift in Sources */,
+				0EA4F42D230016BE00BB7669 /* Markdown+Lexer.swift in Sources */,
 				0E9DA84B2271CE3900078978 /* JSON+Lexer.swift in Sources */,
 				0E6F449B22765C3700BDD3B0 /* ViewController+JSON.swift in Sources */,
 				0E1AEE292271BBA700E3C436 /* Filter+Parsable.swift in Sources */,
@@ -522,7 +529,7 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				0E1AEE1B22719CCF00E3C436 /* Query+Token.swift in Sources */,
 				0E6F4495227657EB00BDD3B0 /* JSONTableViewController.swift in Sources */,
-				0E77755122FEE0DD004A875C /* YAML.swift in Sources */,
+				0E77755122FEE0DD004A875C /* Markdown.swift in Sources */,
 				0E9DA8542271CE3900078978 /* Dictionary+JSONElement.swift in Sources */,
 				0E1AEE252271B8AB00E3C436 /* Property+Parsable.swift in Sources */,
 				0E6F44972276585800BDD3B0 /* JSONValueTableViewCell.swift in Sources */,
@@ -532,6 +539,7 @@
 				0E1AEE1D22719D8500E3C436 /* Query+Lexer.swift in Sources */,
 				0E1AEE2F2271C68200E3C436 /* Query+Parsable.swift in Sources */,
 				0E1AEE2B2271C4E200E3C436 /* Equality+Parsable.swift in Sources */,
+				0EA231C22301A0EA001A3C00 /* MarkdownViewController.swift in Sources */,
 				0E9DA8532271CE3900078978 /* Array+JSONElement.swift in Sources */,
 				0E6F449922765B5100BDD3B0 /* JSONSingleValueViewController.swift in Sources */,
 			);

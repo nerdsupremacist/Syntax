@@ -27,7 +27,7 @@ extension ViewController: UITextViewDelegate {
 
 }
 
-extension ViewController: EditorDelegate {
+extension ViewController: AttributesEditorDelegate {
     typealias Value = JSON
     typealias Lexer = JSON.Lexer
 

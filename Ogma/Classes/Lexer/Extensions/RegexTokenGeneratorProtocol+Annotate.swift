@@ -34,7 +34,7 @@ extension RegexTokenGeneratorProtocol {
         let matches = expression.matches(in: text, range: text.range)
 
         return try matches
-            .map { ($0, try token(in: $0, for: text)) }
+            .map { ($0, try token(in: $0, for: text, expression: expression)) }
             .collect { lastAnnotation, tuple -> Annotation<Token?> in
 
                 let (match, token) = tuple

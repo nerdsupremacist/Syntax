@@ -9,7 +9,7 @@
 import UIKit
 import Ogma
 
-private let runBenchmarks = false
+private let runBenchmarks = true
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         guard runBenchmarks else { return true }
 
-        let query = "checking #status = 42 and #status = 30 or #status = 0 and #status = 1"
+        let query = "checking #status = 42 and #status = 30 and #status = 1 or #status = 0"
         let parsed = try! Query.parse(query)
         print(parsed)
 

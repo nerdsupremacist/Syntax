@@ -11,7 +11,7 @@ public struct SingleLineComment: TokenProtocol {
     public let text: String
 }
 
-public struct SingleLineCommentTokenGenerator: RegexTokenGeneratorProtocol {
+public struct SingleLineCommentTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = SingleLineComment
 
     let prefixPattern: String

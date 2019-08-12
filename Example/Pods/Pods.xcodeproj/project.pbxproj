@@ -24,6 +24,8 @@
 		0E77755322FEE35D004A875C /* Parser+ignoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755222FEE35D004A875C /* Parser+ignoring.swift */; };
 		0E77755922FF6F91004A875C /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77755822FF6F91004A875C /* EditorTextView.swift */; };
 		0E9204602281ED730047F56D /* StringLiteralTokenGenerator+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E92045F2281ED730047F56D /* StringLiteralTokenGenerator+Error.swift */; };
+		0EA4F43123001EB800BB7669 /* MatchGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA4F43023001EB800BB7669 /* MatchGroups.swift */; };
+		0EA4F4332300204A00BB7669 /* SingleGroupRegexTokenGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EA4F4322300204A00BB7669 /* SingleGroupRegexTokenGenerator.swift */; };
 		0EB8C1892276C679005B5850 /* Parsable+Wrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C1882276C679005B5850 /* Parsable+Wrapped.swift */; };
 		0EB8C18D2276D0D1005B5850 /* Parser+excluding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB8C18C2276D0D1005B5850 /* Parser+excluding.swift */; };
 		0EC100EC22808D86003CDF0B /* StringLiteralEscapingStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC100EB22808D86003CDF0B /* StringLiteralEscapingStrategy.swift */; };
@@ -121,6 +123,8 @@
 		0E77755822FF6F91004A875C /* EditorTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		0E7CB07FEB49CCAB0B480DF80E292E7D /* Pods-Ogma_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Ogma_Example.release.xcconfig"; sourceTree = "<group>"; };
 		0E92045F2281ED730047F56D /* StringLiteralTokenGenerator+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringLiteralTokenGenerator+Error.swift"; sourceTree = "<group>"; };
+		0EA4F43023001EB800BB7669 /* MatchGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchGroups.swift; sourceTree = "<group>"; };
+		0EA4F4322300204A00BB7669 /* SingleGroupRegexTokenGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleGroupRegexTokenGenerator.swift; sourceTree = "<group>"; };
 		0EB8C1882276C679005B5850 /* Parsable+Wrapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parsable+Wrapped.swift"; sourceTree = "<group>"; };
 		0EB8C18C2276D0D1005B5850 /* Parser+excluding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Parser+excluding.swift"; sourceTree = "<group>"; };
 		0EC100EB22808D86003CDF0B /* StringLiteralEscapingStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringLiteralEscapingStrategy.swift; sourceTree = "<group>"; };
@@ -459,6 +463,8 @@
 			isa = PBXGroup;
 			children = (
 				2373AA29DF523999B6527B976C84EFF5 /* RegexTokenGeneratorProtocol.swift */,
+				0EA4F4322300204A00BB7669 /* SingleGroupRegexTokenGenerator.swift */,
+				0EA4F43023001EB800BB7669 /* MatchGroups.swift */,
 			);
 			path = "Helper Protocols";
 			sourceTree = "<group>";
@@ -747,6 +753,7 @@
 				2AD7639D6508E3DADCB1BB2C751409E1 /* Parsable+Annotate.swift in Sources */,
 				24CC54566E0B8279B9E07D541D16478E /* Parsable+Indirect.swift in Sources */,
 				0E71E36E2281B9F30007DE13 /* StringLiteralEscapedSectionTokenGenerator.swift in Sources */,
+				0EA4F4332300204A00BB7669 /* SingleGroupRegexTokenGenerator.swift in Sources */,
 				ADED57B50D516B396DF4CEA407DAF8B5 /* Parsable+Init.swift in Sources */,
 				32232B22026CE71232B1B77FDB6C868D /* Parsable+Map.swift in Sources */,
 				1563BA3DE91D69ADDB1F669EE65F8434 /* Parsable+parse.swift in Sources */,
@@ -772,6 +779,7 @@
 				0E71E36C2281B4AA0007DE13 /* RawRepresentable+Comparable.swift in Sources */,
 				0EB8C1892276C679005B5850 /* Parsable+Wrapped.swift in Sources */,
 				E85F5DC7CAD69546684C7549683D9899 /* SingleLineCommentTokenGenerator.swift in Sources */,
+				0EA4F43123001EB800BB7669 /* MatchGroups.swift in Sources */,
 				4989AC0B4BF64379810DF13C140C143C /* SingleTokenParser.swift in Sources */,
 				0E161ADE2273519800CC22B5 /* Optional+Filter.swift in Sources */,
 				122F1E383E7DB972B1BE85DFBA548C68 /* StringLiteralTokenGenerator.swift in Sources */,

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct IntLiteralTokenGenerator: RegexTokenGeneratorProtocol {
+public struct IntLiteralTokenGenerator: SingleGroupRegexTokenGenerator {
     public typealias Token = Int
 
     public let pattern: String = "-?\\d+(e\\d+)?\\b"

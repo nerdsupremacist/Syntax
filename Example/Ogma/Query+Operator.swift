@@ -27,6 +27,15 @@ extension Query.Filter.Operator: BinaryOperator {
             return .or
         }
     }
+
+    var associativity: Associativity {
+        switch self {
+        case .and:
+            return .right
+        case .or:
+            return .left
+        }
+    }
 }
 
 extension Query.Filter: MemberOfBinaryOperation {

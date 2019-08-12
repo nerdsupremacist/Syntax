@@ -11,16 +11,7 @@ import Foundation
 /// A TokenGenerator that matches the beginning of the String if it matches a Regular Expression
 public protocol RegexTokenGeneratorProtocol: TokenGenerator {
     var pattern: String { get }
-    var group: Int { get }
-    func token(from matched: String) throws -> Token?
-}
-
-extension RegexTokenGeneratorProtocol {
-
-    public var group: Int {
-        return 0
-    }
-
+    func token(from groups: MatchGroups) throws -> Token?
 }
 
 extension RegexTokenGeneratorProtocol {
@@ -37,7 +28,7 @@ extension RegexTokenGeneratorProtocol {
 
         let remaining = matchRange.upperBound < text.endIndex ? String(text[matchRange.upperBound...]) : nil
 
-        return TokenResult(token: try token(in: match, for: text),
+        return TokenResult(token: try token(in: match, for: text, expression: expression),
                            remainingString: remaining)
     }
     
@@ -45,21 +36,15 @@ extension RegexTokenGeneratorProtocol {
 
 extension RegexTokenGeneratorProtocol {
 
-    func token(in match: NSTextCheckingResult, for text: String) throws -> Token? {
-        let groupRange = match.range(at: group)
-
-        guard let range = Range(groupRange, in: text) else {
-            throw LexerError.noMatchFound(text, pattern: pattern)
-        }
-
-        let matched = String(text[range])
+    func token(in match: NSTextCheckingResult, for text: String, expression: NSRegularExpression) throws -> Token? {
+        let matchGroups = try MatchGroups(regularExpression: expression, match: match, text: text, pattern: pattern)
 
         do {
-            return try token(from: matched)
+            return try token(from: matchGroups)
         } catch let error as LexerError {
             throw error
         } catch {
-            throw LexerError.cannotMap(matched, dueTo: error, generator: Self.self)
+            throw LexerError.cannotMap(matchGroups, dueTo: error, generator: Self.self)
         }
     }
 

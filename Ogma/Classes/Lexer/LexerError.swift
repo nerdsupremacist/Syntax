@@ -17,7 +17,7 @@ enum LexerError: Error {
     /// The Regular Expression did not yield a match at the beginning of the string
     case noMatchFound(String, pattern: String)
     /// An error occurred while mapping the output matched to the Regular Expression
-    case cannotMap(String, dueTo: Error, generator: Any.Type)
+    case cannotMap(MatchGroups, dueTo: Error, generator: Any.Type)
     /// No TokenGenerator managed to create a token from the String
     case noGeneratorMatched(String, errors: [LexerError])
     /// A custom error from outside the framework was thrown
