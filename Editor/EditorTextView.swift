@@ -9,75 +9,6 @@ import UIKit
 
 private let parsedURL = URL(string: "parsed://")!
 
-public protocol EditorDelegateProtocol: class {
-    var linkTextAttributes: [NSAttributedString.Key : Any]? { get }
-
-    func string(for input: String, defaultAttributes: [NSAttributedString.Key : Any]) throws -> NSAttributedString
-    func didTap(value: Any, token: Any, rect: CGRect)
-}
-
-public protocol EditorDelegate: EditorDelegateProtocol {
-    associatedtype Value: Parsable
-    associatedtype Lexer: LexerProtocol where Lexer.Token == Value.Token
-
-    func string(text: String, value: Value, token: Value.Token) -> NSAttributedString
-    func didTap(value: Value, token: Value.Token, rect: CGRect)
-}
-
-public protocol AttributesEditorDelegate: EditorDelegate {
-    func attributes(for value: Value, token: Value.Token) -> [NSAttributedString.Key : Any]
-}
-
-extension EditorDelegate {
-    public var linkTextAttributes: [NSAttributedString.Key : Any]? {
-        return nil
-    }
-
-    public func string(for input: String, defaultAttributes: [NSAttributedString.Key : Any]) throws -> NSAttributedString {
-        return try Value
-            .detailedAnnotation(input, using: Lexer.self)
-            .string(attributes: defaultAttributes) { text, value, token -> NSAttributedString in
-                let attributedString = NSMutableAttributedString(attributedString: string(text: text, value: value, token: token))
-                attributedString.addAttribute(.link, value: parsedURL, range: attributedString.string.range)
-                return attributedString
-            }
-    }
-
-    public func didTap(value: Any, token: Any, rect: CGRect) {
-        didTap(value: value as! Value, token: token as! Value.Token, rect: rect)
-    }
-}
-
-extension AttributesEditorDelegate {
-
-    public func string(text: String, value: Value, token: Value.Token) -> NSAttributedString {
-        return NSAttributedString(string: text, attributes: attributes(for: value, token: token))
-    }
-
-}
-
-public protocol AttributesAndAttachmentsEditorDelegate: EditorDelegate {
-    func attachments(for value: Value, token: Value.Token) -> [NSTextAttachment]
-    func attributes(for value: Value, token: Value.Token) -> [NSAttributedString.Key : Any]
-}
-
-extension AttributesAndAttachmentsEditorDelegate {
-
-    public func string(text: String, value: Value, token: Value.Token) -> NSAttributedString {
-        let attributes = NSAttributedString(string: text, attributes: self.attributes(for: value, token: token))
-        let attachments: [NSAttributedString] = self.attachments(for: value, token: token).map { NSAttributedString(attachment: $0) }
-
-        let all = [
-            [attributes],
-            attachments
-        ]
-        
-        return all.flatMap { $0 }
-            .reduce(into: NSMutableAttributedString()) { $0.append($1) }
-    }
-
-}
-
 @objc
 @IBDesignable
 open class EditorTextView: UITextView {
@@ -126,7 +57,7 @@ open class EditorTextView: UITextView {
     fileprivate func shouldInteractWith(url: URL,
                                         in characterRange: NSRange) -> Bool {
 
-        guard url == parsedURL else { return true }
+        guard let editorDelegate = editorDelegate else { return true }
 
         guard let value = attributedText
             .attribute(.annotationValue,
@@ -138,8 +69,10 @@ open class EditorTextView: UITextView {
                        at: characterRange.location,
                        effectiveRange: nil) else { return true }
 
-        editorDelegate?.didTap(value: value, token: token, rect: rect(for: characterRange) ?? .zero)
-        return false
+        return !editorDelegate.attemptToHandleTap(url: url,
+                                                  value: value,
+                                                  token: token,
+                                                  rect: rect(for: characterRange) ?? .zero)
     }
 }
 
