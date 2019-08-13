@@ -9,7 +9,7 @@
 import UIKit
 import Ogma
 
-private let runBenchmarks = true
+private let runBenchmarks = false
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
