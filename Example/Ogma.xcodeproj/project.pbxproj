@@ -468,15 +468,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Ogma_Example/Pods-Ogma_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Ogma/Ogma.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Ogma.framework",
 			);
