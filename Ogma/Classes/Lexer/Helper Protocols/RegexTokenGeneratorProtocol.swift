@@ -37,7 +37,7 @@ extension RegexTokenGeneratorProtocol {
 extension RegexTokenGeneratorProtocol {
 
     func token(in match: NSTextCheckingResult, for text: String, expression: NSRegularExpression) throws -> Token? {
-        let matchGroups = try MatchGroups(regularExpression: expression, match: match, text: text, pattern: pattern)
+        let matchGroups = MatchGroups(regularExpression: expression, match: match, text: text, pattern: pattern)
 
         do {
             return try token(from: matchGroups)

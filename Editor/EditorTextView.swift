@@ -36,8 +36,10 @@ extension EditorDelegate {
     public func string(for input: String, defaultAttributes: [NSAttributedString.Key : Any]) throws -> NSAttributedString {
         return try Value
             .detailedAnnotation(input, using: Lexer.self)
-            .string(attributes: defaultAttributes) { text, value, token in
-                return string(text: text, value: value, token: token)
+            .string(attributes: defaultAttributes) { text, value, token -> NSAttributedString in
+                let attributedString = NSMutableAttributedString(attributedString: string(text: text, value: value, token: token))
+                attributedString.addAttribute(.link, value: parsedURL, range: attributedString.string.range)
+                return attributedString
             }
     }
 

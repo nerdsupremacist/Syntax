@@ -64,7 +64,10 @@ extension Array {
             }
         }
 
-        return try annotated.string(attributes: defaultAttributes) { try attributedString($0, $1.0, $1.1) }
+        return try annotated._string(attributes: defaultAttributes) {
+            try attributedString($0, $1.0, $1.1)
+                .with(attributes: [.annotationValue : $1.0, .annotationToken: $1.1])
+        }
     }
 
     public func string<Value, Token>(
@@ -72,18 +75,8 @@ extension Array {
         _ attributesHandler: (String, Value, Token) throws -> [NSAttributedString.Key : Any]
     ) rethrows -> NSAttributedString where Element == AnnotationElement<ParsedAnnotation<Value, Token>> {
 
-        let annotated = flatMap { annotation -> AnnotatedString<(Value, Token)> in
-            switch annotation {
-            case .annotated(_, let annotation):
-                return annotation.annotatedString.map { (annotation.value, $0) }
-            case .text(let string):
-                return [.text(string)]
-            }
-        }
-
-        return try annotated._string(attributes: defaultAttributes) {
-            return try attributesHandler($0, $1.0, $1.1)
-                .merging([.annotationValue : $1.0, .annotationToken: $1.1]) { $1 }
+        return try string(attributes: defaultAttributes) {
+            NSAttributedString(string: $0, attributes: try attributesHandler($0, $1, $2))
         }
     }
 
@@ -104,8 +97,7 @@ extension Array {
         _ attributesHandler: (String, Annotation) throws -> [NSAttributedString.Key : Any]
     ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
         return try _string(attributes: defaultAttributes) {
-            return try attributesHandler($0, $1)
-                .merging([.annotationValue : $1]) { $1 }
+            return NSAttributedString(string: $0, attributes: try attributesHandler($0, $1))
         }
     }
 
@@ -121,17 +113,17 @@ extension Array {
 
 extension Array {
 
-    private func _string<Annotation>(
-        attributes defaultAttributes: [NSAttributedString.Key : Any]? = nil,
-        _ attributesHandler: (String, Annotation) throws -> [NSAttributedString.Key : Any]
+    public func string<Annotation>(
+        attributes defaultAttributes: [NSAttributedString.Key : Any]?,
+        _ attributedString: (String, Annotation) throws -> NSAttributedString
     ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
-        return try string(attributes: defaultAttributes) { text, annotation in
-            return NSAttributedString(string: text,
-                                      attributes: try attributesHandler(text, annotation))
+
+        return try _string(attributes: defaultAttributes) {
+            try attributedString($0, $1).with(attributes: [.annotationValue : $1])
         }
     }
 
-    public func string<Annotation>(
+    private func _string<Annotation>(
         attributes defaultAttributes: [NSAttributedString.Key : Any]?,
         _ attributedString: (String, Annotation) throws -> NSAttributedString
     ) rethrows -> NSAttributedString where Element == AnnotationElement<Annotation> {
@@ -155,5 +147,15 @@ extension NSAttributedString.Key {
 
     public static let annotationValue = NSAttributedString.Key("Ogma.AnnotationValue")
     public static let annotationToken = NSAttributedString.Key("Ogma.AnnotationToken")
+
+}
+
+extension NSAttributedString {
+
+    func with(attributes: [NSAttributedString.Key : Any]) -> NSAttributedString {
+        let string = NSMutableAttributedString(attributedString: self)
+        string.addAttributes(attributes, range: string.string.range)
+        return string
+    }
 
 }
