@@ -39,7 +39,8 @@ private struct HeaderTokenGenerator: RegexTokenGeneratorProtocol {
     let pattern = "(#{1,4})\\s+(\\S.+)"
 
     func token(from groups: MatchGroups) throws -> Markdown? {
-        return .header(Markdown.Header(level: groups[1].count, text: groups[2]))
+        return .header(Markdown.Header(level: try groups.attempt(group: 1).count,
+                                       text: try groups.attempt(group: 2)))
     }
 }
 
@@ -49,8 +50,8 @@ private struct LinkTokenGenrator: RegexTokenGeneratorProtocol {
     let pattern = "\\[([^\\]]+)]\\(([^\\)]+)\\)"
 
     func token(from groups: MatchGroups) throws -> Markdown? {
-        guard let url = URL(string: groups[2]) else { return nil }
-        return .link(Markdown.Link(name: groups[1], url: url))
+        guard let url = URL(string: try groups.attempt(group: 2)) else { return nil }
+        return .link(Markdown.Link(name: try groups.attempt(group: 1), url: url))
     }
 }
 
@@ -60,7 +61,8 @@ private struct ImageTokenGenrator: RegexTokenGeneratorProtocol {
     let pattern = "!\\[([^\\]]+)]\\(([^\\)]+)\\)"
 
     func token(from groups: MatchGroups) throws -> Markdown? {
-        return .image(Markdown.Image(name: groups[1], identifier: groups[2]))
+        return .image(Markdown.Image(name: try groups.attempt(group: 1),
+                                     identifier: try groups.attempt(group: 2)))
     }
 }
 

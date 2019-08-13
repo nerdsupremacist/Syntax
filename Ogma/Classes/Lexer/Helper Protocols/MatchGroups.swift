@@ -9,7 +9,8 @@ import Foundation
 
 public struct MatchGroups {
     public let text: String
-    private let results: [String]
+    public let pattern: String
+    private let results: [String?]
 }
 
 extension MatchGroups {
@@ -17,19 +18,15 @@ extension MatchGroups {
     init(regularExpression: NSRegularExpression,
          match: NSTextCheckingResult,
          text: String,
-         pattern: String) throws {
+         pattern: String) {
 
         self.text = text
+        self.pattern = pattern
 
         let groups = 0...regularExpression.numberOfCaptureGroups
-        self.results = try groups.map { group in
+        self.results = groups.map { group in
             let groupRange = match.range(at: group)
-
-            guard let range = Range(groupRange, in: text) else {
-                throw LexerError.noMatchFound(text, pattern: pattern)
-            }
-
-            return String(text[range])
+            return Range(groupRange, in: text).map { String(text[$0]) }
         }
     }
 
@@ -44,11 +41,22 @@ extension MatchGroups: Collection {
         return results.endIndex
     }
 
-    public subscript(index: Int) -> String {
+    public subscript(index: Int) -> String? {
         return results[index]
     }
 
     public func index(after i: Int) -> Int {
         return results.index(after: i)
     }
+}
+
+extension MatchGroups {
+
+    public func attempt(group: Int) throws -> String {
+        guard let value = self[group] else {
+            throw LexerError.noMatchFound(text, pattern: pattern)
+        }
+        return value
+    }
+
 }

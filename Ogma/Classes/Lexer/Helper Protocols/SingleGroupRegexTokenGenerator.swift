@@ -26,7 +26,7 @@ extension SingleGroupRegexTokenGenerator {
         guard (groups.startIndex..<groups.endIndex).contains(group) else {
             throw LexerError.noMatchFound(groups.text, pattern: pattern)
         }
-        return try token(from: groups[group])
+        return try token(from: try groups.attempt(group: group))
     }
 
 }
