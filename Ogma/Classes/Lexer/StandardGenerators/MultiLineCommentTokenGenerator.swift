@@ -23,9 +23,9 @@ public struct MultiLineCommentTokenGenerator: SingleGroupRegexTokenGenerator {
 
     public let group: Int = 1
 
-    public init(prefixPattern: String, postfixPattern: String) {
-        self.prefixPattern = prefixPattern
-        self.postfixPattern = postfixPattern
+    public init(prefix: Regex, postfix: Regex) {
+        self.prefixPattern = prefix.pattern
+        self.postfixPattern = postfix.pattern
     }
 
     public func token(from matched: String) throws -> MultiLineComment? {

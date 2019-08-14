@@ -22,8 +22,8 @@ public struct SingleLineCommentTokenGenerator: SingleGroupRegexTokenGenerator {
 
     public let group: Int = 1
 
-    public init(prefixPattern: String) {
-        self.prefixPattern = prefixPattern
+    public init(prefix: Regex) {
+        self.prefixPattern = prefix.pattern
     }
 
     public func token(from matched: String) throws -> SingleLineComment? {

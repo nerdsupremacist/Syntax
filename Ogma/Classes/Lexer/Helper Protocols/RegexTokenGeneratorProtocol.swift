@@ -17,7 +17,14 @@ public protocol RegexTokenGeneratorProtocol: TokenGenerator {
 extension RegexTokenGeneratorProtocol {
 
     public func take(text: String) throws -> Result {
-        let expression = try NSRegularExpression(pattern: "^\(pattern)")
+        let expression: NSRegularExpression
+        do {
+            expression = try NSRegularExpression(pattern: "^\(pattern)")
+        } catch {
+            print(pattern)
+            print(error)
+            throw error
+        }
 
         guard let match = expression.firstMatch(in: text, range: text.range),
             let matchRange = Range(match.range, in: text),

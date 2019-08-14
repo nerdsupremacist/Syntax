@@ -17,27 +17,27 @@ public struct StringLiteralTokenGenerator: SingleGroupRegexTokenGenerator {
 
     public var pattern: String {
         if allowsMultiline {
-            return "\(start)((\\\\.|[^\(end)])*)\(end)"
+            return "\(start)((\\\\.|(?!\(end))(.|\\n))*)\(end)"
         } else {
-            return "\(start)((\\\\.|[^\(end)\\n])*)\(end)"
+            return "\(start)((\\\\.|(?!\(end)).)*)\(end)"
         }
     }
 
     public let group: Int = 1
 
-    public init(start: String,
-                end: String,
+    public init(start: Regex,
+                end: Regex,
                 allowsMultiline: Bool = false,
                 escapingStrategy: StringLiteralEscapingStrategy.Type = SwiftStringLiteralEscapingStrategy.self) {
 
-        self.start = start
-        self.end = end
+        self.start = start.pattern
+        self.end = end.pattern
         self.allowsMultiline = allowsMultiline
-        self.subGenerator = StringLiteralEscapedSectionTokenGenerator(delimiter: end,
+        self.subGenerator = StringLiteralEscapedSectionTokenGenerator(delimiter: self.end,
                                                                       strategy: escapingStrategy).any()
     }
 
-    public init(delimiter: String = "\"",
+    public init(delimiter: Regex = "\"",
                 allowsMultiline: Bool = false,
                 escapingStrategy: StringLiteralEscapingStrategy.Type = SwiftStringLiteralEscapingStrategy.self) {
 

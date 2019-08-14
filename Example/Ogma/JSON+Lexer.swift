@@ -15,23 +15,23 @@ extension JSON {
         typealias Token = JSON.Token
 
         static let generators: Generators = [
-            SingleLineCommentTokenGenerator(prefixPattern: "\\/\\/").ignore(),
-            MultiLineCommentTokenGenerator(prefixPattern: "\\/\\*", postfixPattern: "\\*\\/").ignore(),
+            SingleLineCommentTokenGenerator(prefix: "//").ignore(),
+            MultiLineCommentTokenGenerator(prefix: "/*", postfix: "*/").ignore(),
 
             StringLiteralTokenGenerator().map(Token.string),
             StringLiteralTokenGenerator(delimiter: "`", allowsMultiline: true).map(Token.string),
             DoubleLiteralTokenGenerator().map(Token.double),
             IntLiteralTokenGenerator().map(Token.int),
 
-            RegexTokenGenerator(pattern: "\\{").map(to: .openCurlyBracket),
-            RegexTokenGenerator(pattern: "\\}").map(to: .closeCurlyBracket),
-            RegexTokenGenerator(pattern: "\\[").map(to: .openSquareBracket),
-            RegexTokenGenerator(pattern: "\\]").map(to: .closeSquareBracket),
-            RegexTokenGenerator(pattern: ",").map(to: .comma),
-            RegexTokenGenerator(pattern: ":").map(to: .colon),
-            RegexTokenGenerator(pattern: "true\\b").map(to: .true),
-            RegexTokenGenerator(pattern: "false\\b").map(to: .false),
-            RegexTokenGenerator(pattern: "null\\b").map(to: .null),
+            RegexTokenGenerator(string: "{").map(to: .openCurlyBracket),
+            RegexTokenGenerator(string: "}").map(to: .closeCurlyBracket),
+            RegexTokenGenerator(string: "[").map(to: .openSquareBracket),
+            RegexTokenGenerator(string: "]").map(to: .closeSquareBracket),
+            RegexTokenGenerator(string: ",").map(to: .comma),
+            RegexTokenGenerator(string: ":").map(to: .colon),
+            RegexTokenGenerator(word: "null").map(to: .null),
+            RegexTokenGenerator(word: "true").map(to: .true),
+            RegexTokenGenerator(word: "false").map(to: .false),
 
             WhiteSpaceTokenGenerator().ignore(),
         ]
