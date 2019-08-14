@@ -15,6 +15,12 @@ public func ||<A: Parser, B: Parser>(lhs: A,
     return OrParser(parsers: lhs.underlyingParsers() + rhs.underlyingParsers()).any()
 }
 
+public func ||<A: Parser>(lhs: A,
+                          rhs: A.Output) -> AnyParser<A.Token, A.Output> {
+
+    return lhs || AnyParser.empty(with: rhs)
+}
+
 fileprivate extension Parser {
 
     func underlyingParsers() -> [AnyParser<Token, Output>] {
@@ -34,21 +40,22 @@ fileprivate extension Parser {
 
 }
 
-private class OrParser<Token: Hashable, Output>: Parser {
+private class OrParser<Token: TokenProtocol, Output>: Parser {
     let parsers: [AnyParser<Token, Output>]
 
     private(set) lazy var parser: AnyParser<Token, Output> = { [unowned self] in
+        let emptyParsers = self.parsers.filter { $0.prefixes(stack: []).isEmpty }
         let prefixes = self.parsers.flatMap { parser in parser.prefixes(stack: []).map { ($0, parser) } }
         let count = prefixes.map { $0.0.count }.max() ?? 0
         let parserMap = Dictionary(grouping: prefixes, by: { $0.0 }).mapValues { $0.map { $0.1 } }
 
         return .lookAhead(count) { tokens in
-            let parsers = parserMap.get(prefix: tokens).flatMap { $0 }
-            return BacktrackingOrParser(parsers: parsers).any()
+            let parsers = parserMap.get(prefix: .tokens(tokens)).flatMap { $0 }
+            return BacktrackingOrParser(parsers: parsers + emptyParsers).any()
         }
     }()
 
-    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Token>> {
         return parsers.reduce([]) { $0.union($1.prefixes(stack: stack)) }
     }
 
@@ -64,36 +71,41 @@ private class OrParser<Token: Hashable, Output>: Parser {
 private struct BacktrackingOrParser<Token: TokenProtocol, Output>: Parser {
     let parsers: [AnyParser<Token, Output>]
 
-    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Token>> {
         return parsers.reduce([]) { $0.union($1.prefixes(stack: stack)) }
     }
 
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
-        return try parse(tokens: tokens, stack: stack, parsers: parsers)
+        return try parse(tokens: tokens, stack: stack, parsers: parsers, errors: [])
     }
 
     private func parse(tokens: [Token],
                        stack: [AnyObject],
-                       parsers: [AnyParser<Token, Output>]) throws -> ParserOutput<Token, Output> {
+                       parsers: [AnyParser<Token, Output>],
+                       errors: [Error]) throws -> ParserOutput<Token, Output> {
 
         guard let first = parsers.first else {
-            throw ParserError.backtrackingFailed(parsers: self.parsers, tokens: tokens)
+            throw ParserError.backtrackingFailed(parsers: self.parsers, tokens: tokens, errors: errors)
         }
 
         do {
             return try first.parse(tokens: tokens, stack: stack)
         } catch {
-            return try parse(tokens: tokens, stack: stack, parsers: Array(parsers.dropFirst()))
+            return try parse(tokens: tokens,
+                             stack: stack,
+                             parsers: Array(parsers.dropFirst()),
+                             errors: errors + [error])
         }
     }
 }
 
-extension Dictionary {
+extension Dictionary where Key: PrefixProtocol {
 
-    fileprivate func get<SubKey: Hashable>(prefix: [SubKey]) -> [Value] where Array<SubKey> == Key {
-        let values = filter { prefix.hasPrefix($0.key) }
-            .values
-        return Array(values)
+    fileprivate func get(prefix: Key) -> [Value] {
+        return filter { prefix.has(prefix: $0.key) }
+            .map { (size: Swift.min($0.key.count, prefix.count), value: $0.value) }
+            .sorted { $0.size >= $1.size }
+            .map { $0.value }
     }
 
 }

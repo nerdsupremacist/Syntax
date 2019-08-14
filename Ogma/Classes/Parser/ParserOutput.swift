@@ -20,5 +20,5 @@ extension ParserOutput {
     public func map<V>(_ transform: (T) throws -> V) rethrows -> ParserOutput<Token, V> {
         return ParserOutput<Token, V>(output: try transform(output), remaining: remaining)
     }
-    
+
 }

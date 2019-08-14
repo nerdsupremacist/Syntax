@@ -85,7 +85,7 @@ extension BinaryOperation {
     }
 
     private static func parserLeft(using parser: AnyParser<Token, Output>,
-                                    for operator: Member.Operator) -> AnyParser<Token, Output> {
+                                   for operator: Member.Operator) -> AnyParser<Token, Output> {
 
         let parser = parser && (`operator`.token && parser)*
         return parser.map {

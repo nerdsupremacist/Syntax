@@ -24,5 +24,5 @@ public enum ParserError<Token: TokenProtocol>: Error {
     /// Parsing a binary operation still resulted in a single member being parsed
     case expectedABinaryOperation
     /// Backtracking failed to gather any values
-    case backtrackingFailed(parsers: [Any], tokens: [Token])
+    case backtrackingFailed(parsers: [Any], tokens: [Token], errors: [Error])
 }

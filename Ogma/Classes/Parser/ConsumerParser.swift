@@ -11,23 +11,31 @@ extension AnyParser {
 
     /// Returns a Parser that will attempt to read a property from the Token.
     /// If the property has a value it will return the value, otherwise throw an error
-    public static func consuming(_ closure: @escaping (Token) throws -> Output?) -> AnyParser<Token, Output> {
-        return ConsumerParser(closure: closure).any()
+    public static func consuming(file: StaticString = #file,
+                                 line: Int = #line,
+                                 _ closure: @escaping (Token) throws -> Output?) -> AnyParser<Token, Output> {
+
+        return ConsumerParser(file: file, line: line, closure: closure).any()
     }
 
     /// Returns a Parser that will attempt to read a property from the Token.
     /// If the property has a value it will return the value, otherwise throw an error
-    public static func consuming(keyPath: KeyPath<Token, Output?>) -> AnyParser<Token, Output> {
+    public static func consuming(file: StaticString = #file,
+                                 line: Int = #line,
+                                 keyPath: KeyPath<Token, Output?>) -> AnyParser<Token, Output> {
+
         return .consuming { $0[keyPath: keyPath] }
     }
 
 }
 
 private struct ConsumerParser<Token: TokenProtocol, Output>: SingleTokenParser {
+    let file: StaticString
+    let line: Int
     let closure: (Token) throws -> Output?
 
-    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
-        return [[]]
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Token>> {
+        return [.consuming]
     }
 
     func parse(token: Token, stack: [AnyObject]) throws -> Output {

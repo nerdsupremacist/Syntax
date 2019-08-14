@@ -27,7 +27,7 @@ private struct MappedParser<Source: Parser, Output>: Parser {
     let source: Source
     let transform: (Source.Output) throws -> Output
 
-    func prefixes(stack: [AnyObject]) -> Set<[Source.Token]> {
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Source.Token>> {
         return source.prefixes(stack: stack)
     }
 

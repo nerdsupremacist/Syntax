@@ -22,8 +22,15 @@ private struct IgnoringParser<Source: Parser>: Parser {
     let source: Source
     let ignoring: Token
 
-    func prefixes(stack: [AnyObject]) -> Set<[Source.Token]> {
-        return Set(source.prefixes(stack: stack).flatMap { $0.insertingPowerset(ignoring) })
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Source.Token>> {
+        return Set(source.prefixes(stack: stack).flatMap { prefix -> [Prefix<Source.Token>] in
+            switch prefix {
+            case .tokens(let tokens):
+                return tokens.insertingPowerset(ignoring).map { .tokens($0) }
+            case .consuming:
+                return [.consuming]
+            }
+        })
     }
 
     func parse(tokens: [Source.Token], stack: [AnyObject]) throws -> ParserOutput<Source.Token, Source.Output> {

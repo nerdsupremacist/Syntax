@@ -22,14 +22,13 @@ extension Parser {
         }
 
         if allowsEmpty {
-            return separated(by: separator, allowsEmpty: false)
-                .optional()
-                .map { $0 ?? [] }
+            return separated(by: separator, allowsEmpty: false) || []
         }
 
-        let subsequent = separator && self
-        let parser = self && subsequent*
-        return parser.map { [$0] + $1 }
+        return .recursive { separated in
+            return self.and(separator).and(separated).map { [$0] + $1 } ||
+                self.map { [$0] }
+        }
     }
     
 }

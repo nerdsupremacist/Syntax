@@ -44,7 +44,9 @@ extension AnyParser: ExpressibleByDictionaryLiteral where Token: Hashable {
 extension Array {
 
     func first(_ n: Int) -> [Element] {
-        return Array(dropLast(count - n))
+        let drop = count - n
+        guard drop >= 0 else { return [] }
+        return Array(dropLast(drop))
     }
 
 }
@@ -58,12 +60,11 @@ private struct PrefixLookAheadParser<Token: TokenProtocol, Output>: Parser {
         self.parsers = parsers
     }
 
-    func prefixes(stack: [AnyObject]) -> Set<[Token]> {
-        return [[]]
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Token>> {
+        return [.consuming]
     }
 
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output> {
-        guard !tokens.isEmpty else { throw ParserError<Token>.noMoreTokens }
         let prefix = tokens.first(depth)
         guard let parser = parsers(prefix) else { throw ParserError.lookaheadFailedToReturnSubParser(basedOn: prefix) }
         return try parser.parse(tokens: tokens, stack: stack)

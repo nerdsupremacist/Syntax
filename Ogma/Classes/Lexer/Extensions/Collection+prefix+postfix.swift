@@ -23,14 +23,22 @@ extension Collection where Element: Equatable {
         return reversed().prefix(containing: collection).reversed()
     }
 
-    func hasPrefix<C: Collection>(_ collection: C) -> Bool where Element == C.Element {
+}
+
+extension Collection where Self: PrefixProtocol, SubSequence: PrefixProtocol, Element: Equatable {
+
+    public func has(prefix collection: Self) -> Bool {
         guard let first = collection.first else { return true }
 
         if self.first != first {
             return false
         }
 
-        return dropFirst().hasPrefix(collection.dropFirst())
+        return dropFirst().has(prefix: collection.dropFirst())
     }
 
 }
+
+extension ArraySlice: PrefixProtocol where Element: Equatable { }
+
+extension Array: PrefixProtocol where Element: Equatable { }

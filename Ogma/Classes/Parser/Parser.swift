@@ -17,7 +17,7 @@ public protocol Parser {
     /// Output of the Parser
     associatedtype Output
 
-    func prefixes(stack: [AnyObject]) -> Set<[Token]>
+    func prefixes(stack: [AnyObject]) -> Set<Prefix<Token>>
 
     /// Parse the Tokens. And Return the output with the remaining Tokens
     func parse(tokens: [Token], stack: [AnyObject]) throws -> ParserOutput<Token, Output>

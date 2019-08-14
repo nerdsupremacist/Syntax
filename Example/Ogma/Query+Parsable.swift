@@ -10,8 +10,7 @@ import Foundation
 import Ogma
 
 extension Query: Parsable {
-    static let parser: AnyParser<Query.Token, Query> = {
-        let parser = Keyword.self* && Filter?.self
-        return parser.map { Query(keywords: $0, filter: $1) }
-    }()
+    static let parser: AnyParser<Query.Token, Query> = Keyword.self*
+        .and(Filter?.self)
+        .map { Query(keywords: $0, filter: $1) }
 }

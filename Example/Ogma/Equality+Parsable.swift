@@ -12,8 +12,8 @@ import Ogma
 extension Query.Filter.Equality: Parsable {
     typealias Token = Query.Token
 
-    static let parser: AnyParser<Query.Token, Query.Filter.Equality> = {
-        let parser = Query.Filter.Property.self && .equals && Query.Filter.Value.self
-        return parser.map { Query.Filter.Equality(property: $0, value: $1) }
-    }()
+    static let parser: AnyParser<Query.Token, Query.Filter.Equality> = Query.Filter.Property
+        .and(.equals)
+        .and(Query.Filter.Value.self)
+        .map { Query.Filter.Equality(property: $0, value: $1) }
 }
