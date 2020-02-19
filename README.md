@@ -1,6 +1,6 @@
 # Ogma
 
-Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complicated state machines! Now you can easily write a Parser using only pure functions.
+Ogma is a lightweight Parsing Framework written in Swift. Say goodbye to complicated state machines! Now you can easily write a Parser that will output a your desired type-safe model using only pure functions.
 
 ## How do I write a Parser?
 
