@@ -26,7 +26,7 @@ extension GeneratorLexer {
         var tokens = [Token?]()
 
         while let remainingInput = remaining {
-            let generated = try generators.take(text: input)
+            let generated = try generators.take(text: remainingInput)
             remaining = generated.remainingString
             tokens.append(generated.token)
             if let remaining = remaining, remaining.count == remainingInput.count {
