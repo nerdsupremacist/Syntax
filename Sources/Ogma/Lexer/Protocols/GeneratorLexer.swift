@@ -22,13 +22,19 @@ extension GeneratorLexer {
     }
 
     private static func tokenize(input: String) throws -> [Token?] {
-        let generated = try generators.take(text: input)
-        guard let remaining = generated.remainingString else { return [generated.token] }
+        var remaining: String? = input
+        var tokens = [Token?]()
 
-        guard remaining.count != input.count else { throw LexerError.couldNotDecode(remaining.first) }
+        while let remainingInput = remaining {
+            let generated = try generators.take(text: input)
+            remaining = generated.remainingString
+            tokens.append(generated.token)
+            if let remaining = remaining, remaining.count == remainingInput.count {
+                throw LexerError.couldNotDecode(remaining.first)
+            }
+        }
 
-        let rest = try tokenize(input: remaining) as [Token?]
-        return [generated.token] + rest
+        return tokens
     }
 
 }
