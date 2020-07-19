@@ -7,6 +7,7 @@
 
 #if os(iOS)
 import Foundation
+import UIKit
 
 public protocol EditorDelegateProtocol: class {
     var linkTextAttributes: [NSAttributedString.Key : Any]? { get }

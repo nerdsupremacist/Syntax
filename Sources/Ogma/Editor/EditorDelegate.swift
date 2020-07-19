@@ -7,6 +7,7 @@
 
 #if os(iOS)
 import Foundation
+import UIKit
 
 private let parsedURL = URL(string: "parsed://")!
 
