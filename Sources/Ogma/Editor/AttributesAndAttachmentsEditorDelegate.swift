@@ -7,6 +7,7 @@
 
 #if os(iOS)
 import Foundation
+import UIKit
 
 public protocol AttributesAndAttachmentsEditorDelegate: EditorDelegate {
     func attachments(for value: Value, token: Value.Token) -> [NSTextAttachment]
