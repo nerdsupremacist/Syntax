@@ -1,7 +1,7 @@
 
 import Foundation
 
-public struct Kind: RawRepresentable, Encodable {
+public struct Kind: RawRepresentable, Encodable, Equatable {
     public let rawValue: String
 
     public init(rawValue: String) {
