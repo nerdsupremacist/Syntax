@@ -21,5 +21,8 @@ final class JSONSyntaxTests: XCTestCase {
                 "other" : nil,
             ]
         )
+
+        let syntaxTree = try! JSONParser().syntaxTree(text)
+        print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
     }
 }

@@ -12,7 +12,7 @@ public struct StringLiteral: Parser {
 
             Repeat {
                 Either {
-                    escapeStrategy.escaped
+                    escapeStrategy.escaped(with: end)
                     RegularExpression("[^\\n\(end)]").map { String($0.text) }
                 }
             }

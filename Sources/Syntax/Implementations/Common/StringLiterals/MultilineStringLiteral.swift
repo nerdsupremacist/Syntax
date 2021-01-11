@@ -11,7 +11,7 @@ public struct MultilineStringLiteral: Parser {
 
         Repeat {
             Either {
-                escapeStrategy.escaped
+                escapeStrategy.escaped(with: end)
                 RegularExpression("[^\(end)]").map { String($0.text) }
             }
         }

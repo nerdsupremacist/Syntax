@@ -2,10 +2,10 @@
 import Foundation
 
 public struct SwiftEscapeStrategy: StringEscapeStrategy {
-    public var escaped: AnyParser<String> {
+    public func escaped(with endDelimiter: String) -> AnyParser<String> {
         Either<String> {
             "\\\\".map(to: "\\")
-            "\\\"".map(to: "\"")
+            "\\\(endDelimiter)".map(to: "\"")
             "\\n".map(to: "\n")
             "\\t".map(to: "\t")
             "\\0".map(to: "\0")

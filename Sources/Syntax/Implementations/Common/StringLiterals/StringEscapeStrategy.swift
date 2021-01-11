@@ -3,5 +3,5 @@ import Foundation
 
 public protocol StringEscapeStrategy {
     @ParserBuilder
-    var escaped: AnyParser<String> { get }
+    func escaped(with endDelimiter: String) -> AnyParser<String>
 }
