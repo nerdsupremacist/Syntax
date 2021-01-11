@@ -57,6 +57,6 @@ struct JSONParser: Parser {
 extension Kind {
 
     static let boolLiteral: Kind = "bool.literal"
-    static let nullLiteral: Kind = "bool.literal"
+    static let nullLiteral: Kind = "null.literal"
 
 }
