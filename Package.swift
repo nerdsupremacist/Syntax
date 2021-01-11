@@ -2,15 +2,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "Ogma",
-    platforms: [.iOS(.v10), .macOS(.v10_12)],
+    name: "Syntax",
+    platforms: [.iOS(.v13), .macOS(.v10_15)],
     products: [
-        .library(name: "Ogma",
-                 targets: ["Ogma"]),
+        .library(name: "Syntax",
+                 targets: ["Syntax"]),
     ],
     dependencies: [],
     targets: [
-        .target(name: "Ogma",
-                dependencies: [])
+        .target(name: "Syntax",
+                dependencies: []),
+
+        .testTarget(name: "SyntaxTests",
+                    dependencies: ["Syntax"]),
     ]
 )

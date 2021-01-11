@@ -1,0 +1,57 @@
+%{ import itertools }%
+import Foundation
+
+@_functionBuilder
+public struct ParserBuilder {
+
+    public static func buildBlock() -> AnyParser<Void> {
+        return EmptyParser().ignoreOutput()
+    }
+
+    public static func buildBlock<C0 : Parser>(_ c0: C0) -> AnyParser<C0.Output> {
+        return AnyParser(c0)
+    }
+
+    public static func buildBlock<Output, C0 : Parser>(_ c0: C0) -> [AnyParser<Output>] where C0.Output == Output {
+        return [c0.eraseToAnyParser()]
+    }
+
+    public static func buildIf<C0 : Parser>(_ c0: C0?) -> AnyParser<C0.Output?> {
+        return c0.eraseToAnyParser()
+    }
+
+    % for num_components in range(2, 11):
+%{
+        combinations = itertools.product([True, False], repeat=num_components)
+        indices = range(0, num_components)
+        generic_names_in = ['C{}'.format(idx) for idx in indices]
+        generics = ', '.join(['{}: Parser'.format(name) for name in generic_names_in])
+        param_names = ['c{}'.format(idx) for idx in indices]
+        params = ', '.join(['_ {}: {}'.format(param, type) for param, type in zip(param_names, generic_names_in)])
+}%
+    % for combination in combinations:
+%{
+        generic_names_out = ['C{}.Output'.format(idx) for idx in indices if combination[idx]]
+        output_generics = ", ".join(generic_names_out)
+        generic_constaints = ", ".join(['C{}.Output == Void'.format(idx) for idx in indices if not combination[idx]])
+        if len(generic_constaints) > 0:
+            generic_constaints = " where " + generic_constaints
+        tuple_ctor_args = ', '.join(['{}.internalParser()'.format(name) for name in param_names])
+        types_ctor_args = ', '.join([name + '.self' for name in generic_names_out])
+}%
+    public static func buildBlock<${generics}>(${params}) -> AnyParser<(${output_generics})>${generic_constaints} {
+        return TupleParser<(${output_generics})>(parsers: [${tuple_ctor_args}], outputTypes: [${types_ctor_args}]).eraseToAnyParser()
+    }
+
+    % end
+%{
+        generic_constaints = ", ".join(['C{}.Output == Output'.format(idx) for idx in indices])
+        output = ', '.join([name + ".eraseToAnyParser()" for name in param_names])
+}%
+
+    public static func buildBlock<Output, ${generics}>(${params}) -> [AnyParser<Output>] where ${generic_constaints} {
+        return [${output}]
+    }
+
+    % end
+}
