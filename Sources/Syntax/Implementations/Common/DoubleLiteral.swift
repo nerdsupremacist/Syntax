@@ -14,10 +14,16 @@ public struct DoubleLiteral: Parser {
                 return number.doubleValue
             }
         }
-        .kind("double.literal")
+        .kind(.doubleLiteral)
         .optimize(using: doublePrefixes)
         .annotate { int in
             return ["value" : String(int)]
         }
     }
+}
+
+extension Kind {
+
+    public static let doubleLiteral: Kind = "double.literal"
+
 }

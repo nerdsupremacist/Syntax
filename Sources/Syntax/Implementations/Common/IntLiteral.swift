@@ -15,9 +15,16 @@ public struct IntLiteral: Parser {
             }
         }
         .optimize(using: integerPrefixes)
-        .kind("int.literal")
+        .kind(.intLiteral)
         .annotate { int in
             return ["value" : String(int)]
         }
     }
+}
+
+
+extension Kind {
+
+    public static let intLiteral: Kind = "int.literal"
+
 }

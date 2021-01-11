@@ -20,12 +20,18 @@ extension RegularExpression: InternalParser {
         let match = try scanner.take(pattern: pattern)
         scanner.store(value: match)
         scanner.exitNode()
-        scanner.configureNode(kind: "regular.expression.match")
+        scanner.configureNode(kind: .expressionMatch)
         scanner.configureNode(annotations: ["match" : String(match.text)])
     }
 
     func prefixes() -> Set<String> {
         return []
     }
+
+}
+
+extension Kind {
+
+    public static let expressionMatch: Kind = "regular.expression.match"
 
 }

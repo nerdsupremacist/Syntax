@@ -2,13 +2,13 @@
 import Foundation
 
 public class SyntaxTree: Encodable {
-    public internal(set) var kind: String?
+    public internal(set) var kind: Kind?
     public let range: Range<Int>
     public let location: Range<Location>
     public internal(set) var annotations: [String : String]
     public internal(set) var children: [SyntaxTree]
 
-    init(kind: String? = nil,
+    init(kind: Kind? = nil,
          range: Range<Int>,
          location: Range<Location>,
          annotations: [String : String],

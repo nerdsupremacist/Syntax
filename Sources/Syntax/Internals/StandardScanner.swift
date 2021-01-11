@@ -118,7 +118,15 @@ class StandardScanner: Scanner {
         storage.node.children = []
     }
 
-    func configureNode(kind: String) {
+    func locationOfNode() -> Range<Location> {
+        let startIndex = storage.node.updatedIndex ?? storage.node.start
+        let endIndex = storage.index
+        let startOffset = text.distance(from: text.startIndex, to: startIndex)
+        let endOffset = text.distance(from: text.startIndex, to: endIndex)
+        return lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!
+    }
+
+    func configureNode(kind: Kind) {
         storage.node.children.last?.kind = kind
     }
 
@@ -267,7 +275,7 @@ extension StandardScanner {
             pruneNode()
         }
 
-        func configureNode(kind: String) {
+        func configureNode(kind: Kind) {
             guard allowedToRegisterNodes else { return }
             scanner.configureNode(kind: kind)
         }
@@ -280,6 +288,10 @@ extension StandardScanner {
         func removeChildrenOfNode() {
             guard allowedToRegisterNodes else { return }
             scanner.removeChildrenOfNode()
+        }
+
+        func locationOfNode() -> Range<Location> {
+            return scanner.locationOfNode()
         }
 
         func take(pattern: String) throws -> ExpressionMatch {

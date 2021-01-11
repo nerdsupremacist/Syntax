@@ -7,8 +7,9 @@ protocol Scanner {
     func enterNode()
     func exitNode()
     func removeChildrenOfNode()
+    func locationOfNode() -> Range<Location>
 
-    func configureNode(kind: String)
+    func configureNode(kind: Kind)
     func configureNode(annotations: [String : String])
     func pruneNode()
 

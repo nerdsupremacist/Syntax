@@ -46,10 +46,17 @@ struct JSONParser: Parser {
                 IntLiteral().map(JSON.int)
                 DoubleLiteral().map(JSON.double)
 
-                Word("true").map(to: JSON.bool(true)).kind("bool.literal")
-                Word("false").map(to: JSON.bool(true)).kind("bool.literal")
-                Word("null").kind("null.literal").map(to: JSON.null)
+                Word("true").map(to: JSON.bool(true)).kind(.boolLiteral)
+                Word("false").map(to: JSON.bool(true)).kind(.boolLiteral)
+                Word("null").kind(.nullLiteral).map(to: JSON.null)
             }
         }
     }
+}
+
+extension Kind {
+
+    static let boolLiteral: Kind = "bool.literal"
+    static let nullLiteral: Kind = "bool.literal"
+
 }

@@ -3,27 +3,27 @@ import Foundation
 
 extension Parser {
 
-    public func kind(_ kind: String?) -> AnyParser<Output> {
+    public func kind(_ kind: Kind?) -> AnyParser<Output> {
         guard let kind = kind else { return eraseToAnyParser() }
-        return Kind(content: internalParser(), kind: kind).eraseToAnyParser()
+        return KindParser(content: internalParser(), kind: kind).eraseToAnyParser()
     }
 
-    public func kind(_ kind: String) -> AnyParser<Output> {
-        return Kind(content: internalParser(), kind: kind).eraseToAnyParser()
+    public func kind(_ kind: Kind) -> AnyParser<Output> {
+        return KindParser(content: internalParser(), kind: kind).eraseToAnyParser()
     }
 
 }
 
-private struct Kind<Output>: Parser {
+private struct KindParser<Output>: Parser {
     fileprivate let content: InternalParser
-    fileprivate let kind: String
+    fileprivate let kind: Kind
 
     var body: AnyParser<Output> {
         return neverBody()
     }
 }
 
-extension Kind: InternalParser {
+extension KindParser: InternalParser {
     func prefixes() -> Set<String> {
         return content.prefixes()
     }

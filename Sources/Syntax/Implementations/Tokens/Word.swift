@@ -24,8 +24,15 @@ extension Word: InternalParser {
         let match = try scanner.take(word: word)
         scanner.store(value: match)
         scanner.exitNode()
-        scanner.configureNode(kind: "word.match")
+        scanner.configureNode(kind: .wordMatch)
         scanner.configureNode(annotations: ["match" : match])
     }
+
+}
+
+
+extension Kind {
+
+    public static let wordMatch: Kind = "word.match"
 
 }

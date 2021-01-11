@@ -22,7 +22,7 @@ public struct StringLiteral: Parser {
 
             end
         }
-        .kind("string.literal")
+        .kind(.stringLiteral)
         .annotate { value in
             return ["value" : value]
         }
@@ -42,5 +42,11 @@ extension StringLiteral {
     public func escapeStrategy(_ strategy: StringEscapeStrategy) -> StringLiteral {
         return StringLiteral(start: start, end: end, escapeStrategy: strategy)
     }
+
+}
+
+extension Kind {
+
+    public static let stringLiteral: Kind = "string.literal"
 
 }

@@ -100,13 +100,13 @@ extension BinaryOperationParser {
             Group {
                 `operator`
                     .parser
-                    .kind("binary.operator")
+                    .kind(.binaryOperator)
 
                 parser
             }
             .star()
         }
-        .kind("binary.operation")
+        .kind(.binaryOperation)
         .map { first, operations -> IntermediateRepresentation in
             return operations.reduce(first) { lhs, rhs in
                 .operation(BinaryOperation(lhs: lhs.member(using: self.wrapper),
@@ -126,13 +126,13 @@ extension BinaryOperationParser {
             Group {
                 `operator`
                     .parser
-                    .kind("binary.operator")
+                    .kind(.binaryOperator)
 
                 parser
             }
             .star()
         }
-        .kind("binary.operation")
+        .kind(.binaryOperation)
         .map { first, operations -> IntermediateRepresentation in
             let reversed = ([first] + operations).reversed()
             let rightMost = reversed.first!
@@ -143,5 +143,12 @@ extension BinaryOperationParser {
             }
         }
     }
+
+}
+
+extension Kind {
+
+    public static let binaryOperation: Kind = "binary.operation"
+    public static let binaryOperator: Kind = "binary.operator"
 
 }
