@@ -2,6 +2,10 @@
 import Foundation
 
 public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>: Parser {
+    public static var kind: Kind? {
+        return nil
+    }
+
     private let content: Content
     private let wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output
     private let operators: [Operator]
