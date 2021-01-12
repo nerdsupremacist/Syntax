@@ -8,6 +8,7 @@ final class JSONSyntaxTests: XCTestCase {
         {
             "greeting" : "hello world!",
             "int" : 42,
+            "bool" : false,
             "other" : null
         }
         """
@@ -18,6 +19,7 @@ final class JSONSyntaxTests: XCTestCase {
             [
                 "greeting" : "hello world!",
                 "int" : 42,
+                "bool" : false,
                 "other" : nil,
             ]
         )

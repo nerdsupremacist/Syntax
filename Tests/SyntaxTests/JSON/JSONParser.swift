@@ -2,7 +2,7 @@
 import Syntax
 
 struct JSONParser: Parser {
-    struct ArrayParser: Parser {
+    struct JSONArrayParser: Parser {
         let json: AnyParser<JSON>
 
         var body: AnyParser<[JSON]> {
@@ -14,7 +14,7 @@ struct JSONParser: Parser {
         }
     }
 
-    struct DictionaryParser: Parser {
+    struct JSONDictionaryParser: Parser {
         let json: AnyParser<JSON>
 
         var body: AnyParser<[String : JSON]> {
@@ -39,15 +39,14 @@ struct JSONParser: Parser {
     var body: AnyParser<JSON> {
         Recursive { parser in
             Either {
-                DictionaryParser(json: parser).map(JSON.object)
-                ArrayParser(json: parser).map(JSON.array)
+                JSONDictionaryParser(json: parser).map(JSON.object)
+                JSONArrayParser(json: parser).map(JSON.array)
 
                 StringLiteral().map(JSON.string)
                 IntLiteral().map(JSON.int)
                 DoubleLiteral().map(JSON.double)
-
-                Word("true").map(to: JSON.bool(true)).kind(.boolLiteral)
-                Word("false").map(to: JSON.bool(true)).kind(.boolLiteral)
+                BooleanLiteral().map(JSON.bool)
+                
                 Word("null").kind(.nullLiteral).map(to: JSON.null)
             }
         }
