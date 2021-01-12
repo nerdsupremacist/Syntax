@@ -33,7 +33,7 @@ extension Annotator: InternalParser {
         }
         let annotations = self.annotations(value)
         scanner.configureNode(annotations: annotations)
-        scanner.pruneNode()
+        scanner.pruneNode(strategy: .separate)
     }
 
     func prefixes() -> Set<String> {
