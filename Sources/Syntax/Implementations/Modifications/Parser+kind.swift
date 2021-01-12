@@ -3,12 +3,12 @@ import Foundation
 
 extension Parser {
 
-    public func kind(_ kind: Kind?, using strategy: Kind.CombinationStrategy = .separate) -> AnyParser<Output> {
+    public func kind(_ kind: Kind?, using strategy: Kind.CombinationStrategy = .higher) -> AnyParser<Output> {
         guard let kind = kind else { return eraseToAnyParser() }
         return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
     }
 
-    public func kind(_ kind: Kind, using strategy: Kind.CombinationStrategy = .separate) -> AnyParser<Output> {
+    public func kind(_ kind: Kind, using strategy: Kind.CombinationStrategy = .higher) -> AnyParser<Output> {
         return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
     }
 
