@@ -5,6 +5,8 @@ private let numberFormatter = NumberFormatter()
 private let integerPrefixes: Set<String> = Set((0...9).map { String($0) } + (1...9).map { String(-$0) })
 
 public struct IntLiteral: Parser {
+    public static let kind: Kind = .intLiteral
+
     public init() { }
 
     public var body: AnyParser<Int> {
@@ -16,9 +18,6 @@ public struct IntLiteral: Parser {
         }
         .optimize(using: integerPrefixes)
         .kind(.intLiteral)
-        .annotate { int in
-            return ["value" : String(int)]
-        }
     }
 }
 

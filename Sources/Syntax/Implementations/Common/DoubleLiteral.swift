@@ -5,6 +5,8 @@ private let numberFormatter = NumberFormatter()
 private let doublePrefixes: Set<String> = Set((0...9).map { String($0) } + (0...9).map { String(-$0) })
 
 public struct DoubleLiteral: Parser {
+    public static let kind: Kind = .doubleLiteral
+
     public init() { }
 
     public var body: AnyParser<Double> {
@@ -14,11 +16,7 @@ public struct DoubleLiteral: Parser {
                 return number.doubleValue
             }
         }
-        .kind(.doubleLiteral)
         .optimize(using: doublePrefixes)
-        .annotate { int in
-            return ["value" : String(int)]
-        }
     }
 }
 

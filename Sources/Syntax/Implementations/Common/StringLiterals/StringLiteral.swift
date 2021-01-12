@@ -2,6 +2,8 @@
 import Foundation
 
 public struct StringLiteral: Parser {
+    public static let kind: Kind = .stringLiteral
+
     private let start: String
     private let end: String
     private let escapeStrategy: StringEscapeStrategy
@@ -21,10 +23,6 @@ public struct StringLiteral: Parser {
             }
 
             end
-        }
-        .kind(.stringLiteral)
-        .annotate { value in
-            return ["value" : value]
         }
     }
 }

@@ -2,7 +2,7 @@
 import Foundation
 
 public struct AnyParser<Output>: Parser {
-    private let parser: InternalParser
+    let parser: InternalParser
 
     public init<Content : Parser>(_ content: Content) where Content.Output == Output {
         let internalParser = content.internalParser()
@@ -16,18 +16,6 @@ public struct AnyParser<Output>: Parser {
     public var body: AnyParser<Output> {
         return neverBody()
     }
-}
-
-extension Parser {
-
-    func internalParser() -> InternalParser {
-        if let parser = self as? InternalParser {
-            return parser
-        } else {
-            return body.internalParser()
-        }
-    }
-
 }
 
 extension AnyParser: InternalParser {
