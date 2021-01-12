@@ -28,31 +28,39 @@ public class SyntaxTree: Encodable {
 
 extension SyntaxTree {
 
-    func prune() {
+    func prune(using strategy: Kind.CombinationStrategy) {
         children = children.filter { $0.kind != nil || !$0.annotations.isEmpty || !$0.range.isEmpty }
 
         if children.count == 1 {
-            prune(using: children[0])
+            prune(using: children[0], and: strategy)
         }
         
-        for child in children {
-            child.prune()
+        for child in self.children {
+            child.prune(using: .separate)
         }
     }
 
-    fileprivate func prune(using child: SyntaxTree) {
-        if let kind = kind, let otherKind = child.kind, kind != otherKind {
-            return child.prune()
+    fileprivate func prune(using child: SyntaxTree, and strategy: Kind.CombinationStrategy) {
+        var newKind: Kind? = kind ?? child.kind
+        if let kind = kind, let otherKind = child.kind {
+            switch strategy {
+            case .separate:
+                return child.prune(using: .separate)
+            case .higher:
+                newKind = kind
+            case .lower:
+                newKind = otherKind
+            }
         }
 
         guard range == child.range, Set(child.annotations.keys).intersection(annotations.keys).isEmpty else {
-            return child.prune()
+            return child.prune(using: .separate)
         }
 
-        kind = kind ?? child.kind
+        kind = newKind
         children = child.children
         annotations.merge(child.annotations) { $1 }
-        prune()
+        prune(using: strategy)
     }
 
 }

@@ -10,8 +10,8 @@ protocol Scanner {
     func locationOfNode() -> Range<Location>
 
     func configureNode(kind: Kind)
-    func configureNode(annotations: [String : String])
-    func pruneNode()
+    func configureNode(annotations: [String : Encodable])
+    func pruneNode(strategy: Kind.CombinationStrategy)
 
     func prefix(_ length: Int) throws -> Substring
 

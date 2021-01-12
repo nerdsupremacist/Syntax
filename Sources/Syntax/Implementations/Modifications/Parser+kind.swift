@@ -3,13 +3,13 @@ import Foundation
 
 extension Parser {
 
-    public func kind(_ kind: Kind?) -> AnyParser<Output> {
+    public func kind(_ kind: Kind?, using strategy: Kind.CombinationStrategy = .separate) -> AnyParser<Output> {
         guard let kind = kind else { return eraseToAnyParser() }
-        return KindParser(content: internalParser(), kind: kind).eraseToAnyParser()
+        return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
     }
 
-    public func kind(_ kind: Kind) -> AnyParser<Output> {
-        return KindParser(content: internalParser(), kind: kind).eraseToAnyParser()
+    public func kind(_ kind: Kind, using strategy: Kind.CombinationStrategy = .separate) -> AnyParser<Output> {
+        return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
     }
 
 }
@@ -17,6 +17,7 @@ extension Parser {
 private struct KindParser<Output>: Parser {
     fileprivate let content: InternalParser
     fileprivate let kind: Kind
+    fileprivate let strategy: Kind.CombinationStrategy
 
     var body: AnyParser<Output> {
         return neverBody()
@@ -33,7 +34,6 @@ extension KindParser: InternalParser {
         try content.parse(using: scanner)
         scanner.exitNode()
         scanner.configureNode(kind: kind)
-        scanner.pruneNode()
+        scanner.pruneNode(strategy: strategy)
     }
-
 }

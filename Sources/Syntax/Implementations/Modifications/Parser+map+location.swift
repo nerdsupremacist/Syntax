@@ -41,7 +41,7 @@ extension MappedParser: InternalParser {
             scanner.store(value: transformed)
         }
 
-        scanner.pruneNode()
+        scanner.pruneNode(strategy: .separate)
     }
 
 }

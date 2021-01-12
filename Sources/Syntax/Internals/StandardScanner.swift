@@ -130,12 +130,12 @@ class StandardScanner: Scanner {
         storage.node.children.last?.kind = kind
     }
 
-    func configureNode(annotations: [String : String]) {
+    func configureNode(annotations: [String : Encodable]) {
         storage.node.children.last?.add(annotations: annotations)
     }
 
-    func pruneNode() {
-        storage.node.children.last?.prune()
+    func pruneNode(strategy: Kind.CombinationStrategy) {
+        storage.node.children.last?.prune(using: strategy)
     }
 
     func take(pattern: String) throws -> ExpressionMatch {
@@ -181,7 +181,7 @@ extension StandardScanner {
                                     annotations: [:],
                                     children: storage.node.children)
 
-        syntaxTree.prune()
+        syntaxTree.prune(using: .separate)
         return syntaxTree
     }
 
@@ -270,9 +270,9 @@ extension StandardScanner {
             scanner.exitNode()
         }
 
-        func pruneNode() {
+        func pruneNode(strategy: Kind.CombinationStrategy) {
             guard allowedToRegisterNodes else { return }
-            pruneNode()
+            pruneNode(strategy: strategy)
         }
 
         func configureNode(kind: Kind) {
@@ -280,7 +280,7 @@ extension StandardScanner {
             scanner.configureNode(kind: kind)
         }
 
-        func configureNode(annotations: [String : String]) {
+        func configureNode(annotations: [String : Encodable]) {
             guard allowedToRegisterNodes else { return }
             scanner.configureNode(annotations: annotations)
         }
