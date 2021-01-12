@@ -3,7 +3,7 @@ import Foundation
 
 extension Parser {
 
-    public func annotate(_ annotations: @escaping (Output) -> [String : String]) -> AnyParser<Output> {
+    public func annotate(_ annotations: @escaping (Output) -> [String : Encodable]) -> AnyParser<Output> {
         return Annotator(content: internalParser(), annotations: annotations).eraseToAnyParser()
     }
 
@@ -11,7 +11,7 @@ extension Parser {
 
 private struct Annotator<Output>: Parser {
     fileprivate let content: InternalParser
-    fileprivate let annotations: (Output) -> [String : String]
+    fileprivate let annotations: (Output) -> [String : Encodable]
 
     var body: AnyParser<Output> {
         return neverBody()
