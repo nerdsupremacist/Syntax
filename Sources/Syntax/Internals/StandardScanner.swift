@@ -3,14 +3,22 @@ import Foundation
 
 class StandardScanner: Scanner {
     private class Node {
-        let start: String.Index
-        var updatedIndex: String.Index? = nil
+        let originalStart: String.Index
+        var start: String.Index
         var parent: Node? = nil
         var children: [SyntaxTree] = []
 
         init(start: String.Index, parent: Node? = nil) {
+            self.originalStart = start
             self.start = start
             self.parent = parent
+        }
+
+        func update(from previous: String.Index, to new: String.Index) {
+            if start >= previous, start < new {
+                start = new
+                parent?.update(from: previous, to: new)
+            }
         }
     }
 
@@ -80,6 +88,11 @@ class StandardScanner: Scanner {
         parent.index = storage.index
         parent.values = parent.values + storage.values
         parent.ids = storage.ids
+
+        if parent.node.start >= storage.node.originalStart && storage.node.originalStart < storage.node.start {
+            parent.node.update(from: storage.node.originalStart, to: storage.node.start)
+        }
+
         parent.node.children.append(contentsOf: storage.node.children)
         storage = parent
     }
@@ -96,11 +109,7 @@ class StandardScanner: Scanner {
     func exitNode() {
         guard let parent = storage.node.parent else { return }
 
-        if parent.start == storage.node.start, let updated = storage.node.updatedIndex {
-            parent.updatedIndex = updated
-        }
-
-        let startIndex = storage.node.updatedIndex ?? storage.node.start
+        let startIndex = storage.node.start
         let endIndex = storage.index
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
@@ -119,7 +128,7 @@ class StandardScanner: Scanner {
     }
 
     func locationOfNode() -> Range<Location> {
-        let startIndex = storage.node.updatedIndex ?? storage.node.start
+        let startIndex = storage.node.start
         let endIndex = storage.index
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
@@ -201,15 +210,16 @@ extension StandardScanner {
         do {
             return try take(expression: expression)
         } catch ScannerError.failedToMatch(_, let substring) where !errorHandlers.isEmpty && allowErrorHandling {
-            let isAtStart = storage.index == storage.node.start
+            let currentIndex = storage.index
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
             for handler in errorHandlers {
                 do {
                     try handler.scannerFailedToMatch(errorHandlerScanner, expression: expression)
-                    if isAtStart {
-                        storage.node.updatedIndex = storage.index
+                    if storage.node.start >= currentIndex {
+                        storage.node.update(from: currentIndex, to: storage.index)
                     }
+
                     return try scanner.take(pattern: pattern)
                 } catch ScannerError.failedToMatch { }
             }
