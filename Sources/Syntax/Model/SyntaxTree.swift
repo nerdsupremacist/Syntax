@@ -68,7 +68,10 @@ public class SyntaxTree: Encodable {
         try container.encode(range.upperBound, forKey: AnyCodingKey(.endOffset))
         try container.encode(location.lowerBound, forKey: AnyCodingKey(.startLocation))
         try container.encode(location.upperBound, forKey: AnyCodingKey(.endLocation))
-        try container.encode(children, forKey: AnyCodingKey(.children))
+
+        if !children.isEmpty {
+            try container.encode(children, forKey: AnyCodingKey(.children))
+        }
 
         let inlineable = _annotations.filter { !CodingKeys.taken.contains($0.key) }
         let rest = _annotations.filter { CodingKeys.taken.contains($0.key) }
