@@ -1,0 +1,93 @@
+%{ import itertools }%
+import Foundation
+
+@_functionBuilder
+public struct ParserBuilder {
+
+    public static func buildExpression<P: Parser>(_ parser: P) -> PartialEmptyParserResult where P.Output == Void {
+        return PartialEmptyParserResult(parsers: [parser.internalParser()])
+    }
+
+    @_disfavoredOverload
+    public static func buildExpression<P: Parser>(_ parser: P) -> PartialParserResult<P.Output> {
+        return PartialParserResult(parsers: [parser.internalParser()], outputTypes: [P.Output.self])
+    }
+}
+
+extension ParserBuilder {
+
+    public static func buildIf(_ parser: PartialEmptyParserResult?) -> PartialEmptyParserResult {
+        return parser ?? PartialEmptyParserResult(parsers: [])
+    }
+
+    public static func buildIf<Output>(_ parser: PartialParserResult<Output>?) -> PartialParserResult<Output?> {
+        return parser.map { PartialParserResult(parsers: $0.parsers, outputTypes: $0.outputTypes) } ?? PartialParserResult(parsers: [], outputTypes: [Optional<Output>.self])
+    }
+
+}
+
+extension ParserBuilder {
+    public static func buildEither(first: PartialEmptyParserResult) -> PartialEmptyParserResult {
+        return first
+    }
+
+    public static func buildEither(second: PartialEmptyParserResult) -> PartialEmptyParserResult {
+        return second
+    }
+
+    public static func buildEither<Output>(first: PartialParserResult<Output>) -> PartialParserResult<Output> {
+        return first
+    }
+
+    public static func buildEither<Output>(second: PartialParserResult<Output>) -> PartialParserResult<Output> {
+        return second
+    }
+}
+
+extension ParserBuilder {
+
+    public static func buildBlock() -> AnyParser<Void> {
+        return EmptyParser().eraseToAnyParser()
+    }
+
+    public static func buildBlock(_ a: PartialEmptyParserResult) -> AnyParser<Void> {
+        return TupleParser(partials: a).eraseToAnyParser()
+    }
+
+    public static func buildBlock<A>(_ a: PartialParserResult<A>) -> AnyParser<A> {
+        return TupleParser(partials: a).eraseToAnyParser()
+    }
+
+}
+
+extension ParserBuilder {
+
+    % for num_components in range(2, 11):
+%{
+        combinations = itertools.product([True, False], repeat=num_components)
+        indices = range(0, num_components)
+}%
+    % for combination in combinations:
+%{
+        generic_names_in = ['C{}'.format(idx) for idx in indices if combination[idx]]
+        generics = ', '.join(generic_names_in)
+        types = ['PartialParserResult<C{}>'.format(idx) if combination[idx] else 'PartialEmptyParserResult' for idx in indices]
+
+        param_names = ['c{}'.format(idx) for idx in indices]
+        params = ', '.join(['_ {}: {}'.format(param, type) for param, type in zip(param_names, types)])
+
+        tuple_ctor_args = ', '.join(param_names)
+}%
+    % if len(generic_names_in) == 0:
+    public static func buildBlock(${params}) -> AnyParser<Void> {
+    % elif len(generic_names_in) == 1:
+    public static func buildBlock<${generics}>(${params}) -> AnyParser<${generics}> {
+    % else:
+    public static func buildBlock<${generics}>(${params}) -> AnyParser<(${generics})> {
+    % end
+        return TupleParser(partials: ${tuple_ctor_args}).eraseToAnyParser()
+    }
+
+    % end
+    % end
+}

@@ -37,7 +37,7 @@ public struct Either<Output>: Parser {
         self.prefixMap = prefixMap
     }
 
-    public init(@ParserBuilder options: () -> [AnyParser<Output>]) {
+    public init(@EitherParserBuilder options: () -> [AnyParser<Output>]) {
         self.init(options: options())
     }
 
