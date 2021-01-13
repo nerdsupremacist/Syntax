@@ -7,19 +7,21 @@ public struct MultilineStringLiteral: Parser {
     private let escapeStrategy: StringEscapeStrategy
 
     public var body: AnyParser<String> {
-        start.ignoreOutput()
+        Leaf {
+            start
 
-        Repeat {
-            Either {
-                escapeStrategy.escaped(with: end)
-                RegularExpression("[^\(end)]").map { String($0.text) }
+            Repeat {
+                Either {
+                    escapeStrategy.escaped(with: end)
+                    RegularExpression("[^\(end)]").map { String($0.text) }
+                }
             }
-        }
-        .map { sections in
-            return sections.joined(separator: "")
-        }
+            .map { sections in
+                return sections.joined(separator: "")
+            }
 
-        end.ignoreOutput()
+            end
+        }
     }
 }
 
