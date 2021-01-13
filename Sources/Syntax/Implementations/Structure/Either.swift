@@ -95,6 +95,7 @@ extension Either: InternalParser {
 extension Either {
 
     func parsers(for prefix: Substring) -> [InternalParser] {
+        var usedParsers = [Int]()
         var alreadyUsed = Set<Int>()
         var parsers = [InternalParser]()
         
@@ -109,12 +110,18 @@ extension Either {
                 for index in indices where !alreadyUsed.contains(index) {
                     parsers.append(options[index])
                     alreadyUsed.formUnion([index])
+                    usedParsers.append(index)
                 }
             }
         }
 
         for index in fallbackParsers where !alreadyUsed.contains(index) {
-            parsers.append(options[index])
+            if let indexForInsertion = usedParsers.firstIndex(where: { $0 > index }) {
+                parsers.insert(options[index], at: indexForInsertion)
+                usedParsers.insert(index, at: indexForInsertion)
+            } else {
+                parsers.append(options[index])
+            }
             alreadyUsed.formUnion([index])
         }
 
