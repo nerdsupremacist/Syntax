@@ -42,6 +42,7 @@ extension Parser {
     public func syntaxTree(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> SyntaxTree {
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler))
         try internalParser().parse(using: scanner)
+        try scanner.checkIsEmpty()
         return scanner.syntaxTree()
     }
 
@@ -52,6 +53,7 @@ extension Parser {
     public func parse(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> Output {
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler))
         try internalParser().parse(using: scanner)
+        try scanner.checkIsEmpty()
         let output = try scanner.pop(of: Output.self)
         return output
     }

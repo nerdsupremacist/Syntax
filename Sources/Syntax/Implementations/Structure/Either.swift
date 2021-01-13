@@ -92,6 +92,7 @@ extension Either: InternalParser {
         }
 
         if let diagnosticError = diagnostics.max(by: { $0.location > $1.location }) {
+            scanner.store(error: diagnosticError)
             throw diagnosticError
         }
 

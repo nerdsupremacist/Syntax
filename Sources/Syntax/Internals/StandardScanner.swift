@@ -43,6 +43,7 @@ class StandardScanner: Scanner {
     private var regularExpressions: [String : NSRegularExpression] = [:]
 
     private let errorHandlers: [ScannerErrorHandler]
+    private var lastDiagnosticError: DiagnosticError? = nil
 
     init(text: String, errorHandlers: [ScannerErrorHandler]) {
         self.text = text
@@ -209,6 +210,51 @@ extension StandardScanner {
 
 extension StandardScanner {
 
+    func checkIsEmpty() throws {
+        do {
+            try _checkIsEmpty()
+            return
+        } catch {
+            for errorHandler in errorHandlers {
+                do {
+                    try errorHandler.scannerIsNotAtTheEnd(self)
+                    try _checkIsEmpty()
+                    return
+                } catch { }
+            }
+            
+            throw error
+        }
+    }
+
+    private func _checkIsEmpty() throws {
+        if let lastError = lastDiagnosticError {
+            throw lastError
+        }
+
+        if storage.index < text.endIndex {
+            let token: Substring
+            do {
+                let expression = try NSRegularExpression(pattern: "\\S+")
+                let rangeToLookAt = NSRange(storage.index..., in: text)
+                if let match = expression.firstMatch(in: text, range: rangeToLookAt) {
+                    let range = Range(match.range, in: text)!
+                    token = text[range]
+                } else {
+                    token = text[storage.index...]
+                }
+            } catch {
+                token = text[storage.index...]
+            }
+
+            throw error(reason: .unexpectedToken(String(token)))
+        }
+    }
+
+}
+
+extension StandardScanner {
+
     fileprivate func take(pattern: String, allowErrorHandling: Bool) throws -> ExpressionMatch {
         let expression: NSRegularExpression
         if let stored = regularExpressions[pattern] {
@@ -253,6 +299,14 @@ extension StandardScanner {
             storage.ids = []
         }
         storage.index = result.range.upperBound
+
+        if let lastError = lastDiagnosticError,
+           let location = lineColumnIndex[text.distance(from: text.startIndex, to: result.range.upperBound)],
+           lastError.location > location {
+
+            lastDiagnosticError = nil
+        }
+
         return result
     }
 
@@ -328,6 +382,10 @@ extension StandardScanner {
 
         func store<T>(value: T) {
             scanner.store(value: value)
+        }
+
+        func store(error: DiagnosticError) {
+            scanner.store(error: error)
         }
     }
 

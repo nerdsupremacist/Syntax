@@ -26,6 +26,7 @@ final class ExpressionSyntaxTests: XCTestCase {
 
     func testFailsToParseEmpty() {
         fails(" ")
+        fails("1 + *")
     }
 }
 
