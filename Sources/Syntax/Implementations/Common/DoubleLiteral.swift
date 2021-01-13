@@ -2,7 +2,7 @@
 import Foundation
 
 private let numberFormatter = NumberFormatter()
-private let doublePrefixes: Set<String> = Set((0...9).map { String($0) } + (0...9).map { String(-$0) })
+private let doublePrefixes: Set<String> = Set((0...9).map { "\($0)." } + (0...9).map { "\(-$0)." })
 
 public struct DoubleLiteral: Parser {
     public static let kind: Kind = .doubleLiteral
