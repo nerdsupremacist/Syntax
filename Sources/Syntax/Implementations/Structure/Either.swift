@@ -67,7 +67,8 @@ extension Either: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        var errors = [Error]()
+        var diagnostics = [DiagnosticError]()
+        var otherErrors = [Error]()
 
         scanner.enterNode()
         defer { scanner.exitNode() }
@@ -81,13 +82,22 @@ extension Either: InternalParser {
                 try option.parse(using: scanner)
                 try scanner.commit()
                 return
+            } catch let error as DiagnosticError {
+                diagnostics.append(error)
+                try scanner.rollback()
             } catch {
-                errors.append(error)
+                otherErrors.append(error)
                 try scanner.rollback()
             }
         }
 
-        throw ParserError.failedToParseAnyCase(dueTo: errors)
+        if let diagnosticError = diagnostics.max(by: { $0.location > $1.location }) {
+            throw diagnosticError
+        }
+
+        if !otherErrors.isEmpty {
+            throw ParserError.failedToParseAnyCase(dueTo: otherErrors)
+        }
     }
 
 }

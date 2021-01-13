@@ -65,7 +65,7 @@ class StandardScanner: Scanner {
 
         let rangeToLookAt = NSRange(storage.index..., in: text)
         guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
-            throw ScannerError.failedToMatch(expression, at: text[storage.index...])
+            throw error(reason: .failedToMatch(expression))
         }
 
         let range = Range(match.range(at: 1), in: text)!
@@ -153,14 +153,14 @@ class StandardScanner: Scanner {
 
     func pop<T>(of type: T.Type = T.self) throws -> T {
         guard let value = storage.values.popLast() else {
-            throw ScannerError.attemptedToPopValueFromEmptyList(type)
+            throw error(reason: .attemptedToPopValueFromEmptyList(type))
         }
 
         if let value = value as? T {
             return value
         } else {
             storage.values.append(value)
-            throw ScannerError.poppedValueDidNotMatchExpectedValue(value, expected: type)
+            throw error(reason: .poppedValueDidNotMatchExpectedValue(value, expected: type))
         }
     }
 
@@ -173,6 +173,17 @@ class StandardScanner: Scanner {
             try rule.parse(using: self)
         } else {
             try parse(using: rule.body)
+        }
+    }
+
+    func store(error: DiagnosticError) {
+        switch lastDiagnosticError {
+        case .some(let lastError) where error.location > lastError.location:
+            lastDiagnosticError = nil
+        case .some:
+            break
+        case .none:
+            lastDiagnosticError = error
         }
     }
 }
@@ -209,7 +220,8 @@ extension StandardScanner {
 
         do {
             return try take(expression: expression)
-        } catch ScannerError.failedToMatch(_, let substring) where !errorHandlers.isEmpty && allowErrorHandling {
+        } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling {
+            guard case .failedToMatch = error.reason else { throw error }
             let currentIndex = storage.index
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
@@ -221,17 +233,19 @@ extension StandardScanner {
                     }
 
                     return try scanner.take(pattern: pattern)
-                } catch ScannerError.failedToMatch { }
+                } catch let error as ScannerError {
+                    guard case .failedToMatch = error.reason else { throw error }
+                }
             }
 
-            throw ScannerError.failedToMatch(expression, at: substring)
+            throw error
         }
     }
 
     private func take(expression: NSRegularExpression) throws -> ExpressionMatch {
         let rangeToLookAt = NSRange(storage.index..., in: text)
         guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
-            throw ScannerError.failedToMatch(expression, at: text[storage.index...])
+            throw error(reason: .failedToMatch(expression))
         }
 
         let result = ExpressionMatch(source: text, match: match)
@@ -318,3 +332,14 @@ extension StandardScanner {
     }
 
 }
+
+extension StandardScanner {
+
+    private func error(reason: ScannerError.Reason) -> ScannerError {
+        let offset = text.distance(from: text.startIndex, to: storage.index)
+        let location = lineColumnIndex[offset]!
+        return ScannerError(index: storage.index, location: location, reason: reason)
+    }
+
+}
+
