@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>: Parser {
     public static var kind: Kind? {

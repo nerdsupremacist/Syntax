@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 private let numberFormatter = NumberFormatter()
 private let doublePrefixes: Set<String> = Set((0...9).map { "\($0)." } + (0...9).map { "\(-$0)." })

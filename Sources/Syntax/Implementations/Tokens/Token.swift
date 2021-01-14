@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 struct Token: Parser {
     private let string: String

@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct BooleanLiteral: Parser {
     public static var kind: Kind = .booleanLiteral

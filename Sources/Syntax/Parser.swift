@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 private var computedKinds = [Int : Kind]()
 

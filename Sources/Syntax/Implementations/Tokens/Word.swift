@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct Word: Parser {
     private let word: String

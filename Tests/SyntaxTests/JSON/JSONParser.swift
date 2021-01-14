@@ -1,5 +1,6 @@
 
 import Syntax
+import SyntaxTree
 
 struct JSONParser: Parser {
     struct JSONArrayParser: Parser {

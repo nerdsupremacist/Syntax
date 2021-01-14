@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct StringLiteral: Parser {
     public static let kind: Kind = .stringLiteral

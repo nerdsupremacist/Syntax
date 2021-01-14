@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 protocol Scanner {
     var index: String.Index { get }

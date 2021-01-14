@@ -1,12 +1,13 @@
 
 import Foundation
+import SyntaxTree
 
 class StandardScanner: Scanner {
     private class Node {
         let originalStart: String.Index
         var start: String.Index
         var parent: Node? = nil
-        var children: [SyntaxTree] = []
+        var children: [MutableSyntaxTree] = []
 
         init(start: String.Index, parent: Node? = nil) {
             self.originalStart = start
@@ -125,10 +126,10 @@ class StandardScanner: Scanner {
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
-        let syntaxTree = SyntaxTree(range: startOffset..<endOffset,
-                                    location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
-                                    annotations: [:],
-                                    children: storage.node.children)
+        let syntaxTree = MutableSyntaxTree(range: startOffset..<endOffset,
+                                           location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
+                                           annotations: [:],
+                                           children: storage.node.children)
 
         parent.children.append(syntaxTree)
         storage.node = parent
@@ -203,13 +204,13 @@ extension StandardScanner {
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
-        let syntaxTree = SyntaxTree(range: startOffset..<endOffset,
-                                    location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
-                                    annotations: [:],
-                                    children: storage.node.children)
+        let syntaxTree = MutableSyntaxTree(range: startOffset..<endOffset,
+                                           location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
+                                           annotations: [:],
+                                           children: storage.node.children)
 
         syntaxTree.prune(using: .separate)
-        return syntaxTree
+        return syntaxTree.build()
     }
 
 }

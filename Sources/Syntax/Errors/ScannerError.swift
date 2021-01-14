@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct ScannerError: DiagnosticError {
     public enum Reason {

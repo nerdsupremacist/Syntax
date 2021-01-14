@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public struct RegularExpression: Parser {
     private let pattern: String

@@ -8,10 +8,12 @@ let package = Package(
         .library(name: "Syntax",
                  targets: ["Syntax"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/nerdsupremacist/SyntaxTree.git", .branch("main")),
+    ],
     targets: [
         .target(name: "Syntax",
-                dependencies: []),
+                dependencies: ["SyntaxTree"]),
 
         .testTarget(name: "SyntaxTests",
                     dependencies: ["Syntax"]),
