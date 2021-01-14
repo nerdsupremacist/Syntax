@@ -90,7 +90,10 @@ extension Repeat: InternalParser {
         if Element.self != Void.self {
             let values = try (0..<count).map { _ in try scanner.pop(of: Element.self) }.reversed()
             scanner.store(value: Array(values))
+        } else {
+            scanner.store(value: [])
         }
+
         scanner.exitNode()
     }
 
