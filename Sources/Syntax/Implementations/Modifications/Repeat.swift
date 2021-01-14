@@ -87,8 +87,10 @@ extension Repeat: InternalParser {
             }
         }
 
-        let values = try (0..<count).map { _ in try scanner.pop(of: Element.self) }.reversed()
-        scanner.store(value: Array(values))
+        if Element.self != Void.self {
+            let values = try (0..<count).map { _ in try scanner.pop(of: Element.self) }.reversed()
+            scanner.store(value: Array(values))
+        }
         scanner.exitNode()
     }
 
