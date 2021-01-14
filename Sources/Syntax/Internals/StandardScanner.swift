@@ -302,7 +302,7 @@ extension StandardScanner {
 
         if let lastError = lastDiagnosticError,
            let location = lineColumnIndex[text.distance(from: text.startIndex, to: result.range.upperBound)],
-           lastError.location > location {
+           lastError.location < location {
 
             lastDiagnosticError = nil
         }
