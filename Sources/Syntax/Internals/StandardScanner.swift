@@ -264,7 +264,7 @@ extension StandardScanner {
         if let stored = regularExpressions[pattern] {
             expression = stored
         } else {
-            expression = try NSRegularExpression(pattern: pattern, options: .anchorsMatchLines)
+            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
             regularExpressions[pattern] = expression
         }
 
