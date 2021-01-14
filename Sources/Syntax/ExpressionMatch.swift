@@ -27,6 +27,7 @@ public struct ExpressionMatch {
     }
 
     public subscript(_ index: Int) -> CaptureGroup? {
+        guard index < match.numberOfRanges else { return nil }
         let range = match.range(at: index)
         return Range(range, in: source).map { CaptureGroup(source: source, range: $0) }
     }
