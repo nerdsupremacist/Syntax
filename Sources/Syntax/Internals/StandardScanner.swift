@@ -184,7 +184,7 @@ class StandardScanner: Scanner {
     func store(error: DiagnosticError) {
         switch lastDiagnosticError {
         case .some(let lastError) where error.location > lastError.location:
-            lastDiagnosticError = nil
+            lastDiagnosticError = error
         case .some:
             break
         case .none:
