@@ -28,12 +28,14 @@ class StandardScanner: Scanner {
         var node: Node
         var values: [Any] = []
         var ids: Set<UUID>
+        var lastDiagnosticError: DiagnosticError? = nil
 
         init(index: String.Index, parent: Storage?) {
             self.index = index
             self.node = Node(start: index, parent: nil)
             self.ids = parent?.ids ?? []
             self.parent = parent
+            self.lastDiagnosticError = parent?.lastDiagnosticError
         }
     }
 
@@ -43,7 +45,6 @@ class StandardScanner: Scanner {
     private var regularExpressions: [String : NSRegularExpression] = [:]
 
     private let errorHandlers: [ScannerErrorHandler]
-    private var lastDiagnosticError: DiagnosticError? = nil
 
     var index: String.Index {
         return storage.index
@@ -97,6 +98,7 @@ class StandardScanner: Scanner {
         parent.index = storage.index
         parent.values = parent.values + storage.values
         parent.ids = storage.ids
+        parent.lastDiagnosticError = storage.lastDiagnosticError
 
         if parent.node.start >= storage.node.originalStart && storage.node.originalStart < storage.node.start {
             parent.node.update(from: storage.node.originalStart, to: storage.node.start)
@@ -182,13 +184,13 @@ class StandardScanner: Scanner {
     }
 
     func store(error: DiagnosticError) {
-        switch lastDiagnosticError {
+        switch storage.lastDiagnosticError {
         case .some(let lastError) where error.location > lastError.location:
-            lastDiagnosticError = error
+            storage.lastDiagnosticError = error
         case .some:
             break
         case .none:
-            lastDiagnosticError = error
+            storage.lastDiagnosticError = error
         }
     }
 }
@@ -232,7 +234,7 @@ extension StandardScanner {
     }
 
     private func _checkIsEmpty() throws {
-        if let lastError = lastDiagnosticError {
+        if let lastError = storage.lastDiagnosticError {
             throw lastError
         }
 
@@ -304,10 +306,10 @@ extension StandardScanner {
         }
         storage.index = result.range.upperBound
 
-        if let lastError = lastDiagnosticError,
+        if let lastError = storage.lastDiagnosticError,
            lastError.location < location(for: result.range.upperBound) {
 
-            lastDiagnosticError = nil
+            storage.lastDiagnosticError = nil
         }
 
         return result
