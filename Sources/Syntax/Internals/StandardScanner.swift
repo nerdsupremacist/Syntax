@@ -45,6 +45,14 @@ class StandardScanner: Scanner {
     private let errorHandlers: [ScannerErrorHandler]
     private var lastDiagnosticError: DiagnosticError? = nil
 
+    var index: String.Index {
+        return storage.index
+    }
+
+    var location: Location {
+        return location(for: index)
+    }
+
     init(text: String, errorHandlers: [ScannerErrorHandler]) {
         self.text = text
         self.lineColumnIndex = LineColumnIndex(string: text)
@@ -129,11 +137,7 @@ class StandardScanner: Scanner {
     }
 
     func locationOfNode() -> Range<Location> {
-        let startIndex = storage.node.start
-        let endIndex = storage.index
-        let startOffset = text.distance(from: text.startIndex, to: startIndex)
-        let endOffset = text.distance(from: text.startIndex, to: endIndex)
-        return lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!
+        return location(for: storage.node.start)..<location(for: storage.index)
     }
 
     func configureNode(kind: Kind) {
@@ -301,8 +305,7 @@ extension StandardScanner {
         storage.index = result.range.upperBound
 
         if let lastError = lastDiagnosticError,
-           let location = lineColumnIndex[text.distance(from: text.startIndex, to: result.range.upperBound)],
-           lastError.location < location {
+           lastError.location < location(for: result.range.upperBound) {
 
             lastDiagnosticError = nil
         }
@@ -314,9 +317,25 @@ extension StandardScanner {
 
 extension StandardScanner {
 
+    private func location(for index: String.Index) -> Location {
+        return lineColumnIndex[text.distance(from: text.startIndex, to: index)]!
+    }
+
+}
+
+extension StandardScanner {
+
     private struct ErroredScanner: Scanner {
         let scanner: StandardScanner
         let allowedToRegisterNodes: Bool
+
+        var index: String.Index {
+            return scanner.index
+        }
+
+        var location: Location {
+            return scanner.location
+        }
 
         func prefix(_ length: Int) throws -> Substring {
             return try scanner.prefix(length)
@@ -394,9 +413,9 @@ extension StandardScanner {
 extension StandardScanner {
 
     private func error(reason: ScannerError.Reason) -> ScannerError {
-        let offset = text.distance(from: text.startIndex, to: storage.index)
-        let location = lineColumnIndex[offset]!
-        return ScannerError(index: storage.index, location: location, reason: reason)
+        return ScannerError(index: storage.index,
+                            location: location(for: storage.index),
+                            reason: reason)
     }
 
 }

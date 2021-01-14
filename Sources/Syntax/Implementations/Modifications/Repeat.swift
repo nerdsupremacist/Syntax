@@ -69,9 +69,16 @@ extension Repeat: InternalParser {
         }
 
         while (max.map { $0 > count } ?? true) {
+            let index = scanner.index
             scanner.begin()
             do {
                 try parser.parse(using: scanner)
+
+                if scanner.index <= index {
+                    try scanner.rollback()
+                    break
+                }
+
                 try scanner.commit()
                 count += 1
             } catch {

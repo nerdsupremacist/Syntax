@@ -2,6 +2,9 @@
 import Foundation
 
 protocol Scanner {
+    var index: String.Index { get }
+    var location: Location { get }
+
     func preventRecursion(id: UUID) throws
 
     func enterNode()

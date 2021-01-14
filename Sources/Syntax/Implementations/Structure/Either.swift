@@ -76,10 +76,17 @@ extension Either: InternalParser {
         let prefix = try scanner.prefix(maxPrefixLength)
         let options = parsers(for: prefix)
 
+        let index = scanner.index
         for option in options {
             scanner.begin()
             do {
                 try option.parse(using: scanner)
+
+                if Output.self == Void.self, scanner.index <= index {
+                    try scanner.rollback()
+                    continue
+                }
+
                 try scanner.commit()
                 return
             } catch let error as DiagnosticError {
