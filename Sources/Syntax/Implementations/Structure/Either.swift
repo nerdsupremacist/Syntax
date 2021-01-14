@@ -76,6 +76,8 @@ extension Either: InternalParser {
         let prefix = try scanner.prefix(maxPrefixLength)
         let options = parsers(for: prefix)
 
+        var emptyParsers = [InternalParser]()
+
         let index = scanner.index
         for option in options {
             scanner.begin()
@@ -83,6 +85,7 @@ extension Either: InternalParser {
                 try option.parse(using: scanner)
 
                 if Output.self == Void.self, scanner.index <= index {
+                    emptyParsers.append(option)
                     try scanner.rollback()
                     continue
                 }
@@ -96,6 +99,11 @@ extension Either: InternalParser {
                 otherErrors.append(error)
                 try scanner.rollback()
             }
+        }
+
+        for option in emptyParsers {
+            try option.parse(using: scanner)
+            return
         }
 
         if let diagnosticError = diagnostics.max(by: { $0.location > $1.location }) {
