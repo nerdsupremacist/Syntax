@@ -27,7 +27,8 @@ extension Parser where Output == Void {
 
 }
 
-private struct RepeatUntil<Element, End>: Parser {
+private struct RepeatUntil<Element, End>: Parser, Identified {
+    public let id = UUID()
     let parser: InternalParser
     let end: InternalParser
 
@@ -49,7 +50,7 @@ extension RepeatUntil: InternalParser {
             let index = scanner.index
             scanner.begin()
             do {
-                try end.parse(using: scanner)
+                try scanner.parse(using: end)
                 try scanner.commit()
                 break
             } catch { }
@@ -57,7 +58,7 @@ extension RepeatUntil: InternalParser {
 
             scanner.begin()
             do {
-                try parser.parse(using: scanner)
+                try scanner.parse(using: parser)
 
                 if scanner.index <= index {
                     try scanner.rollback()
@@ -68,7 +69,7 @@ extension RepeatUntil: InternalParser {
                 count += 1
             } catch {
                 try scanner.rollback()
-                try end.parse(using: scanner)
+                try scanner.parse(using: end)
                 break
             }
         }

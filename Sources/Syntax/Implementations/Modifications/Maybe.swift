@@ -17,7 +17,8 @@ extension Parser {
 
 }
 
-public struct Maybe<Wrapped>: Parser {
+public struct Maybe<Wrapped>: Parser, Identified {
+    public let id = UUID()
     fileprivate let content: InternalParser
 
     public var body: AnyParser<Wrapped?> {
@@ -42,7 +43,7 @@ extension Maybe: InternalParser {
     func parse(using scanner: Scanner) throws {
         scanner.begin()
         do {
-            try content.parse(using: scanner)
+            try scanner.parse(using: content)
             try scanner.commit()
         } catch {
             try scanner.rollback()

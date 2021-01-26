@@ -13,7 +13,8 @@ extension Parser {
 
 }
 
-private struct OptimizedPrefixes<Output>: Parser {
+private struct OptimizedPrefixes<Output>: Parser, Identified {
+    public let id = UUID()
     let parser: InternalParser
     let optimizations: Set<String>
 
@@ -29,7 +30,7 @@ extension OptimizedPrefixes: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
     }
 
 }

@@ -2,7 +2,7 @@
 import Foundation
 import SyntaxTree
 
-public struct RegularExpression: Parser {
+public struct RegularExpression: Parser, Hashable {
     private let pattern: String
 
     public init(_ pattern: String) {

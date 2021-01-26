@@ -1,7 +1,8 @@
 
 import Foundation
 
-public struct AnyParser<Output>: Parser {
+public struct AnyParser<Output>: Parser, Identified {
+    public let id = UUID()
     let parser: InternalParser
 
     public init<Content : Parser>(_ content: Content) where Content.Output == Output {
@@ -24,7 +25,7 @@ extension AnyParser: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
     }
 
 }

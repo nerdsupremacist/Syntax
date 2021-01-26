@@ -40,10 +40,24 @@ class StandardScanner: Scanner {
         }
     }
 
+    private struct MemoizationKey: Hashable {
+        let hashable: AnyHashable
+        let start: String.Index
+    }
+
+    private struct Memoized {
+        var index: String.Index
+        var node: Node
+        var values: [Any] = []
+        var ids: Set<UUID>
+        var lastDiagnosticError: DiagnosticError? = nil
+    }
+
     private let text: String
     private let lineColumnIndex: LineColumnIndex
     private var storage: Storage
     private var regularExpressions: [String : NSRegularExpression] = [:]
+    private var memoized: [MemoizationKey : Memoized] = [:]
 
     private let errorHandlers: [ScannerErrorHandler]
 
@@ -176,14 +190,6 @@ class StandardScanner: Scanner {
         storage.values.append(value)
     }
 
-    func parse<T : Parser>(using rule: T) throws {
-        if let rule = rule as? InternalParser {
-            try rule.parse(using: self)
-        } else {
-            try parse(using: rule.body)
-        }
-    }
-
     func store(error: DiagnosticError) {
         switch storage.lastDiagnosticError {
         case .some(let lastError) where error.location > lastError.location:
@@ -193,6 +199,30 @@ class StandardScanner: Scanner {
         case .none:
             storage.lastDiagnosticError = error
         }
+    }
+
+    func parse(using parser: InternalParser) throws {
+        let start = storage.index
+        let key = MemoizationKey(hashable: parser.hashable, start: start)
+        if let memoized = self.memoized[key] {
+            storage.index = memoized.index
+            storage.node = memoized.node
+            storage.values = storage.values + memoized.values
+            storage.ids = memoized.ids
+            storage.lastDiagnosticError = memoized.lastDiagnosticError
+            return
+        }
+
+        let index = storage.values.endIndex
+
+        try parser.parse(using: self)
+        let memoized = Memoized(index: storage.index,
+                                node: storage.node,
+                                values: Array(storage.values[index...]),
+                                ids: storage.ids,
+                                lastDiagnosticError: storage.lastDiagnosticError)
+
+        self.memoized[key] = memoized
     }
 }
 
@@ -408,6 +438,10 @@ extension StandardScanner {
 
         func store(error: DiagnosticError) {
             scanner.store(error: error)
+        }
+
+        func parse(using parser: InternalParser) throws {
+            try scanner.parse(using: parser)
         }
     }
 

@@ -9,7 +9,8 @@ extension Parser {
 
 }
 
-private struct Annotator<Output>: Parser {
+private struct Annotator<Output>: Parser, Identified {
+    public let id = UUID()
     fileprivate let content: InternalParser
     fileprivate let annotations: (Output) -> [String : Encodable]
 
@@ -22,7 +23,7 @@ extension Annotator: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         scanner.enterNode()
-        try content.parse(using: scanner)
+        try scanner.parse(using: content)
         scanner.exitNode()
         let value: Output
         if Output.self != Void.self {

@@ -1,7 +1,8 @@
 
 import Foundation
 
-public struct Group<Content : Parser>: Parser {
+public struct Group<Content : Parser>: Parser, Identified {
+    public let id = UUID()
     private let content: InternalParser
 
     public init(@ParserBuilder content: () -> Content) {
@@ -20,7 +21,7 @@ extension Group: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try content.parse(using: scanner)
+        try scanner.parse(using: content)
     }
 
 }

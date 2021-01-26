@@ -17,7 +17,8 @@ extension Parser {
 
 }
 
-private struct Separated<Source: Parser, Separator: Parser>: Parser {
+private struct Separated<Source: Parser, Separator: Parser>: Parser, Identified {
+    public let id = UUID()
     fileprivate let parser: InternalParser
     fileprivate let separator: InternalParser
     fileprivate let allowTrailing: Bool
@@ -40,7 +41,7 @@ extension Separated: InternalParser {
             scanner.begin()
             do {
                 if !values.isEmpty {
-                    try separator.parse(using: scanner)
+                    try scanner.parse(using: separator)
                     let separatorOutput: Separator.Output
                     if Separator.Output.self != Void.self {
                         separatorOutput = try scanner.pop(of: Separator.Output.self)
@@ -50,7 +51,7 @@ extension Separated: InternalParser {
 
                     values[values.count - 1] = (values[values.count - 1].0, separatorOutput)
                 }
-                try parser.parse(using: scanner)
+                try scanner.parse(using: parser)
                 let sourceOutput: Source.Output
                 if Source.Output.self != Void.self {
                     sourceOutput = try scanner.pop(of: Source.Output.self)
@@ -66,7 +67,7 @@ extension Separated: InternalParser {
         }
 
         if !values.isEmpty && allowTrailing {
-            try separator.parse(using: scanner)
+            try scanner.parse(using: separator)
             let separatorOutput: Separator.Output
             if Separator.Output.self != Void.self {
                 separatorOutput = try scanner.pop(of: Separator.Output.self)

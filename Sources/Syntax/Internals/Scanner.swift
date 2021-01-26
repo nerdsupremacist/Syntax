@@ -30,6 +30,8 @@ protocol Scanner {
     func pop<T>(of type: T.Type) throws -> T
     func store<T>(value: T)
 
+    func parse(using parser: InternalParser) throws
+
     func store(error: DiagnosticError)
 }
 

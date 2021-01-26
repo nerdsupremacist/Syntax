@@ -14,7 +14,8 @@ extension Parser {
 
 }
 
-private struct MappedParser<Source: Parser, Output>: Parser {
+private struct MappedParser<Source: Parser, Output>: Parser, Identified {
+    public let id = UUID()
     fileprivate let parser: InternalParser
     fileprivate let transform: (Source.Output) throws -> Output
 
@@ -29,7 +30,7 @@ extension MappedParser: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
         let transformed: Output
         if Source.Output.self != Void.self {
             let output = try scanner.pop(of: Source.Output.self)

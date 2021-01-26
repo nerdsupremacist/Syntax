@@ -9,8 +9,9 @@ extension Parser {
 
 }
 
-struct IgnoreRule<Source : Parser>: Parser {
+struct IgnoreRule<Source : Parser>: Parser, Identified {
     typealias Output = Void
+    public let id = UUID()
     fileprivate let parser: InternalParser
 
     var body: AnyParser<Void> {
@@ -24,7 +25,7 @@ extension IgnoreRule: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
         if Source.Output.self != Void.self {
             _ = try scanner.pop(of: Source.Output.self)
         }

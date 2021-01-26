@@ -33,7 +33,8 @@ extension Parser where Output == Void {
 
 }
 
-public struct Repeat<Element>: Parser {
+public struct Repeat<Element>: Parser, Identified {
+    public let id = UUID()
     private let min: UInt?
     private let max: UInt?
     private let parser: InternalParser
@@ -63,7 +64,7 @@ extension Repeat: InternalParser {
         var count = 0
         if let min = min {
             for _ in 0..<min {
-                try parser.parse(using: scanner)
+                try scanner.parse(using: parser)
                 count += 1
             }
         }
@@ -72,7 +73,7 @@ extension Repeat: InternalParser {
             let index = scanner.index
             scanner.begin()
             do {
-                try parser.parse(using: scanner)
+                try scanner.parse(using: parser)
 
                 if scanner.index <= index {
                     try scanner.rollback()

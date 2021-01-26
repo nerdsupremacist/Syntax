@@ -1,7 +1,8 @@
 
 import Foundation
 
-public class Recursive<Content : Parser>: Parser {
+public class Recursive<Content : Parser>: Parser, Identified {
+    public let id = UUID()
     private let content: (AnyParser<Output>) -> Content
     private lazy var _content: InternalParser = { [unowned self] in
         return content(eraseToAnyParser()).internalParser()
@@ -22,7 +23,7 @@ extension Recursive: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        try _content.parse(using: scanner)
+        try scanner.parse(using: _content)
     }
 
 }

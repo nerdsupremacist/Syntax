@@ -2,11 +2,12 @@
 import Foundation
 import SyntaxTree
 
-public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>: Parser {
+public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>: Parser, Identified {
     public static var kind: Kind? {
         return nil
     }
 
+    public let id = UUID()
     private let content: Content
     private let wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output
     private let operators: [Operator]

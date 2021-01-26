@@ -10,8 +10,8 @@ extension Parser {
 
 }
 
-private class PreventRecursion<Output>: Parser {
-    fileprivate let id = UUID()
+private class PreventRecursion<Output>: Parser, Identified {
+    public let id = UUID()
     fileprivate let parser: InternalParser
 
     init(parser: InternalParser) {
@@ -31,7 +31,7 @@ extension PreventRecursion: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         try scanner.preventRecursion(id: id)
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
     }
 
 }

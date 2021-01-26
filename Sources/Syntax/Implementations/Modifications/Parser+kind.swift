@@ -15,7 +15,8 @@ extension Parser {
 
 }
 
-private struct KindParser<Output>: Parser {
+private struct KindParser<Output>: Parser, Identified {
+    public let id = UUID()
     fileprivate let content: InternalParser
     fileprivate let kind: Kind
     fileprivate let strategy: Kind.CombinationStrategy
@@ -32,7 +33,7 @@ extension KindParser: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         scanner.enterNode()
-        try content.parse(using: scanner)
+        try scanner.parse(using: content)
         scanner.exitNode()
         scanner.configureNode(kind: kind)
         scanner.pruneNode(strategy: strategy)

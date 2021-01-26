@@ -1,7 +1,8 @@
 
 import Foundation
 
-public struct Either<Output>: Parser {
+public struct Either<Output>: Parser, Identified {
+    public let id = UUID()
     private let maxPrefixLength: Int
     private let prefixMap: [Int : [String : [Int]]]
     private let fallbackParsers: [Int]
@@ -82,7 +83,7 @@ extension Either: InternalParser {
         for option in options {
             scanner.begin()
             do {
-                try option.parse(using: scanner)
+                try scanner.parse(using: option)
 
                 if Output.self == Void.self, scanner.index <= index {
                     emptyParsers.append(option)
@@ -102,7 +103,7 @@ extension Either: InternalParser {
         }
 
         for option in emptyParsers {
-            try option.parse(using: scanner)
+            try scanner.parse(using: option)
             return
         }
 

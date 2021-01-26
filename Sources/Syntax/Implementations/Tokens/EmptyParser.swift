@@ -9,7 +9,7 @@ struct EmptyParser: Parser {
     }
 }
 
-extension EmptyParser: InternalParser {
+extension EmptyParser: InternalParser, Hashable {
 
     func parse(using scanner: Scanner) throws {
         // No-op

@@ -2,7 +2,7 @@
 import Foundation
 import SyntaxTree
 
-public struct Word: Parser {
+public struct Word: Parser, Hashable {
     private let word: String
 
     public init(_ word: String) {

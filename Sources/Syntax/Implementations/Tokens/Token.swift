@@ -2,7 +2,7 @@
 import Foundation
 import SyntaxTree
 
-struct Token: Parser {
+struct Token: Parser, Hashable {
     private let string: String
 
     init(_ string: String) {

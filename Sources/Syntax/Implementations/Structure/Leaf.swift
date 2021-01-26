@@ -1,7 +1,8 @@
 
 import Foundation
 
-public struct Leaf<Output>: Parser {
+public struct Leaf<Output>: Parser, Identified {
+    public let id = UUID()
     private let parser: InternalParser
 
     public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Output == Output {
@@ -20,7 +21,7 @@ extension Leaf: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         scanner.enterNode()
-        try parser.parse(using: scanner)
+        try scanner.parse(using: parser)
         scanner.removeChildrenOfNode()
         scanner.exitNode()
     }
