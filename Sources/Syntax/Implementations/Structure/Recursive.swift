@@ -3,7 +3,12 @@ import Foundation
 
 public class Recursive<Content : Parser>: Parser {
     private let content: (AnyParser<Output>) -> Content
+
+    // Prevent recursive calling of prefixes
+    private var isComputingContent = false
     private lazy var _content: InternalParser = { [unowned self] in
+        isComputingContent = true
+        defer { isComputingContent = false }
         return content(eraseToAnyParser()).internalParser()
     }()
 
@@ -22,6 +27,9 @@ extension Recursive: InternalParser {
     }
 
     func prefixes() -> Set<String> {
+        if isComputingContent {
+            return []
+        }
         return _content.prefixes()
     }
 
