@@ -2,9 +2,9 @@
 import Foundation
 
 public struct PartialEmptyParserResult: PartialResult {
-    let parsers: [InternalParser]
+    let parser: InternalParser
 
-    var outputTypes: [Any.Type] {
-        return []
+    var outputType: Any.Type? {
+        return nil
     }
 }

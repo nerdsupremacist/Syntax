@@ -4,25 +4,13 @@ import Foundation
 public struct ParserBuilder {
 
     public static func buildExpression<P: Parser>(_ parser: P) -> PartialEmptyParserResult where P.Output == Void {
-        return PartialEmptyParserResult(parsers: [parser.internalParser()])
+        return PartialEmptyParserResult(parser: parser.internalParser())
     }
 
     @_disfavoredOverload
     public static func buildExpression<P: Parser>(_ parser: P) -> PartialParserResult<P.Output> {
-        return PartialParserResult(parsers: [parser.internalParser()], outputTypes: [P.Output.self])
+        return PartialParserResult(parser: parser.internalParser(), outputType: P.Output.self)
     }
-}
-
-extension ParserBuilder {
-
-    public static func buildIf(_ parser: PartialEmptyParserResult?) -> PartialEmptyParserResult {
-        return parser ?? PartialEmptyParserResult(parsers: [])
-    }
-
-    public static func buildIf<Output>(_ parser: PartialParserResult<Output>?) -> PartialParserResult<Output?> {
-        return parser.map { PartialParserResult(parsers: $0.parsers, outputTypes: $0.outputTypes) } ?? PartialParserResult(parsers: [], outputTypes: [Optional<Output>.self])
-    }
-
 }
 
 extension ParserBuilder {
@@ -50,11 +38,11 @@ extension ParserBuilder {
     }
 
     public static func buildBlock(_ a: PartialEmptyParserResult) -> AnyParser<Void> {
-        return TupleParser(partials: a).eraseToAnyParser()
+        return AnyParser(a.parser)
     }
 
     public static func buildBlock<A>(_ a: PartialParserResult<A>) -> AnyParser<A> {
-        return TupleParser(partials: a).eraseToAnyParser()
+        return AnyParser(a.parser)
     }
 
 }

@@ -1,17 +1,20 @@
 
 import Foundation
 
-public struct AnyParser<Output>: Parser, Identified {
-    public let id = UUID()
+public struct AnyParser<Output>: Parser {
     let parser: InternalParser
 
-    public init<Content : Parser>(_ content: Content) where Content.Output == Output {
-        let internalParser = content.internalParser()
+    init(_ internalParser: InternalParser) {
         if let internalParser = internalParser as? AnyParser<Output> {
             self.parser = internalParser.parser
         } else {
             self.parser = internalParser
         }
+    }
+
+    public init<Content : Parser>(_ content: Content) where Content.Output == Output {
+        let internalParser = content.internalParser()
+        self.init(internalParser)
     }
     
     public var body: AnyParser<Output> {
@@ -20,14 +23,17 @@ public struct AnyParser<Output>: Parser, Identified {
 }
 
 extension AnyParser: InternalParser {
+    var id: UUID {
+        return parser.id
+    }
+
     func prefixes() -> Set<String> {
         return parser.prefixes()
     }
 
     func parse(using scanner: Scanner) throws {
-        try scanner.parse(using: parser)
+        try parser.parse(using: scanner)
     }
-
 }
 
 extension Parser {

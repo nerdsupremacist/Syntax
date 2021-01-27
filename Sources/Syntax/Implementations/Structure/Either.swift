@@ -1,8 +1,8 @@
 
 import Foundation
 
-public struct Either<Output>: Parser, Identified {
-    public let id = UUID()
+public struct Either<Output>: Parser {
+    let id = UUID()
     private let maxPrefixLength: Int
     private let prefixMap: [Int : [String : [Int]]]
     private let fallbackParsers: [Int]

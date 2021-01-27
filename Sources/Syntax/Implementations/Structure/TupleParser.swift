@@ -1,8 +1,8 @@
 
 import Foundation
 
-struct TupleParser<Output>: Parser, Identified {
-    public let id = UUID()
+struct TupleParser<Output>: Parser {
+    let id = UUID()
     let parsers: [InternalParser]
     let outputTypes: [Any.Type]
 
@@ -49,7 +49,7 @@ extension TupleParser: InternalParser {
             try scanner.parse(using: parser)
         }
 
-        if Output.self == Void.self {
+        guard outputTypes.count > 1 else {
             return
         }
 

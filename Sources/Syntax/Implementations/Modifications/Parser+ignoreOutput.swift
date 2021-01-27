@@ -9,9 +9,9 @@ extension Parser {
 
 }
 
-struct IgnoreRule<Source : Parser>: Parser, Identified {
+struct IgnoreRule<Source : Parser>: Parser {
     typealias Output = Void
-    public let id = UUID()
+    let id = UUID()
     fileprivate let parser: InternalParser
 
     var body: AnyParser<Void> {

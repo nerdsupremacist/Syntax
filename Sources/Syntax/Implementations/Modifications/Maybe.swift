@@ -17,8 +17,8 @@ extension Parser {
 
 }
 
-public struct Maybe<Wrapped>: Parser, Identified {
-    public let id = UUID()
+public struct Maybe<Wrapped>: Parser {
+    let id = UUID()
     fileprivate let content: InternalParser
 
     public var body: AnyParser<Wrapped?> {

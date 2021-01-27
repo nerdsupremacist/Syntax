@@ -3,6 +3,70 @@ import Foundation
 import SyntaxTree
 
 class StandardScanner: Scanner {
+    private struct Stack {
+        private class Storage {
+            let previous: Storage?
+            let value: Any
+
+            init(previous: StandardScanner.Stack.Storage?, value: Any) {
+                self.previous = previous
+                self.value = value
+            }
+
+            func inserted(into storage: Storage) -> Storage {
+                return Storage(previous: previous?.inserted(into: storage) ?? storage, value: value)
+            }
+
+            func removed(from storage: Storage) -> Storage {
+                if previous === storage {
+                    return Storage(previous: nil, value: value)
+                }
+
+                return Storage(previous: previous?.removed(from: storage), value: value)
+            }
+        }
+
+        private var storage: Storage?
+        private var count: Int
+
+        init() {
+            storage = nil
+            count = 0
+        }
+
+        @inlinable
+        mutating func pop() -> Any? {
+            defer {
+                count -= 1
+                storage = storage?.previous
+            }
+            return storage?.value
+        }
+
+        @inlinable
+        mutating func append(_ value: Any) {
+            count += 1
+            storage = Storage(previous: storage, value: value)
+        }
+
+        @inlinable
+        mutating func append(contentsOf other: Stack) {
+            guard let otherStorage = other.storage else { return }
+            count += other.count
+            guard let storage = storage else {
+                self.storage = other.storage
+                return
+            }
+
+            self.storage = otherStorage.inserted(into: storage)
+        }
+
+        mutating func remove(from other: Stack) {
+            guard let otherStorage = other.storage else { return }
+            storage = storage?.removed(from: otherStorage)
+        }
+    }
+
     private class Node {
         let originalStart: String.Index
         var start: String.Index
@@ -27,7 +91,7 @@ class StandardScanner: Scanner {
         var index: String.Index
         let parent: Storage?
         var node: Node
-        var values: [Any] = []
+        var values: Stack = Stack()
         var ids: Set<UUID>
         var lastDiagnosticError: DiagnosticError? = nil
 
@@ -41,14 +105,14 @@ class StandardScanner: Scanner {
     }
 
     private struct MemoizationKey: Hashable {
-        let hashable: AnyHashable
+        let id: UUID
         let start: String.Index
     }
 
     private struct Memoized {
         var index: String.Index
         var node: Node
-        var values: [Any] = []
+        var values: Stack
         var ids: Set<UUID>
         var lastDiagnosticError: DiagnosticError? = nil
     }
@@ -111,7 +175,7 @@ class StandardScanner: Scanner {
     func commit() throws {
         guard let parent = storage.parent else { return }
         parent.index = storage.index
-        parent.values = parent.values + storage.values
+        parent.values.append(contentsOf: storage.values)
         parent.ids = storage.ids
         parent.lastDiagnosticError = storage.lastDiagnosticError
 
@@ -174,7 +238,7 @@ class StandardScanner: Scanner {
     }
 
     func pop<T>(of type: T.Type = T.self) throws -> T {
-        guard let value = storage.values.popLast() else {
+        guard let value = storage.values.pop() else {
             throw error(reason: .attemptedToPopValueFromEmptyList(type))
         }
 
@@ -203,22 +267,24 @@ class StandardScanner: Scanner {
 
     func parse(using parser: InternalParser) throws {
         let start = storage.index
-        let key = MemoizationKey(hashable: parser.hashable, start: start)
+        let key = MemoizationKey(id: parser.id, start: start)
         if let memoized = self.memoized[key] {
             storage.index = memoized.index
             storage.node = memoized.node
-            storage.values = storage.values + memoized.values
+            storage.values.append(contentsOf: memoized.values)
             storage.ids = memoized.ids
             storage.lastDiagnosticError = memoized.lastDiagnosticError
             return
         }
 
-        let index = storage.values.endIndex
+        let currentStack = storage.values
 
         try parser.parse(using: self)
+        var values = storage.values
+        values.remove(from: currentStack)
         let memoized = Memoized(index: storage.index,
                                 node: storage.node,
-                                values: Array(storage.values[index...]),
+                                values: values,
                                 ids: storage.ids,
                                 lastDiagnosticError: storage.lastDiagnosticError)
 

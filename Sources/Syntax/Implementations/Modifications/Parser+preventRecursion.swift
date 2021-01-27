@@ -10,8 +10,7 @@ extension Parser {
 
 }
 
-private class PreventRecursion<Output>: Parser, Identified {
-    public let id = UUID()
+private class PreventRecursion<Output>: Parser {
     fileprivate let parser: InternalParser
 
     init(parser: InternalParser) {
@@ -25,13 +24,17 @@ private class PreventRecursion<Output>: Parser, Identified {
 
 extension PreventRecursion: InternalParser {
 
+    var id: UUID {
+        return parser.id
+    }
+
     func prefixes() -> Set<String> {
         return parser.prefixes()
     }
 
     func parse(using scanner: Scanner) throws {
         try scanner.preventRecursion(id: id)
-        try scanner.parse(using: parser)
+        try parser.parse(using: scanner)
     }
 
 }

@@ -33,8 +33,8 @@ extension Parser where Output == Void {
 
 }
 
-public struct Repeat<Element>: Parser, Identified {
-    public let id = UUID()
+public struct Repeat<Element>: Parser {
+    let id = UUID()
     private let min: UInt?
     private let max: UInt?
     private let parser: InternalParser

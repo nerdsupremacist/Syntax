@@ -14,8 +14,8 @@ extension Parser {
 
 }
 
-private struct MappedParser<Source: Parser, Output>: Parser, Identified {
-    public let id = UUID()
+private struct MappedParser<Source: Parser, Output>: Parser {
+    let id = UUID()
     fileprivate let parser: InternalParser
     fileprivate let transform: (Source.Output) throws -> Output
 

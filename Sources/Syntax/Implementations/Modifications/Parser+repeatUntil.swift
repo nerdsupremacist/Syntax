@@ -27,8 +27,8 @@ extension Parser where Output == Void {
 
 }
 
-private struct RepeatUntil<Element, End>: Parser, Identified {
-    public let id = UUID()
+private struct RepeatUntil<Element, End>: Parser {
+    let id = UUID()
     let parser: InternalParser
     let end: InternalParser
 

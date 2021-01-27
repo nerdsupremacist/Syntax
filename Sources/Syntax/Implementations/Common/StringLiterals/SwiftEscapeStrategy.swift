@@ -5,7 +5,7 @@ public struct SwiftEscapeStrategy: StringEscapeStrategy {
     public func escaped(with endDelimiter: String) -> AnyParser<String> {
         Either<String> {
             "\\\\".map(to: "\\")
-            "\\\(endDelimiter)".map(to: "\"")
+            "\\\(endDelimiter)".map(to: "\(endDelimiter)")
             "\\n".map(to: "\n")
             "\\t".map(to: "\t")
             "\\0".map(to: "\0")

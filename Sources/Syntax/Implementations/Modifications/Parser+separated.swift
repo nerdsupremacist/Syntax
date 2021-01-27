@@ -17,8 +17,8 @@ extension Parser {
 
 }
 
-private struct Separated<Source: Parser, Separator: Parser>: Parser, Identified {
-    public let id = UUID()
+private struct Separated<Source: Parser, Separator: Parser>: Parser {
+    let id = UUID()
     fileprivate let parser: InternalParser
     fileprivate let separator: InternalParser
     fileprivate let allowTrailing: Bool

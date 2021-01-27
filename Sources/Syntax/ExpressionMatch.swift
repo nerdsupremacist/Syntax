@@ -1,7 +1,7 @@
 
 import Foundation
 
-public struct ExpressionMatch {
+public struct ExpressionMatch: CustomStringConvertible {
     public struct CaptureGroup {
         fileprivate let source: String
 
@@ -18,6 +18,10 @@ public struct ExpressionMatch {
 
     public var text: Substring {
         return source[range]
+    }
+
+    public var description: String {
+        return String(text)
     }
 
     init(source: String, match: NSTextCheckingResult) {

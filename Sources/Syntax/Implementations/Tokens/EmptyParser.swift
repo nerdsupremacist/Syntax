@@ -1,6 +1,8 @@
 
 import Foundation
 
+private let emptyId = UUID()
+
 struct EmptyParser: Parser {
     typealias Output = Void
 
@@ -10,6 +12,10 @@ struct EmptyParser: Parser {
 }
 
 extension EmptyParser: InternalParser, Hashable {
+
+    var id: UUID {
+        return emptyId
+    }
 
     func parse(using scanner: Scanner) throws {
         // No-op

@@ -3,6 +3,7 @@ import Foundation
 import SyntaxTree
 
 struct Token: Parser, Hashable {
+    let id = UUID()
     private let string: String
 
     init(_ string: String) {

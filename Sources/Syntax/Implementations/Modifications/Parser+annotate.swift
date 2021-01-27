@@ -9,8 +9,8 @@ extension Parser {
 
 }
 
-private struct Annotator<Output>: Parser, Identified {
-    public let id = UUID()
+private struct Annotator<Output>: Parser {
+    let id = UUID()
     fileprivate let content: InternalParser
     fileprivate let annotations: (Output) -> [String : Encodable]
 

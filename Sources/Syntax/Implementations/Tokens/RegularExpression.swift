@@ -3,6 +3,7 @@ import Foundation
 import SyntaxTree
 
 public struct RegularExpression: Parser, Hashable {
+    let id = UUID()
     private let pattern: String
 
     public init(_ pattern: String) {

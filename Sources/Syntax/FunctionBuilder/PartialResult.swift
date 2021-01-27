@@ -2,15 +2,15 @@
 import Foundation
 
 protocol PartialResult {
-    var parsers: [InternalParser] { get }
-    var outputTypes: [Any.Type] { get }
+    var parser: InternalParser { get }
+    var outputType: Any.Type? { get }
 }
 
 extension TupleParser {
 
     init(partials: PartialResult...) {
-        self.parsers = partials.flatMap { $0.parsers }
-        self.outputTypes = partials.flatMap { $0.outputTypes }
+        self.parsers = partials.map { $0.parser }
+        self.outputTypes = partials.compactMap { $0.outputType }
     }
 
 }

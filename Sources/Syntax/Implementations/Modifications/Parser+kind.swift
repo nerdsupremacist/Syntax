@@ -15,8 +15,8 @@ extension Parser {
 
 }
 
-private struct KindParser<Output>: Parser, Identified {
-    public let id = UUID()
+private struct KindParser<Output>: Parser {
+    let id = UUID()
     fileprivate let content: InternalParser
     fileprivate let kind: Kind
     fileprivate let strategy: Kind.CombinationStrategy
