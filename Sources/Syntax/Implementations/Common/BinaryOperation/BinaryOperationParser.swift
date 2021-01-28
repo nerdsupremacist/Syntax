@@ -26,6 +26,51 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
     }
 }
 
+extension BinaryOperationParser {
+
+    public init(operators: Operator...,
+                @ParserBuilder content: () -> Content,
+                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
+
+        self.init(operators: operators, content: content, by: wrapper)
+    }
+
+}
+
+extension BinaryOperationParser where Operator: CaseIterable {
+
+    public init(@ParserBuilder content: () -> Content,
+                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
+
+        self.init(operators: Array(Operator.allCases), content: content, by: wrapper)
+    }
+
+}
+
+extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator {
+
+    public init(operators: Operator...,
+                @ParserBuilder content: () -> Content) {
+
+        self.init(operators: operators, content: content)
+    }
+
+    public init(operators: [Operator],
+                @ParserBuilder content: () -> Content) {
+
+        self.init(operators: operators, content: content, by: { .binaryOperation($0) })
+    }
+
+}
+
+extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator, Operator: CaseIterable {
+
+    public init(@ParserBuilder content: () -> Content) {
+        self.init(operators: Array(Operator.allCases), content: content, by: { .binaryOperation($0) })
+    }
+
+}
+
 extension BinaryOperationParser: InternalParser {
     func prefixes() -> Set<String> {
         return content.prefixes()
@@ -118,36 +163,6 @@ extension BinaryOperationParser {
     }
 
 }
-
-extension BinaryOperationParser where Operator: CaseIterable {
-
-    public init(@ParserBuilder content: () -> Content,
-                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
-
-        self.init(operators: Array(Operator.allCases), content: content, by: wrapper)
-    }
-
-}
-
-extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator {
-
-    public init(operators: [Operator],
-                @ParserBuilder content: () -> Content) {
-
-        self.init(operators: operators, content: content, by: { .binaryOperation($0) })
-    }
-
-}
-
-extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator, Operator: CaseIterable {
-
-    public init(@ParserBuilder content: () -> Content) {
-
-        self.init(operators: Array(Operator.allCases), content: content, by: { .binaryOperation($0) })
-    }
-
-}
-
 
 extension BinaryOperationParser {
 
