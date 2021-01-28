@@ -4,25 +4,52 @@ import SyntaxTree
 
 class StandardScanner: Scanner {
     private struct Stack {
-        private class Storage {
-            let previous: Storage?
-            let value: Any
+        private class ValueBox<T>: AnyValueBox {
+            let value: T
 
-            init(previous: StandardScanner.Stack.Storage?, value: Any) {
-                self.previous = previous
+            init(value: T) {
                 self.value = value
             }
 
+            override func pop<A>(of type: A.Type) -> A {
+                return value as! A
+            }
+        }
+
+        private class AnyValueBox {
+            func pop<A>(of type: A.Type) -> A {
+                fatalError("Empty Value")
+            }
+        }
+
+        private class Storage {
+            let previous: Storage?
+            private let box: AnyValueBox
+
+            init<T>(previous: StandardScanner.Stack.Storage?, value: T) {
+                self.previous = previous
+                self.box = ValueBox(value: value)
+            }
+
+            private init(previous: StandardScanner.Stack.Storage?, box: AnyValueBox) {
+                self.previous = previous
+                self.box = box
+            }
+
             func inserted(into storage: Storage) -> Storage {
-                return Storage(previous: previous?.inserted(into: storage) ?? storage, value: value)
+                return Storage(previous: previous?.inserted(into: storage) ?? storage, box: box)
             }
 
             func removed(from storage: Storage) -> Storage {
                 if previous === storage {
-                    return Storage(previous: nil, value: value)
+                    return Storage(previous: nil, box: box)
                 }
 
-                return Storage(previous: previous?.removed(from: storage), value: value)
+                return Storage(previous: previous?.removed(from: storage), box: box)
+            }
+
+            func pop<A>(of type: A.Type) -> A {
+                return box.pop(of: type)
             }
         }
 
@@ -35,16 +62,16 @@ class StandardScanner: Scanner {
         }
 
         @inlinable
-        mutating func pop() -> Any? {
+        mutating func pop<T>(of type: T.Type) -> T? {
             defer {
                 count -= 1
                 storage = storage?.previous
             }
-            return storage?.value
+            return storage?.pop(of: type)
         }
 
         @inlinable
-        mutating func append(_ value: Any) {
+        mutating func append<T>(_ value: T) {
             count += 1
             storage = Storage(previous: storage, value: value)
         }
@@ -238,16 +265,11 @@ class StandardScanner: Scanner {
     }
 
     func pop<T>(of type: T.Type = T.self) throws -> T {
-        guard let value = storage.values.pop() else {
+        guard let value = storage.values.pop(of: type) else {
             throw error(reason: .attemptedToPopValueFromEmptyList(type))
         }
 
-        if let value = value as? T {
-            return value
-        } else {
-            storage.values.append(value)
-            throw error(reason: .poppedValueDidNotMatchExpectedValue(value, expected: type))
-        }
+        return value
     }
 
     func store<T>(value: T) {

@@ -1,7 +1,7 @@
 
 import Foundation
 
-public enum Associativity {
+public enum Associativity: String, Encodable {
     case left
     case right
 }

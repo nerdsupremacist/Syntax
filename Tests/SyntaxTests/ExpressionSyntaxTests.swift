@@ -1,34 +1,7 @@
 import XCTest
 import Syntax
 
-enum FizzBuzzValue {
-    case number(Int)
-    case fizz
-    case buzz
-    case fizzBuzz
-}
-
-struct FizzBuzzParser: Parser {
-    var body: AnyParser<[FizzBuzzValue]> {
-        Repeat {
-            Either {
-                IntLiteral().map { FizzBuzzValue.number($0) }
-
-                Word("FizzBuzz").map(to: FizzBuzzValue.fizzBuzz).kind("keyword.fizzbuzz")
-                Word("Fizz").map(to: FizzBuzzValue.fizz).kind("keyword.fizz")
-                Word("Buzz").map(to: FizzBuzzValue.buzz).kind("keyword.buzz")
-            }
-        }
-    }
-}
-
 final class ExpressionSyntaxTests: XCTestCase {
-    func testFizzBuzz() {
-        let text = "1 2 Fizz"
-        let syntaxTree = try! FizzBuzzParser().syntaxTree(text)
-        print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
-    }
-
     func testNumberYieldsThatNumber() {
         check("4", equals: 4)
         check("4.5", equals: 4.5)
@@ -39,17 +12,26 @@ final class ExpressionSyntaxTests: XCTestCase {
     }
 
     func testParserOmitsWhitespcaes() {
-//        check("   12        -  8   ", equals: 4)
-//        check("142        -9   ", equals: 133)
-//        check("72+  15", equals: 87)
+        check("   12        -  8   ", equals: 4)
+        check("142        -9   ", equals: 133)
+        check("72+  15", equals: 87)
         check("2 + ( 72+  15) * 2", equals: 176)
-//        check(" 12*  4", equals: 48)
-//        check(" 50/10", equals: 5)
+        check(" 12*  4", equals: 48)
+        check(" 50/10", equals: 5)
     }
 
     func testLongAdditiveExpressionsAreComputedLeftToRight() {
-//        check("2 -4 +6 -1 -1- 0 +8", equals: 10)
-//        check("1 -1   + 2   - 2   +  4 - 4 +    6", equals: 6)
+        check("2 -4 +6 -1 -1- 0 +8", equals: 10)
+        check("1 -1   + 2   - 2   +  4 - 4 +    6", equals: 6)
+    }
+
+    func testLongMixedAdditiveAndMultiplicativeExpressionsAreLeftToRight() {
+        check(" 2*3 - 4*5 + 6/3 ", equals: -12)
+        check("2*3*4/8 -   5/2*4 +  6 + 0/3   ", equals: -1)
+    }
+
+    func testPowerIsRightAssociative() {
+        check("2^3^2", equals: 512)
     }
 
     func testFailsToParseEmpty() {

@@ -6,8 +6,8 @@ extension Expression {
 
     enum Operator: Int, BinaryOperator, CaseIterable {
         case power
-        case multiply
         case divide
+        case multiply
         case minus
         case plus
 
