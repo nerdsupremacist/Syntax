@@ -28,7 +28,7 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
 
 extension BinaryOperationParser: InternalParser {
     func prefixes() -> Set<String> {
-        return []
+        return content.prefixes()
     }
 
     func parse(using scanner: Scanner) throws {
