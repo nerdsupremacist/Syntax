@@ -6,8 +6,10 @@ struct ExpressionParser: Parser {
     var body: AnyParser<Expression> {
         Recursive { parser in
             Either {
-                BinaryOperationParser { parser }
-                    .map(Expression.binaryOperation)
+                BinaryOperationParser {
+                    parser
+                }
+                .map(Expression.binaryOperation)
 
                 Group {
                     "("
