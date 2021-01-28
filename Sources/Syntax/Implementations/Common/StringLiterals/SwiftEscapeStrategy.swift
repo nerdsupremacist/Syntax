@@ -2,6 +2,8 @@
 import Foundation
 
 public struct SwiftEscapeStrategy: StringEscapeStrategy {
+    public init() { }
+
     public func escaped(with endDelimiter: String) -> AnyParser<String> {
         Either<String> {
             "\\\\".map(to: "\\")
