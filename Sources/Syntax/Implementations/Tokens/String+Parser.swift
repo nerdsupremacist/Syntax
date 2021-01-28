@@ -2,20 +2,21 @@
 import Foundation
 import SyntaxTree
 
-struct Token: Parser, Hashable {
-    let id = UUID()
-    private let string: String
+extension String: Parser {
+    public static let kind: Kind? = nil
 
-    init(_ string: String) {
-        self.string = string
-    }
-
-    var body: AnyParser<String> {
-        return neverBody()
+    public var body: AnyParser<Void> {
+        StringTokenParser(string: self)
     }
 }
 
-extension Token: InternalParser {
+private struct StringTokenParser: Parser, InternalParser {
+    let id = UUID()
+    let string: String
+
+    var body: AnyParser<Void> {
+        return neverBody()
+    }
 
     func prefixes() -> Set<String> {
         return [string]
@@ -24,16 +25,8 @@ extension Token: InternalParser {
     func parse(using scanner: Scanner) throws {
         scanner.enterNode()
         let match = try scanner.take(substring: string)
-        scanner.store(value: match)
         scanner.exitNode()
         scanner.configureNode(kind: .tokenMatch)
         scanner.configureNode(annotations: ["match" : match])
     }
-
-}
-
-extension Kind {
-
-    public static let tokenMatch: Kind = "token.match"
-
 }

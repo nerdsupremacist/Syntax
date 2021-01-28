@@ -2,18 +2,22 @@
 import Foundation
 
 public class Recursive<Content : Parser>: Parser {
-    private let content: (AnyParser<Output>) -> Content
+    private let content: (AnyParser<Output>) -> InternalParser
 
     // Prevent recursive calling of prefixes
     private var isComputingContent = false
     private lazy var _content: InternalParser = { [unowned self] in
         isComputingContent = true
         defer { isComputingContent = false }
-        return content(eraseToAnyParser()).internalParser()
+        return content(eraseToAnyParser())
     }()
 
-    public init(of type: Output.Type = Output.self, @ParserBuilder content: @escaping (AnyParser<Output>) -> Content) {
+    init(of type: Output.Type = Output.self, content: @escaping (AnyParser<Output>) -> InternalParser) {
         self.content = content
+    }
+
+    public init(of type: Output.Type = Output.self, @ParserBuilder content: @escaping (AnyParser<Output>) -> Content) {
+        self.content = { content($0).internalParser() }
     }
 
     public var body: AnyParser<Content.Output> {
@@ -35,5 +39,10 @@ extension Recursive: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         try scanner.parse(using: _content)
+    }
+
+    func wrapContent(with wrapper: @escaping (InternalParser) -> InternalParser) -> InternalParser {
+        let content = self.content
+        return Recursive<Content>(of: Content.Output.self) { wrapper(content($0)) }
     }
 }

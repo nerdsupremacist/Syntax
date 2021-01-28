@@ -115,16 +115,16 @@ class StandardScanner: Scanner {
     }
 
     private class Storage {
-        var index: String.Index
+        var range: Range<String.Index>
         let parent: Storage?
         var node: Node
         var values: Stack = Stack()
         var ids: Set<UUID>
         var lastDiagnosticError: DiagnosticError? = nil
 
-        init(index: String.Index, parent: Storage?) {
-            self.index = index
-            self.node = Node(start: index, parent: nil)
+        init(range: Range<String.Index>, parent: Storage?) {
+            self.range = range
+            self.node = Node(start: range.lowerBound, parent: nil)
             self.ids = parent?.ids ?? []
             self.parent = parent
             self.lastDiagnosticError = parent?.lastDiagnosticError
@@ -137,7 +137,7 @@ class StandardScanner: Scanner {
     }
 
     private struct Memoized {
-        var index: String.Index
+        var range: Range<String.Index>
         var node: Node
         var values: Stack
         var ids: Set<UUID>
@@ -153,7 +153,7 @@ class StandardScanner: Scanner {
     private let errorHandlers: [ScannerErrorHandler]
 
     var index: String.Index {
-        return storage.index
+        return storage.range.lowerBound
     }
 
     var location: Location {
@@ -163,7 +163,7 @@ class StandardScanner: Scanner {
     init(text: String, errorHandlers: [ScannerErrorHandler]) {
         self.text = text
         self.lineColumnIndex = LineColumnIndex(string: text)
-        self.storage = Storage(index: text.startIndex, parent: nil)
+        self.storage = Storage(range: text.startIndex..<text.endIndex, parent: nil)
         self.errorHandlers = errorHandlers
     }
 
@@ -179,7 +179,7 @@ class StandardScanner: Scanner {
             regularExpressions[pattern] = expression
         }
 
-        let rangeToLookAt = NSRange(storage.index..., in: text)
+        let rangeToLookAt = NSRange(storage.range, in: text)
         guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
             throw error(reason: .failedToMatch(expression))
         }
@@ -196,12 +196,18 @@ class StandardScanner: Scanner {
     }
 
     func begin() {
-        storage = Storage(index: storage.index, parent: storage)
+        storage = Storage(range: storage.range, parent: storage)
+    }
+
+    func beginScan(in range: Range<String.Index>) {
+        assert(range.lowerBound >= storage.range.lowerBound)
+        assert(range.upperBound <= storage.range.upperBound)
+        storage = Storage(range: range, parent: storage)
     }
 
     func commit() throws {
         guard let parent = storage.parent else { return }
-        parent.index = storage.index
+        parent.range = storage.range
         parent.values.append(contentsOf: storage.values)
         parent.ids = storage.ids
         parent.lastDiagnosticError = storage.lastDiagnosticError
@@ -220,14 +226,14 @@ class StandardScanner: Scanner {
     }
 
     func enterNode() {
-        storage.node = Node(start: storage.index, parent: storage.node)
+        storage.node = Node(start: storage.range.lowerBound, parent: storage.node)
     }
 
     func exitNode() {
         guard let parent = storage.node.parent else { return }
 
         let startIndex = storage.node.start
-        let endIndex = storage.index
+        let endIndex = storage.range.lowerBound
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
@@ -245,7 +251,7 @@ class StandardScanner: Scanner {
     }
 
     func locationOfNode() -> Range<Location> {
-        return location(for: storage.node.start)..<location(for: storage.index)
+        return location(for: storage.node.start)..<location(for: storage.range.lowerBound)
     }
 
     func configureNode(kind: Kind) {
@@ -288,10 +294,10 @@ class StandardScanner: Scanner {
     }
 
     func parse(using parser: InternalParser) throws {
-        let start = storage.index
+        let start = storage.range.lowerBound
         let key = MemoizationKey(id: parser.id, start: start)
         if let memoized = self.memoized[key] {
-            storage.index = memoized.index
+            storage.range = memoized.range
             storage.node = memoized.node
             storage.values.append(contentsOf: memoized.values)
             storage.ids = memoized.ids
@@ -304,7 +310,7 @@ class StandardScanner: Scanner {
         try parser.parse(using: self)
         var values = storage.values
         values.remove(from: currentStack)
-        let memoized = Memoized(index: storage.index,
+        let memoized = Memoized(range: storage.range,
                                 node: storage.node,
                                 values: values,
                                 ids: storage.ids,
@@ -318,7 +324,7 @@ extension StandardScanner {
 
     func syntaxTree() -> SyntaxTree {
         let startIndex = storage.node.start
-        let endIndex = storage.index
+        let endIndex = storage.range.lowerBound
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
@@ -357,19 +363,19 @@ extension StandardScanner {
             throw lastError
         }
 
-        if storage.index < text.endIndex {
+        if !storage.range.isEmpty {
             let token: Substring
             do {
                 let expression = try NSRegularExpression(pattern: "\\S+")
-                let rangeToLookAt = NSRange(storage.index..., in: text)
+                let rangeToLookAt = NSRange(storage.range, in: text)
                 if let match = expression.firstMatch(in: text, range: rangeToLookAt) {
                     let range = Range(match.range, in: text)!
                     token = text[range]
                 } else {
-                    token = text[storage.index...]
+                    token = text[storage.range]
                 }
             } catch {
-                token = text[storage.index...]
+                token = text[storage.range]
             }
 
             throw error(reason: .unexpectedToken(String(token)))
@@ -393,14 +399,14 @@ extension StandardScanner {
             return try take(expression: expression)
         } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling {
             guard case .failedToMatch = error.reason else { throw error }
-            let currentIndex = storage.index
+            let currentIndex = storage.range.lowerBound
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
             for handler in errorHandlers {
                 do {
                     try handler.scannerFailedToMatch(errorHandlerScanner, expression: expression)
                     if storage.node.start >= currentIndex {
-                        storage.node.update(from: currentIndex, to: storage.index)
+                        storage.node.update(from: currentIndex, to: storage.range.lowerBound)
                     }
 
                     return try scanner.take(pattern: pattern)
@@ -414,16 +420,16 @@ extension StandardScanner {
     }
 
     private func take(expression: NSRegularExpression) throws -> ExpressionMatch {
-        let rangeToLookAt = NSRange(storage.index..., in: text)
+        let rangeToLookAt = NSRange(storage.range, in: text)
         guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
             throw error(reason: .failedToMatch(expression))
         }
 
         let result = ExpressionMatch(source: text, match: match)
-        if result.range.upperBound > storage.index {
+        if result.range.upperBound > storage.range.lowerBound {
             storage.ids = []
         }
-        storage.index = result.range.upperBound
+        storage.range = result.range.upperBound..<storage.range.upperBound
 
         if let lastError = storage.lastDiagnosticError,
            lastError.location < location(for: result.range.upperBound) {
@@ -538,8 +544,8 @@ extension StandardScanner {
 extension StandardScanner {
 
     private func error(reason: ScannerError.Reason) -> ScannerError {
-        return ScannerError(index: storage.index,
-                            location: location(for: storage.index),
+        return ScannerError(index: storage.range.lowerBound,
+                            location: location(for: storage.range.lowerBound),
                             reason: reason)
     }
 
