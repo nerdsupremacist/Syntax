@@ -2,148 +2,9 @@
 import Foundation
 import SyntaxTree
 
-class StandardScanner: Scanner {
-    private struct Stack {
-        private class ValueBox<T>: AnyValueBox {
-            let value: T
+// MARK: StandardScanner
 
-            init(value: T) {
-                self.value = value
-            }
-
-            override func pop<A>(of type: A.Type) -> A {
-                return value as! A
-            }
-        }
-
-        private class AnyValueBox {
-            func pop<A>(of type: A.Type) -> A {
-                fatalError("Empty Value")
-            }
-        }
-
-        private class Storage {
-            let previous: Storage?
-            private let box: AnyValueBox
-
-            init<T>(previous: StandardScanner.Stack.Storage?, value: T) {
-                self.previous = previous
-                self.box = ValueBox(value: value)
-            }
-
-            private init(previous: StandardScanner.Stack.Storage?, box: AnyValueBox) {
-                self.previous = previous
-                self.box = box
-            }
-
-            func inserted(into storage: Storage) -> Storage {
-                return Storage(previous: previous?.inserted(into: storage) ?? storage, box: box)
-            }
-
-            func removed(from storage: Storage) -> Storage {
-                if previous === storage {
-                    return Storage(previous: nil, box: box)
-                }
-
-                return Storage(previous: previous?.removed(from: storage), box: box)
-            }
-
-            func pop<A>(of type: A.Type) -> A {
-                return box.pop(of: type)
-            }
-        }
-
-        private var storage: Storage?
-        private var count: Int
-
-        init() {
-            storage = nil
-            count = 0
-        }
-
-        @inlinable
-        mutating func pop<T>(of type: T.Type) -> T? {
-            defer {
-                count -= 1
-                storage = storage?.previous
-            }
-            return storage?.pop(of: type)
-        }
-
-        @inlinable
-        mutating func append<T>(_ value: T) {
-            count += 1
-            storage = Storage(previous: storage, value: value)
-        }
-
-        @inlinable
-        mutating func append(contentsOf other: Stack) {
-            guard let otherStorage = other.storage else { return }
-            count += other.count
-            guard let storage = storage else {
-                self.storage = other.storage
-                return
-            }
-
-            self.storage = otherStorage.inserted(into: storage)
-        }
-
-        mutating func remove(from other: Stack) {
-            guard let otherStorage = other.storage else { return }
-            storage = storage?.removed(from: otherStorage)
-        }
-    }
-
-    private class Node {
-        let originalStart: String.Index
-        var start: String.Index
-        var parent: Node? = nil
-        var children: [MutableSyntaxTree] = []
-
-        init(start: String.Index, parent: Node? = nil) {
-            self.originalStart = start
-            self.start = start
-            self.parent = parent
-        }
-
-        func update(from previous: String.Index, to new: String.Index) {
-            if start >= previous, start < new {
-                start = new
-                parent?.update(from: previous, to: new)
-            }
-        }
-    }
-
-    private class Storage {
-        var range: Range<String.Index>
-        let parent: Storage?
-        var node: Node
-        var values: Stack = Stack()
-        var ids: Set<UUID>
-        var lastDiagnosticError: DiagnosticError? = nil
-
-        init(range: Range<String.Index>, parent: Storage?) {
-            self.range = range
-            self.node = Node(start: range.lowerBound, parent: nil)
-            self.ids = parent?.ids ?? []
-            self.parent = parent
-            self.lastDiagnosticError = parent?.lastDiagnosticError
-        }
-    }
-
-    private struct MemoizationKey: Hashable {
-        let id: UUID
-        let start: String.Index
-    }
-
-    private struct Memoized {
-        var range: Range<String.Index>
-        var node: Node
-        var values: Stack
-        var ids: Set<UUID>
-        var lastDiagnosticError: DiagnosticError? = nil
-    }
-
+class StandardScanner {
     private let text: String
     private let lineColumnIndex: LineColumnIndex
     private var storage: Storage
@@ -151,6 +12,18 @@ class StandardScanner: Scanner {
     private var memoized: [MemoizationKey : Memoized] = [:]
 
     private let errorHandlers: [ScannerErrorHandler]
+
+    init(text: String, errorHandlers: [ScannerErrorHandler]) {
+        self.text = text
+        self.lineColumnIndex = LineColumnIndex(string: text)
+        self.storage = Storage(range: text.startIndex..<text.endIndex, parent: nil)
+        self.errorHandlers = errorHandlers
+    }
+}
+
+// MARK: - Scanner
+
+extension StandardScanner: Scanner {
 
     var index: String.Index {
         return storage.range.lowerBound
@@ -160,16 +33,9 @@ class StandardScanner: Scanner {
         return location(for: index)
     }
 
-    init(text: String, errorHandlers: [ScannerErrorHandler]) {
-        self.text = text
-        self.lineColumnIndex = LineColumnIndex(string: text)
-        self.storage = Storage(range: text.startIndex..<text.endIndex, parent: nil)
-        self.errorHandlers = errorHandlers
-    }
-
     func prefix(_ length: Int) throws -> Substring {
         guard length > 0 else { return "" }
-        
+
         let pattern = "\\s*((.|\\n){0,\(length)})"
         let expression: NSRegularExpression
         if let stored = regularExpressions[pattern] {
@@ -320,6 +186,70 @@ class StandardScanner: Scanner {
     }
 }
 
+// MARK: - State
+
+extension StandardScanner {
+    private class Storage {
+        var range: Range<String.Index>
+        let parent: Storage?
+        var node: Node
+        var values: Stack = Stack()
+        var ids: Set<UUID>
+        var lastDiagnosticError: DiagnosticError? = nil
+
+        init(range: Range<String.Index>, parent: Storage?) {
+            self.range = range
+            self.node = Node(start: range.lowerBound, parent: nil)
+            self.ids = parent?.ids ?? []
+            self.parent = parent
+            self.lastDiagnosticError = parent?.lastDiagnosticError
+        }
+    }
+}
+
+// MARK: - Memoization
+
+extension StandardScanner {
+
+    private struct MemoizationKey: Hashable {
+        let id: UUID
+        let start: String.Index
+    }
+
+    private struct Memoized {
+        var range: Range<String.Index>
+        var node: Node
+        var values: Stack
+        var ids: Set<UUID>
+        var lastDiagnosticError: DiagnosticError? = nil
+    }
+
+}
+
+// MARK: - Syntax Tree
+
+extension StandardScanner {
+    private class Node {
+        let originalStart: String.Index
+        var start: String.Index
+        var parent: Node? = nil
+        var children: [MutableSyntaxTree] = []
+
+        init(start: String.Index, parent: Node? = nil) {
+            self.originalStart = start
+            self.start = start
+            self.parent = parent
+        }
+
+        func update(from previous: String.Index, to new: String.Index) {
+            if start >= previous, start < new {
+                start = new
+                parent?.update(from: previous, to: new)
+            }
+        }
+    }
+}
+
 extension StandardScanner {
 
     func syntaxTree() -> SyntaxTree {
@@ -338,6 +268,8 @@ extension StandardScanner {
     }
 
 }
+
+// MARK: - Final Checks
 
 extension StandardScanner {
 
@@ -383,6 +315,8 @@ extension StandardScanner {
     }
 
 }
+
+// MARK: - Regular Expressions
 
 extension StandardScanner {
 
@@ -442,6 +376,8 @@ extension StandardScanner {
 
 }
 
+// MARK: - Diagnostics Helpers
+
 extension StandardScanner {
 
     private func location(for index: String.Index) -> Location {
@@ -449,6 +385,17 @@ extension StandardScanner {
     }
 
 }
+extension StandardScanner {
+
+    private func error(reason: ScannerError.Reason) -> ScannerError {
+        return ScannerError(index: storage.range.lowerBound,
+                            location: location(for: storage.range.lowerBound),
+                            reason: reason)
+    }
+
+}
+
+// MARK: - Error Handling
 
 extension StandardScanner {
 
@@ -540,14 +487,3 @@ extension StandardScanner {
     }
 
 }
-
-extension StandardScanner {
-
-    private func error(reason: ScannerError.Reason) -> ScannerError {
-        return ScannerError(index: storage.range.lowerBound,
-                            location: location(for: storage.range.lowerBound),
-                            reason: reason)
-    }
-
-}
-
