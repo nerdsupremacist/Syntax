@@ -8,6 +8,8 @@ public struct ScannerError: DiagnosticError {
         case expected(String)
         case failedToMatch(NSRegularExpression)
 
+        case annotatedValueDoeNotMatchExpectedType(Any, expected: Any.Type)
+        case annotatedValueDoesNotHaveAStartingIndex(Any)
         case attemptedToPopValueFromEmptyList(Any.Type)
         case poppedValueDidNotMatchExpectedValue(Any, expected: Any.Type)
     }

@@ -75,17 +75,17 @@ extension Either: InternalParser {
         defer { scanner.exitNode() }
 
         let prefix = try scanner.prefix(maxPrefixLength)
-        let options = parsers(for: prefix)
+        let options = prefix.map { parsers(for: $0) } ?? self.options
 
         var emptyParsers = [InternalParser]()
 
-        let index = scanner.index
+        let index = scanner.range.lowerBound
         for option in options {
             scanner.begin()
             do {
                 try scanner.parse(using: option)
 
-                if Output.self == Void.self, scanner.index <= index {
+                if Output.self == Void.self, scanner.range.lowerBound <= index {
                     emptyParsers.append(option)
                     try scanner.rollback()
                     continue

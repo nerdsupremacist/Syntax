@@ -27,4 +27,17 @@ final class JSONSyntaxTests: XCTestCase {
         let syntaxTree = try! JSONParser().syntaxTree(text)
         print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
     }
+
+    func testAnnotations() {
+        let text = """
+        Hello World!: "hello\\n\\\"world"
+        """
+
+        let syntaxTree = try! Annotated {
+            JSONParser()
+        }
+        .syntaxTree(text)
+
+        print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
+    }
 }

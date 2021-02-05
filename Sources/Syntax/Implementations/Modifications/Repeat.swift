@@ -70,12 +70,12 @@ extension Repeat: InternalParser {
         }
 
         while (max.map { $0 > count } ?? true) {
-            let index = scanner.index
+            let index = scanner.range.lowerBound
             scanner.begin()
             do {
                 try scanner.parse(using: parser)
 
-                if scanner.index <= index {
+                if scanner.range.lowerBound <= index {
                     try scanner.rollback()
                     break
                 }

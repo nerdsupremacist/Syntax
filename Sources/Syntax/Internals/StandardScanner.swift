@@ -7,16 +7,16 @@ import SyntaxTree
 class StandardScanner {
     private let text: String
     private let lineColumnIndex: LineColumnIndex
-    private var storage: Storage
+    private var state: ScannerState
     private var regularExpressions: [String : NSRegularExpression] = [:]
-    private var memoized: [MemoizationKey : Memoized] = [:]
+    private let memoizationStorage = MemoizationStorage()
 
     private let errorHandlers: [ScannerErrorHandler]
 
     init(text: String, errorHandlers: [ScannerErrorHandler]) {
         self.text = text
         self.lineColumnIndex = LineColumnIndex(string: text)
-        self.storage = Storage(range: text.startIndex..<text.endIndex, parent: nil)
+        self.state = ScannerState(text: text)
         self.errorHandlers = errorHandlers
     }
 }
@@ -24,112 +24,67 @@ class StandardScanner {
 // MARK: - Scanner
 
 extension StandardScanner: Scanner {
-
-    var index: String.Index {
-        return storage.range.lowerBound
+    var range: Range<String.Index> {
+        return state.range
     }
 
     var location: Location {
-        return location(for: index)
+        return state.location(for: state.range.lowerBound)
     }
 
-    func prefix(_ length: Int) throws -> Substring {
-        guard length > 0 else { return "" }
-
-        let pattern = "\\s*((.|\\n){0,\(length)})"
-        let expression: NSRegularExpression
-        if let stored = regularExpressions[pattern] {
-            expression = stored
-        } else {
-            expression = try NSRegularExpression(pattern: pattern, options: .anchorsMatchLines)
-            regularExpressions[pattern] = expression
-        }
-
-        let rangeToLookAt = NSRange(storage.range, in: text)
-        guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
-            throw error(reason: .failedToMatch(expression))
-        }
-
-        let range = Range(match.range(at: 1), in: text)!
-        return text[range]
+    func prefix(_ length: Int) throws -> Substring? {
+        return try state.prefix(length)
     }
 
     func preventRecursion(id: UUID) throws {
-        guard !storage.ids.contains(id) else {
-            throw ParserError.failedDueToLeftHandSideRecursionDetected(id: id)
-        }
-        storage.ids.formUnion([id])
+        try state.preventRecursion(id: id)
     }
 
     func begin() {
-        storage = Storage(range: storage.range, parent: storage)
+        state = state.begin()
     }
 
-    func beginScan(in range: Range<String.Index>) {
-        assert(range.lowerBound >= storage.range.lowerBound)
-        assert(range.upperBound <= storage.range.upperBound)
-        storage = Storage(range: range, parent: storage)
+    func beginScanning<T>(in range: Range<String.Index>, for type: T.Type) {
+        assert(range.upperBound <= state.range.upperBound)
+        state = state.beginScanning(in: range, for: type)
     }
 
     func commit() throws {
-        guard let parent = storage.parent else { return }
-        parent.range = storage.range
-        parent.values.append(contentsOf: storage.values)
-        parent.ids = storage.ids
-        parent.lastDiagnosticError = storage.lastDiagnosticError
-
-        if parent.node.start >= storage.node.originalStart && storage.node.originalStart < storage.node.start {
-            parent.node.update(from: storage.node.originalStart, to: storage.node.start)
-        }
-
-        parent.node.children.append(contentsOf: storage.node.children)
-        storage = parent
+        guard let commited = try state.commit() else { return }
+        state = commited
     }
 
     func rollback() throws {
-        guard let parent = storage.parent else { return }
-        storage = parent
+        guard let rolledback = state.rollback() else { return }
+        state = rolledback
     }
 
     func enterNode() {
-        storage.node = Node(start: storage.range.lowerBound, parent: storage.node)
+        state.enterNode()
     }
 
     func exitNode() {
-        guard let parent = storage.node.parent else { return }
-
-        let startIndex = storage.node.start
-        let endIndex = storage.range.lowerBound
-        let startOffset = text.distance(from: text.startIndex, to: startIndex)
-        let endOffset = text.distance(from: text.startIndex, to: endIndex)
-
-        let syntaxTree = MutableSyntaxTree(range: startOffset..<endOffset,
-                                           location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
-                                           annotations: [:],
-                                           children: storage.node.children)
-
-        parent.children.append(syntaxTree)
-        storage.node = parent
+        state.exitNode(in: text, lineColumnIndex: lineColumnIndex)
     }
 
     func removeChildrenOfNode() {
-        storage.node.children = []
+        state.removeChildrenOfNode()
     }
 
     func locationOfNode() -> Range<Location> {
-        return location(for: storage.node.start)..<location(for: storage.range.lowerBound)
+        return state.location(for: state.node.start)..<state.location(for: state.range.lowerBound)
     }
 
     func configureNode(kind: Kind) {
-        storage.node.children.last?.kind = kind
+        state.configureNode(kind: kind)
     }
 
     func configureNode(annotations: [String : Encodable]) {
-        storage.node.children.last?.add(annotations: annotations)
+        state.configureNode(annotations: annotations)
     }
 
     func pruneNode(strategy: Kind.CombinationStrategy) {
-        storage.node.children.last?.prune(using: strategy)
+        state.pruneNode(strategy: strategy)
     }
 
     func take(pattern: String) throws -> ExpressionMatch {
@@ -137,131 +92,40 @@ extension StandardScanner: Scanner {
     }
 
     func pop<T>(of type: T.Type = T.self) throws -> T {
-        guard let value = storage.values.pop(of: type) else {
-            throw error(reason: .attemptedToPopValueFromEmptyList(type))
+        guard let value = try state.pop(of: type) else {
+            throw state.error(reason: .attemptedToPopValueFromEmptyList(type))
         }
 
         return value
     }
 
     func store<T>(value: T) {
-        storage.values.append(value)
+        state.store(value: value)
     }
 
     func store(error: DiagnosticError) {
-        switch storage.lastDiagnosticError {
-        case .some(let lastError) where error.location > lastError.location:
-            storage.lastDiagnosticError = error
-        case .some:
-            break
-        case .none:
-            storage.lastDiagnosticError = error
-        }
+        state.store(error: error)
     }
 
     func parse(using parser: InternalParser) throws {
-        let start = storage.range.lowerBound
-        let key = MemoizationKey(id: parser.id, start: start)
-        if let memoized = self.memoized[key] {
-            storage.range = memoized.range
-            storage.node = memoized.node
-            storage.values.append(contentsOf: memoized.values)
-            storage.ids = memoized.ids
-            storage.lastDiagnosticError = memoized.lastDiagnosticError
-            return
-        }
-
-        let currentStack = storage.values
-
-        try parser.parse(using: self)
-        var values = storage.values
-        values.remove(from: currentStack)
-        let memoized = Memoized(range: storage.range,
-                                node: storage.node,
-                                values: values,
-                                ids: storage.ids,
-                                lastDiagnosticError: storage.lastDiagnosticError)
-
-        self.memoized[key] = memoized
+        try state.parse(using: parser, with: self, memoizationStorage: memoizationStorage)
     }
-}
-
-// MARK: - State
-
-extension StandardScanner {
-    private class Storage {
-        var range: Range<String.Index>
-        let parent: Storage?
-        var node: Node
-        var values: Stack = Stack()
-        var ids: Set<UUID>
-        var lastDiagnosticError: DiagnosticError? = nil
-
-        init(range: Range<String.Index>, parent: Storage?) {
-            self.range = range
-            self.node = Node(start: range.lowerBound, parent: nil)
-            self.ids = parent?.ids ?? []
-            self.parent = parent
-            self.lastDiagnosticError = parent?.lastDiagnosticError
-        }
-    }
-}
-
-// MARK: - Memoization
-
-extension StandardScanner {
-
-    private struct MemoizationKey: Hashable {
-        let id: UUID
-        let start: String.Index
-    }
-
-    private struct Memoized {
-        var range: Range<String.Index>
-        var node: Node
-        var values: Stack
-        var ids: Set<UUID>
-        var lastDiagnosticError: DiagnosticError? = nil
-    }
-
 }
 
 // MARK: - Syntax Tree
 
 extension StandardScanner {
-    private class Node {
-        let originalStart: String.Index
-        var start: String.Index
-        var parent: Node? = nil
-        var children: [MutableSyntaxTree] = []
-
-        init(start: String.Index, parent: Node? = nil) {
-            self.originalStart = start
-            self.start = start
-            self.parent = parent
-        }
-
-        func update(from previous: String.Index, to new: String.Index) {
-            if start >= previous, start < new {
-                start = new
-                parent?.update(from: previous, to: new)
-            }
-        }
-    }
-}
-
-extension StandardScanner {
 
     func syntaxTree() -> SyntaxTree {
-        let startIndex = storage.node.start
-        let endIndex = storage.range.lowerBound
+        let startIndex = state.node.start
+        let endIndex = state.range.lowerBound
         let startOffset = text.distance(from: text.startIndex, to: startIndex)
         let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
         let syntaxTree = MutableSyntaxTree(range: startOffset..<endOffset,
                                            location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
                                            annotations: [:],
-                                           children: storage.node.children)
+                                           children: state.node.children)
 
         syntaxTree.prune(using: .separate)
         return syntaxTree.build()
@@ -291,26 +155,26 @@ extension StandardScanner {
     }
 
     private func _checkIsEmpty() throws {
-        if let lastError = storage.lastDiagnosticError {
+        if let lastError = state.lastDiagnosticError {
             throw lastError
         }
 
-        if !storage.range.isEmpty {
+        if !state.range.isEmpty {
             let token: Substring
             do {
                 let expression = try NSRegularExpression(pattern: "\\S+")
-                let rangeToLookAt = NSRange(storage.range, in: text)
+                let rangeToLookAt = NSRange(state.range, in: text)
                 if let match = expression.firstMatch(in: text, range: rangeToLookAt) {
                     let range = Range(match.range, in: text)!
                     token = text[range]
                 } else {
-                    token = text[storage.range]
+                    token = text[state.range]
                 }
             } catch {
-                token = text[storage.range]
+                token = text[state.range]
             }
 
-            throw error(reason: .unexpectedToken(String(token)))
+            throw state.error(reason: .unexpectedToken(String(token)))
         }
     }
 
@@ -331,16 +195,16 @@ extension StandardScanner {
 
         do {
             return try take(expression: expression)
-        } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling {
+        } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling && state.allowErrorHandling {
             guard case .failedToMatch = error.reason else { throw error }
-            let currentIndex = storage.range.lowerBound
+            let currentIndex = state.range.lowerBound
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
             for handler in errorHandlers {
                 do {
                     try handler.scannerFailedToMatch(errorHandlerScanner, expression: expression)
-                    if storage.node.start >= currentIndex {
-                        storage.node.update(from: currentIndex, to: storage.range.lowerBound)
+                    if state.node.start >= currentIndex {
+                        state.node.update(from: currentIndex, to: state.range.lowerBound)
                     }
 
                     return try scanner.take(pattern: pattern)
@@ -354,43 +218,9 @@ extension StandardScanner {
     }
 
     private func take(expression: NSRegularExpression) throws -> ExpressionMatch {
-        let rangeToLookAt = NSRange(storage.range, in: text)
-        guard let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt) else {
-            throw error(reason: .failedToMatch(expression))
-        }
-
-        let result = ExpressionMatch(source: text, match: match)
-        if result.range.upperBound > storage.range.lowerBound {
-            storage.ids = []
-        }
-        storage.range = result.range.upperBound..<storage.range.upperBound
-
-        if let lastError = storage.lastDiagnosticError,
-           lastError.location < location(for: result.range.upperBound) {
-
-            storage.lastDiagnosticError = nil
-        }
-
-        return result
-    }
-
-}
-
-// MARK: - Diagnostics Helpers
-
-extension StandardScanner {
-
-    private func location(for index: String.Index) -> Location {
-        return lineColumnIndex[text.distance(from: text.startIndex, to: index)]!
-    }
-
-}
-extension StandardScanner {
-
-    private func error(reason: ScannerError.Reason) -> ScannerError {
-        return ScannerError(index: storage.range.lowerBound,
-                            location: location(for: storage.range.lowerBound),
-                            reason: reason)
+        let result = try state.take(expression: expression, in: text)
+        state = result.state
+        return result.match
     }
 
 }
@@ -403,15 +233,15 @@ extension StandardScanner {
         let scanner: StandardScanner
         let allowedToRegisterNodes: Bool
 
-        var index: String.Index {
-            return scanner.index
+        var range: Range<String.Index> {
+            return scanner.range
         }
 
         var location: Location {
             return scanner.location
         }
 
-        func prefix(_ length: Int) throws -> Substring {
+        func prefix(_ length: Int) throws -> Substring? {
             return try scanner.prefix(length)
         }
 
@@ -421,6 +251,10 @@ extension StandardScanner {
 
         func begin() {
             scanner.begin()
+        }
+
+        func beginScanning<T>(in range: Range<String.Index>, for type: T.Type) {
+            scanner.beginScanning(in: range, for: type)
         }
 
         func commit() throws {

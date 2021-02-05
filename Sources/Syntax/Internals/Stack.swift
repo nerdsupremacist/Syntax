@@ -52,7 +52,7 @@ struct Stack {
     }
 
     private var storage: Storage?
-    private var count: Int
+    private(set) var count: Int
 
     init() {
         storage = nil

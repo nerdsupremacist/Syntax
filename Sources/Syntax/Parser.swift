@@ -59,4 +59,13 @@ extension Parser {
         return output
     }
 
+    public func annotated(_ text: String, options: ParserOption...) throws -> AnnotatedString<Output> {
+        return try annotated(text, options: options)
+    }
+
+    public func annotated(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> AnnotatedString<Output> {
+        let parser = Annotated { self }
+        return try parser.parse(text, options: options)
+    }
+
 }

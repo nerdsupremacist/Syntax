@@ -3,7 +3,7 @@ import Foundation
 import SyntaxTree
 
 protocol Scanner {
-    var index: String.Index { get }
+    var range: Range<String.Index> { get }
     var location: Location { get }
 
     func preventRecursion(id: UUID) throws
@@ -17,9 +17,10 @@ protocol Scanner {
     func configureNode(annotations: [String : Encodable])
     func pruneNode(strategy: Kind.CombinationStrategy)
 
-    func prefix(_ length: Int) throws -> Substring
+    func prefix(_ length: Int) throws -> Substring?
 
     func begin()
+    func beginScanning<T>(in range: Range<String.Index>, for type: T.Type)
 
     func commit() throws
 

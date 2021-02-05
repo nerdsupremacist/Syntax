@@ -9,22 +9,25 @@ public struct StringLiteral: Parser {
     private let end: String
     private let escapeStrategy: StringEscapeStrategy
 
-    public var body: AnyParser<String> {
-        Leaf {
-            start
+    private var content: AnyParser<String> {
+        Annotated(pattern: "((\(NSRegularExpression.escapedPattern(for: escapeStrategy.escaped(endDelimiter: end))))|[^\(NSRegularExpression.escapedPattern(for: end))\\n])*") {
+            Either<String> {
+                escapeStrategy.escaped(endDelimiter: end).map(to: end).kind(.stringEscapedDelimiter)
 
-            Repeat {
-                Either {
-                    escapeStrategy.escaped(with: end)
-                    RegularExpression("[^\\n\(end)]").map { String($0.text) }
-                }
+                escapeStrategy.escaped.kind(.stringEscapedCharacter)
             }
-            .map { sections in
-                return sections.joined(separator: "")
-            }
-
-            end
         }
+        .map { annotated in
+            annotated.string { $0 }
+        }
+    }
+
+    public var body: AnyParser<String> {
+        start
+
+        content
+
+        end
     }
 }
 
@@ -47,5 +50,7 @@ extension StringLiteral {
 extension Kind {
 
     public static let stringLiteral: Kind = "string.literal"
+    public static let stringEscapedCharacter: Kind = "string.escaped.character"
+    public static let stringEscapedDelimiter: Kind = "string.escaped.delimiter"
 
 }
