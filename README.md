@@ -1,3 +1,17 @@
+<p align="center">
+    <img src="logo.png" width="400" max-width="90%" alt="Publish" />
+</p>
+
+<p align="center">
+    <img src="https://img.shields.io/badge/Swift-5.3-orange.svg" />
+    <a href="https://swift.org/package-manager">
+        <img src="https://img.shields.io/badge/swiftpm-compatible-brightgreen.svg?style=flat" alt="Swift Package Manager" />
+    </a>
+    <a href="https://twitter.com/nerdsupremacist">
+        <img src="https://img.shields.io/badge/twitter-@nerdsupremacist-blue.svg?style=flat" alt="Twitter: @nerdsupremacist" />
+    </a>
+</p>
+
 # Syntax
 
 Syntax is a SwiftUI-like data-driven parser builder DSL. You use composition and functional programming to implement a top-down LL(n) parser with minimal effort.
