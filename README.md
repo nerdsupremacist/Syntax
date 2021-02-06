@@ -84,7 +84,7 @@ To use this parser you can call the `parse` function:
 
 ```swift
 let text = "1 2 Fizz"
-let values = FizzBuzzParser().parse(text) // [.number(1), .number(2), .fizz]
+let values = try FizzBuzzParser().parse(text) // [.number(1), .number(2), .fizz]
 ```
 
 ### Syntax Tree's
