@@ -3,8 +3,8 @@ import Foundation
 
 public struct AnnotatedString<Value>: CustomStringConvertible {
     public struct Annotation {
-        let range: Range<String.Index>
-        let value: Value
+        public let range: Range<String.Index>
+        public let value: Value
     }
 
     public enum Part {
