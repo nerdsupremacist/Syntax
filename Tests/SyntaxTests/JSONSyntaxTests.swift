@@ -30,7 +30,7 @@ final class JSONSyntaxTests: XCTestCase {
 
     func testAnnotations() {
         let text = """
-        Hello World!: "hello\\n\\\"world"
+        Hello World!: { "greeting" : "hello\\n\\\"world" }
         """
 
         let syntaxTree = try! Annotated {

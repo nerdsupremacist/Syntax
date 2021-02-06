@@ -38,21 +38,24 @@ public struct AnnotatedString<Value>: CustomStringConvertible {
         return parts
     }
 
-
-    public func string<S : StringProtocol>(_ transform: (Value) throws -> S) rethrows -> String {
+    public func string<S : StringProtocol>(_ transform: (Substring, Value) throws -> S) rethrows -> String {
         var string = ""
 
         for part in parts() {
             switch part {
             case .text(let substring):
                 string += substring
-            case .annotated(_, let value):
-                let newValue = try transform(value)
+            case .annotated(let substring, let value):
+                let newValue = try transform(substring, value)
                 string += newValue
             }
         }
 
         return string
+    }
+
+    public func string<S : StringProtocol>(_ transform: (Value) throws -> S) rethrows -> String {
+        return try string { _, value in try transform(value) }
     }
 
     public var description: String {

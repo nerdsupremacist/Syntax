@@ -38,9 +38,29 @@ final class ExpressionSyntaxTests: XCTestCase {
         fails(" ")
         fails("1 + *")
     }
+
+    func testAnnotatingResults() throws {
+        checkAnnotatedString("Let's see: 1 + 1", equals: "Let's see: 1 + 1 = 2")
+        checkAnnotatedString("Please calculate: 2^3^2", equals: "Please calculate: 2^3^2 = 512")
+    }
 }
 
 extension ExpressionSyntaxTests {
+
+    private func checkAnnotatedString(_ text: String, equals expected: String) {
+        do {
+            let numberFormatter = NumberFormatter()
+            let annotatedString = try ExpressionParser().annotated(text)
+            let finalString = annotatedString.string { substring, expression -> String in
+                let result = expression.eval()
+                let resultString = numberFormatter.string(from: result as NSNumber)!
+                return "\(substring) = \(resultString)"
+            }
+            XCTAssertEqual(finalString, expected)
+        } catch {
+            XCTFail("Failed to parse \(text) due to: \(error)")
+        }
+    }
 
     private func check(_ text: String, equals expected: Double) {
         do {

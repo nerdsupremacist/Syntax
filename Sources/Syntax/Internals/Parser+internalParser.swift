@@ -27,8 +27,13 @@ private struct InternalParserWrapper<T : Parser>: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         scanner.enterNode()
-        try content.parse(using: scanner)
-        scanner.exitNode()
+        do {
+            try content.parse(using: scanner)
+            scanner.exitNode()
+        } catch {
+            scanner.exitNode()
+            throw error
+        }
         if let kind = T.kind {
             scanner.configureNode(kind: kind)
             scanner.pruneNode(strategy: .lower)
