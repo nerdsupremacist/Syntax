@@ -9,7 +9,7 @@ let package = Package(
                  targets: ["Syntax"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/nerdsupremacist/SyntaxTree.git", .branch("main")),
+        .package(url: "https://github.com/nerdsupremacist/SyntaxTree.git", from: "0.1.0"),
     ],
     targets: [
         .target(name: "Syntax",

@@ -5,9 +5,9 @@
         "package": "SyntaxTree",
         "repositoryURL": "https://github.com/nerdsupremacist/SyntaxTree.git",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "e05df57b9482e8122b99c59d6285c3e14ccb5b2b",
-          "version": null
+          "version": "0.1.0"
         }
       }
     ]
