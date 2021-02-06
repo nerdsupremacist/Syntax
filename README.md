@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="logo.png" width="400" max-width="90%" alt="Publish" />
+    <img src="logo.png" width="400" max-width="90%" alt="Syntax" />
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@ import PackageDescription
 let package = Package(
     [...]
     dependencies: [
-        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "0.2.0")
+        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "1.0.0")
     ]
 )
 ```
