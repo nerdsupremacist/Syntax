@@ -26,7 +26,7 @@ extension TupleParser: InternalParser {
                     return prefixes
                 }
             } else {
-                var newPrefixes: Set<String> = []
+                var newPrefixes: Set<String> = prefixes
                 for start in prefixes {
                     for end in currentPrefixes {
                         newPrefixes.formUnion([start + end])
