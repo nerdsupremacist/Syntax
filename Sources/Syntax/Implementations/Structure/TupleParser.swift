@@ -72,6 +72,9 @@ private protocol ValuePopper { }
 extension ValuePopper {
 
     static func pop<T : Collection>(from scanner: Scanner, into pointer: UnsafeMutableRawPointer, followedBy next: T) throws where T.Element == Any.Type {
+        let byteOffsetNeeded = (MemoryLayout<Self>.alignment - Int(UInt(bitPattern: pointer))) % MemoryLayout<Self>.alignment
+        let pointer = pointer.advanced(by: byteOffsetNeeded)
+
         if let nextType = next.first {
             let record = ProtocolConformanceRecord(type: nextType, witnessTable: nil)
             let type = unsafeBitCast(record, to: ValuePopper.Type.self)
