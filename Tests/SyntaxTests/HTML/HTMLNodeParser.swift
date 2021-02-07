@@ -10,13 +10,34 @@ struct HTMLNodeParser: Parser {
 
     var body: AnyParser<HTMLNode> {
         Recursive { parser in
-            InternalHTMLNodeParser(parser: parser)
+            Either {
+                HTMLNodeWithChildrenParser(parser: parser)
+                SingleHTMLNodeParser()
+            }
         }
     }
 
 }
 
-private struct InternalHTMLNodeParser: Parser {
+private struct SingleHTMLNodeParser: Parser {
+    var body: AnyParser<HTMLNode> {
+        return Group {
+            "<"
+
+            RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
+
+            Repeat {
+                AttributeParser()
+            }
+
+            "/>"
+        }
+        .map { HTMLNode(tag: $0.text, attributes: $1, contents: nil) }
+    }
+
+}
+
+private struct HTMLNodeWithChildrenParser: Parser {
     let parser: AnyParser<HTMLNode>
 
     var body: AnyParser<HTMLNode> {

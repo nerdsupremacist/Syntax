@@ -416,18 +416,6 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
             throw state.error(reason: .failedToMatch(expression))
         }
 
-        // Upon a match start with in place storage
-//        let nextState = ScannerState(range: result.range.lowerBound..<state.range.upperBound, parent: state, storage: InPlaceStorage())
-//        nextState.range = result.range.upperBound..<state.range.upperBound
-//
-//        let (firstNode, rest) = state.node.backToFirst()
-//
-//        state.node = firstNode
-//        if let rest = rest {
-//            rest.update(from: state.range.lowerBound, to: result.range.lowerBound)
-//            nextState.node = rest
-//        }
-
         rangeMatchStart = result.range.lowerBound
         return ExpressionScanResult(match: result, state: state)
     }
@@ -552,6 +540,7 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
 
         let result = try current.take(expression: expression, in: text, for: state)
         isInPlace = true
+        state.node.update(from: state.range.lowerBound, to: result.match.range.lowerBound)
         state.range = result.match.range.upperBound..<state.range.upperBound
         return result
     }

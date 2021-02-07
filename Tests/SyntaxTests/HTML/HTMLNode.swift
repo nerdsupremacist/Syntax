@@ -10,9 +10,9 @@ public class HTMLNode {
 
     public let tag: Substring
     public let attributes: [Attribute]
-    public let contents: AnnotatedString<HTMLNode>
+    public let contents: AnnotatedString<HTMLNode>?
 
-    init(tag: Substring, attributes: [Attribute], contents: AnnotatedString<HTMLNode>) {
+    init(tag: Substring, attributes: [Attribute], contents: AnnotatedString<HTMLNode>?) {
         self.tag = tag
         self.attributes = attributes
         self.contents = contents
