@@ -72,7 +72,11 @@ private protocol ValuePopper { }
 extension ValuePopper {
 
     static func pop<T : Collection>(from scanner: Scanner, into pointer: UnsafeMutableRawPointer, followedBy next: T) throws where T.Element == Any.Type {
-        let byteOffsetNeeded = (MemoryLayout<Self>.alignment - Int(UInt(bitPattern: pointer))) % MemoryLayout<Self>.alignment
+        var byteOffsetNeeded = (MemoryLayout<Self>.alignment - Int(UInt(bitPattern: pointer))) % MemoryLayout<Self>.alignment
+        if byteOffsetNeeded < 0 {
+            byteOffsetNeeded += MemoryLayout<Self>.alignment
+        }
+
         let pointer = pointer.advanced(by: byteOffsetNeeded)
 
         if let nextType = next.first {
