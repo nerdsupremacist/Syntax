@@ -101,18 +101,18 @@ extension BinaryOperationParser {
         let leftMost = try member(scanner)
         var representations = [IntermediateRepresentation]()
         while true {
-            scanner.begin()
-            do {
+            let added: Bool = scanner.attempt { scanner in
                 scanner.enterNode()
                 try scanner.parse(using: current.parser)
                 scanner.exitNode()
                 scanner.configureNode(kind: .binaryOperator)
                 scanner.pruneNode(strategy: .separate)
-                try scanner.commit()
+            }
+
+            if added {
                 let value = try member(scanner)
                 representations.append(value)
-            } catch {
-                try scanner.rollback()
+            } else {
                 break
             }
         }

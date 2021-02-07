@@ -150,8 +150,8 @@ final class ScannerState {
         return storage.begin(self)
     }
 
-    func beginScanning<T>(in range: Range<String.Index>, for type: T.Type) -> ScannerState {
-        return ScannerState(range: range, parent: self, storage: ScanningStorage<T>())
+    func beginScanning<T>(in range: Range<String.Index>, clipToLast: Bool, for type: T.Type) -> ScannerState {
+        return ScannerState(range: range, parent: self, storage: ScanningStorage<T>(clipToLast: clipToLast))
     }
 
     func rollback() -> ScannerState? {
@@ -221,13 +221,13 @@ private final class InPlaceStorage: ScannerStateStorage {
         let currentStack = values
 
         try parser.parse(using: scanner)
-        var values = self.values
-        values.remove(from: currentStack)
+        var newValuesStack = self.values
+        newValuesStack.remove(from: currentStack)
         let memoized = MemoizedState(range: state.range,
-                                          node: state.node,
-                                          values: values,
-                                          ids: ids,
-                                          lastDiagnosticError: state.lastDiagnosticError)
+                                     node: state.node,
+                                     values: newValuesStack,
+                                     ids: ids,
+                                     lastDiagnosticError: state.lastDiagnosticError)
 
         memoizationStorage[key] = memoized
     }
@@ -352,6 +352,8 @@ private protocol ScanningStorageProtocol {
 
 private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProtocol {
     typealias Annotation = AnnotatedString<T>.Annotation
+
+    private let clipToLast: Bool
     private let fromParent: [Range<String.Index>]
     var annotations: [Annotation] = []
     var ids: Set<UUID>
@@ -371,13 +373,15 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
         }
     }
 
-    init() {
+    init(clipToLast: Bool) {
+        self.clipToLast = clipToLast
         fromParent = []
         ids = []
     }
 
     init(parent: ScanningStorage<T>) {
         self.parent = parent
+        self.clipToLast = parent.clipToLast
         fromParent = parent.annotations.map(\.range) + parent.fromParent
         ids = parent.ids
     }
@@ -413,19 +417,19 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
         }
 
         // Upon a match start with in place storage
-        let nextState = ScannerState(range: result.range.lowerBound..<state.range.upperBound, parent: state, storage: InPlaceStorage())
-        nextState.range = result.range.upperBound..<state.range.upperBound
-
-        let (firstNode, rest) = state.node.backToFirst()
-
-        state.node = firstNode
-        if let rest = rest {
-            rest.update(from: state.range.lowerBound, to: result.range.lowerBound)
-            nextState.node = rest
-        }
+//        let nextState = ScannerState(range: result.range.lowerBound..<state.range.upperBound, parent: state, storage: InPlaceStorage())
+//        nextState.range = result.range.upperBound..<state.range.upperBound
+//
+//        let (firstNode, rest) = state.node.backToFirst()
+//
+//        state.node = firstNode
+//        if let rest = rest {
+//            rest.update(from: state.range.lowerBound, to: result.range.lowerBound)
+//            nextState.node = rest
+//        }
 
         rangeMatchStart = result.range.lowerBound
-        return ExpressionScanResult(match: result, state: nextState)
+        return ExpressionScanResult(match: result, state: state)
     }
 
     func begin(_ state: ScannerState) -> ScannerState {
@@ -441,8 +445,11 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
 
         switch parent.storage.effective() {
         case let storage as InPlaceStorage:
-            parent.range = state.range.upperBound..<parent.range.upperBound
-            storage.values.append(AnnotatedString(text: state.text[state.range], annotations: annotations.sorted { $0.range.lowerBound < $1.range.lowerBound }))
+            let start = state.range.lowerBound
+            let end = clipToLast ? annotations.map(\.range.upperBound).max() ?? start : state.range.upperBound
+
+            parent.range = end..<parent.range.upperBound
+            storage.values.append(AnnotatedString(text: state.text[start..<end], annotations: annotations.sorted { $0.range.lowerBound < $1.range.lowerBound }))
             storage.ids = []
 
             if parent.node.start >= state.node.originalStart && state.node.originalStart < state.node.start {
@@ -508,6 +515,11 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
         return current.lastDiagnosticError
     }
 
+    init(clipToLast: Bool) {
+        self.scanning = ScanningStorage(clipToLast: clipToLast)
+        self.inplace = InPlaceStorage()
+    }
+
     init(parent: ScanningStorage<T>) {
         self.scanning = ScanningStorage(parent: parent)
         self.inplace = InPlaceStorage()
@@ -539,13 +551,8 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
         }
 
         let result = try current.take(expression: expression, in: text, for: state)
-
-        var state: ScannerState? = state
-        while let storage = state?.storage as? StackedScanningStateStorage<T> {
-            storage.isInPlace = true
-            state = state?.parent
-        }
-
+        isInPlace = true
+        state.range = result.match.range.upperBound..<state.range.upperBound
         return result
     }
 
@@ -558,6 +565,9 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
     }
 
     func commit(_ state: ScannerState) throws -> ScannerState? {
+        if let parent = state.parent, let storage = parent.storage as? StackedScanningStateStorage<T> {
+            storage.isInPlace = self.isInPlace
+        }
         return try current.commit(state)
     }
 

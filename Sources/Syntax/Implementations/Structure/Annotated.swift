@@ -32,20 +32,17 @@ extension Annotated: InternalParser {
 
         if let pattern = pattern {
             let match = try scanner.take(pattern: pattern)
-            scanner.beginScanning(in: match.range, for: Content.Output.self)
+            scanner.beginScanning(in: match.range, clipToLast: false, for: Content.Output.self)
         } else {
-            scanner.beginScanning(in: scanner.range, for: Content.Output.self)
+            scanner.beginScanning(in: scanner.range, clipToLast: false, for: Content.Output.self)
         }
 
         while (true) {
-            scanner.begin()
-            do {
+            let hasParsed: Bool = scanner.attempt { scanner in
                 try parser.parse(using: scanner)
-                try scanner.commit()
-                try scanner.commit()
-            } catch {
-                scanner.exitNode()
-                try scanner.rollback()
+            }
+
+            if !hasParsed {
                 break
             }
         }

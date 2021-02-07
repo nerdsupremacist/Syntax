@@ -44,9 +44,9 @@ extension StandardScanner: Scanner {
         state = state.begin()
     }
 
-    func beginScanning<T>(in range: Range<String.Index>, for type: T.Type) {
+    func beginScanning<T>(in range: Range<String.Index>, clipToLast: Bool, for type: T.Type) {
         assert(range.upperBound <= state.range.upperBound)
-        state = state.beginScanning(in: range, for: type)
+        state = state.beginScanning(in: range, clipToLast: clipToLast, for: type)
     }
 
     func commit() throws {
@@ -253,8 +253,8 @@ extension StandardScanner {
             scanner.begin()
         }
 
-        func beginScanning<T>(in range: Range<String.Index>, for type: T.Type) {
-            scanner.beginScanning(in: range, for: type)
+        func beginScanning<T>(in range: Range<String.Index>, clipToLast: Bool, for type: T.Type) {
+            scanner.beginScanning(in: range, clipToLast: clipToLast, for: type)
         }
 
         func commit() throws {

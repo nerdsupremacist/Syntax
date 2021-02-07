@@ -38,7 +38,11 @@ struct Stack {
             return Storage(previous: previous?.inserted(into: storage) ?? storage, box: box)
         }
 
-        func removed(from storage: Storage) -> Storage {
+        func removed(from storage: Storage) -> Storage? {
+            if self === storage {
+                return nil
+            }
+            
             if previous === storage {
                 return Storage(previous: nil, box: box)
             }
@@ -89,5 +93,13 @@ struct Stack {
     mutating func remove(from other: Stack) {
         guard let otherStorage = other.storage else { return }
         storage = storage?.removed(from: otherStorage)
+
+        var count = 0
+        var nextStorage = storage
+        while let storage = nextStorage {
+            count += 1
+            nextStorage = storage.previous
+        }
+        self.count = count
     }
 }

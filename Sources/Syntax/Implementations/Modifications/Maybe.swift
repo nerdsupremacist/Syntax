@@ -41,12 +41,11 @@ extension Maybe: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        scanner.begin()
-        do {
+        let parsed: Bool = scanner.attempt { scanner in
             try scanner.parse(using: content)
-            try scanner.commit()
-        } catch {
-            try scanner.rollback()
+        }
+
+        if !parsed {
             scanner.store(value: nil as Output)
         }
     }

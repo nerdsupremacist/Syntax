@@ -48,13 +48,13 @@ extension RepeatUntil: InternalParser {
 
         while (true) {
             let index = scanner.range.lowerBound
-            scanner.begin()
-            do {
-                try scanner.parse(using: end)
-                try scanner.commit()
+            let hasParsedEnd: Bool = scanner.attempt { scanner in
+                try scanner.parse(using: self.end)
+            }
+
+            if hasParsedEnd {
                 break
-            } catch { }
-            try scanner.rollback()
+            }
 
             scanner.begin()
             do {

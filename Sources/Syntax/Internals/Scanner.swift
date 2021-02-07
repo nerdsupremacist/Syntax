@@ -20,7 +20,7 @@ protocol Scanner {
     func prefix(_ length: Int) throws -> Substring?
 
     func begin()
-    func beginScanning<T>(in range: Range<String.Index>, for type: T.Type)
+    func beginScanning<T>(in range: Range<String.Index>, clipToLast: Bool, for type: T.Type)
 
     func commit() throws
 
@@ -34,6 +34,32 @@ protocol Scanner {
     func parse(using parser: InternalParser) throws
 
     func store(error: DiagnosticError)
+}
+
+extension Scanner {
+
+    func attempt(_ closure: (Scanner) throws -> Void) throws {
+        begin()
+        do {
+            try closure(self)
+            try commit()
+        } catch {
+            try rollback()
+        }
+    }
+
+    func attempt(_ closure: (Scanner) throws -> Void) -> Bool {
+        begin()
+        do {
+            try closure(self)
+            try commit()
+            return true
+        } catch {
+            try! rollback()
+            return false
+        }
+    }
+
 }
 
 extension Scanner {
