@@ -15,7 +15,7 @@
 # Syntax
 
 Say goodbye to Scanner's and Abstract Syntax Trees. 
-Syntax will take text, and turn it into a model the model that you actually need.
+Syntax will take text, and turn it into the model that you actually need.
 
 Syntax is a SwiftUI-like data-driven parser builder DSL. You use composition and functional programming to implement a top-down LL(n) parser with minimal effort.
 The result is a Parser tailor made to fit your desired output model ;)
