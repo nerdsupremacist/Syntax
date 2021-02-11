@@ -176,6 +176,144 @@ try MyPublishSite().publish(using: [
 ])
 ```
 
+### More complex parsing
+
+Alright. I hear you. FizzBuzz isn't exactly a challenge. So let's take it up a notch and parse JSON instead.
+To be able to parse JSON, we have to understand what JSON even is. JSON consists of 
+
+a) the primitive values like strings, numbers, booleans 
+and b) any combinations of objects (dictionaries) and arrays.
+
+So a possible model for JSON would be:
+
+```swift
+enum JSON {
+    case object([String : JSON])
+    case array([JSON])
+    case int(Int)
+    case double(Double)
+    case bool(Bool)
+    case string(String)
+    case null
+}
+```
+
+Syntax comes with constructs for most of these out of the box, like: `StringLiteral` and `IntLiteral`. 
+So we can rely on those. We can put most of our cases in an `Either` which will try to parse whichever case works:
+
+```swift
+struct JSONParser: Parser {
+    var body: AnyParser<JSON> {
+        Either {
+            /// TODO: Arrays and Objects
+
+            StringLiteral().map(JSON.string)
+            IntLiteral().map(JSON.int)
+            DoubleLiteral().map(JSON.double)
+            BooleanLiteral().map(JSON.bool)
+                
+            Word("null").map(to: JSON.null)
+        }
+    }
+}
+```
+
+You will notice that we put a `map` at the end of each line. 
+This is because parsers like `StringLiteral` will return a String and not JSON. So we need to map that string to JSON.
+
+So the rest of our job will go into parsing objects and literals. The first thing we notice though is that Arrays and Objects need to parse JSON again. 
+This recursion needs to be stated explicitely. For that we can wrap our `Either` in a `Recursive` that will give us a reference to the JSON Parser: 
+
+```swift
+struct JSONParser: Parser {
+    var body: AnyParser<JSON> {
+        Recursive { jsonParser in
+            Either {
+                /// TODO: Arrays and Objects
+
+                StringLiteral().map(JSON.string)
+                IntLiteral().map(JSON.int)
+                DoubleLiteral().map(JSON.double)
+                BooleanLiteral().map(JSON.bool)
+                
+                Word("null").kind(.nullLiteral).map(to: JSON.null)
+            }
+        }
+    }
+}
+```
+
+We can start with arrays. We can create an array parser that will parse multiple values of `JSON` separated by commas, inside `[` and `]`. In Syntax that looks like this:
+
+```swift
+struct JSONArrayParser: Parser {
+    // reference to the JSON parser
+    let jsonParser: AnyParser<JSON>
+
+    var body: AnyParser<[JSON]> {
+        "["
+
+        jsonParser.separated(by: ",")
+
+        "]"
+    }
+}
+```
+
+Easy right. It's pretty much what we said in words. Dictionary is pretty similar, except that we have a key-value pairs separated by commas:
+
+```swift
+struct JSONDictionaryParser: Parser {
+    let jsonParser: AnyParser<JSON>
+
+    var body: AnyParser<[String : JSON]> {
+        "{"
+
+        // Group acts kinda like parenthesis here.
+        // It groups the key-value pair into one parser
+        Group {
+            StringLiteral()
+
+            ":"
+
+            jsonParser
+        }
+        .separated(by: ",")
+        .map { values in
+            // put the pairs in a dictionary
+            return Dictionary(values) { $1 }
+        }
+
+        "}"
+    }
+}
+```
+
+And for the final act, we add those two to our `Either` for JSON:
+
+```swift
+struct JSONParser: Parser {
+    var body: AnyParser<JSON> {
+        Recursive { jsonParser in
+            Either {
+                JSONDictionaryParser(jsonParser: jsonParser).map(JSON.object)
+                JSONArrayParser(jsonParser: jsonParser).map(JSON.array)
+
+                StringLiteral().map(JSON.string)
+                IntLiteral().map(JSON.int)
+                DoubleLiteral().map(JSON.double)
+                BooleanLiteral().map(JSON.bool)
+                
+                Word("null").kind(.nullLiteral).map(to: JSON.null)
+            }
+        }
+    }
+}
+
+let text = "[42, 1337]"
+let json = try JSONParser().parse(text) // .array([.int(42), .int(1337)])
+```
+
 ## Contributions
 Contributions are welcome and encouraged!
 
