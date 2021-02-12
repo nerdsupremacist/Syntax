@@ -9,14 +9,15 @@ class StandardScanner {
     private let lineColumnIndex: LineColumnIndex
     private var state: ScannerState
     private var regularExpressions: [String : NSRegularExpression] = [:]
-    private let memoizationStorage = MemoizationStorage()
+    private let memoizationStorage: MemoizationStorage
 
     private let errorHandlers: [ScannerErrorHandler]
 
-    init(text: String, errorHandlers: [ScannerErrorHandler]) {
+    init(text: String, errorHandlers: [ScannerErrorHandler], memoizationStorage: MemoizationStorage) {
         self.text = text
         self.lineColumnIndex = LineColumnIndex(string: text)
         self.state = ScannerState(text: text)
+        self.memoizationStorage = memoizationStorage
         self.errorHandlers = errorHandlers
     }
 }

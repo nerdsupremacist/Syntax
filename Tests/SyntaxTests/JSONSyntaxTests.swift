@@ -40,4 +40,38 @@ final class JSONSyntaxTests: XCTestCase {
 
         print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
     }
+
+    func testCaching() {
+        let cache = Cache<JSON>(capacity: 3)
+        let parser = JSONParser()
+
+        let first = """
+        { "greeting" : "hello world" }
+        """
+
+        let firstParsed = try! parser.parse(first, cache: cache)
+        print(firstParsed)
+
+        let second = """
+        { "greeting" : "hello world!" }
+        """
+
+        let secondParsed = try! parser.parse(second, cache: cache)
+        print(secondParsed)
+
+        let third = """
+        { "greeting" : "hello world", "int": 1 }
+        """
+
+        let thirdParsed = try! parser.parse(third, cache: cache)
+        print(thirdParsed)
+
+
+        let fourth = """
+        { "hi" : "this is a test" }
+        """
+
+        let fourthParsed = try! parser.parse(fourth, cache: cache)
+        print(fourthParsed)
+    }
 }

@@ -41,7 +41,7 @@ extension Parser {
     }
 
     public func syntaxTree(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> SyntaxTree {
-        let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler))
+        let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
         try internalParser().parse(using: scanner)
         try scanner.checkIsEmpty()
         return scanner.syntaxTree()
@@ -52,7 +52,7 @@ extension Parser {
     }
 
     public func parse(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> Output {
-        let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler))
+        let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
         try internalParser().parse(using: scanner)
         try scanner.checkIsEmpty()
         let output = try scanner.pop(of: Output.self)
@@ -68,4 +68,71 @@ extension Parser {
         return try parser.parse(text, options: options)
     }
 
+}
+
+extension Parser {
+
+
+    public func syntaxTree(_ text: String, options: ParserOption..., cache: Cache<Output>) throws -> SyntaxTree {
+        return try syntaxTree(text, options: options, cache: cache)
+    }
+
+    public func syntaxTree(_ text: String, options: [ParserOption] = [.allowWhiteSpaces], cache: Cache<Output>) throws -> SyntaxTree {
+        return try _parse(text, options: options, cache: cache).tree
+    }
+
+    public func parse(_ text: String, options: ParserOption..., cache: Cache<Output>) throws -> Output {
+        return try parse(text, options: options, cache: cache)
+    }
+
+    public func parse(_ text: String, options: [ParserOption] = [.allowWhiteSpaces], cache: Cache<Output>) throws -> Output {
+        return try _parse(text, options: options, cache: cache).value
+    }
+
+    public func annotated(_ text: String, options: ParserOption..., cache: Cache<AnnotatedString<Output>>) throws -> AnnotatedString<Output> {
+        return try annotated(text, options: options, cache: cache)
+    }
+
+    public func annotated(_ text: String, options: [ParserOption] = [.allowWhiteSpaces], cache: Cache<AnnotatedString<Output>>) throws -> AnnotatedString<Output> {
+        let parser = Annotated { self }
+        return try parser.parse(text, options: options, cache: cache)
+    }
+
+    private func _parse(_ text: String, options: [ParserOption], cache: Cache<Output>) throws -> Cache<Output>.CacheEntry {
+        if let cached = cache.memory(for: text) {
+            return cached
+        }
+
+        let parser: InternalParser
+        if let cached = cache.internalParser {
+            parser = cached
+        } else {
+            parser = internalParser()
+            cache.internalParser = parser
+        }
+
+        let storage: MemoizationStorage
+        if #available(OSX 10.15, *) {
+            storage = cache.storage(for: text)
+        } else {
+            storage = MemoizationStorage()
+        }
+
+        let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: storage)
+        try parser.parse(using: scanner)
+        try scanner.checkIsEmpty()
+
+        let output: Output
+        if Output.self != Void.self {
+            output = try scanner.pop(of: Output.self)
+        } else {
+            output = () as! Output
+        }
+
+        let tree = scanner.syntaxTree()
+        let entry = Cache<Output>.CacheEntry(text: text, value: output, tree: tree, storage: storage)
+        cache.store(entry: entry)
+        return entry
+    }
+    
 }

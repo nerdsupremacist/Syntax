@@ -2,6 +2,12 @@ import XCTest
 import Syntax
 
 final class ExpressionSyntaxTests: XCTestCase {
+    private static var cache: Cache<Expression>!
+
+    override class func setUp() {
+        self.cache = Cache()
+    }
+
     func testNumberYieldsThatNumber() {
         check("4", equals: 4)
         check("4.5", equals: 4.5)
@@ -37,6 +43,7 @@ final class ExpressionSyntaxTests: XCTestCase {
     func testFailsToParseEmpty() {
         fails(" ")
         fails("1 + *")
+        check("1 + 1", equals: 2)
     }
 
     func testAnnotatingResults() throws {
@@ -64,7 +71,7 @@ extension ExpressionSyntaxTests {
 
     private func check(_ text: String, equals expected: Double) {
         do {
-            let expression = try ExpressionParser().parse(text)
+            let expression = try ExpressionParser().parse(text, cache: Self.cache)
             let value = expression.eval()
             XCTAssertTrue(abs(value - expected) < 1e-6, "Expected \(text) = \(expected). But it evaluated to \(value)")
         } catch {
