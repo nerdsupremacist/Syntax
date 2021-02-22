@@ -236,7 +236,7 @@ struct JSONParser: Parser {
                 DoubleLiteral().map(JSON.double)
                 BooleanLiteral().map(JSON.bool)
                 
-                Word("null").kind(.nullLiteral).map(to: JSON.null)
+                Word("null").map(to: JSON.null)
             }
         }
     }
@@ -304,7 +304,7 @@ struct JSONParser: Parser {
                 DoubleLiteral().map(JSON.double)
                 BooleanLiteral().map(JSON.bool)
                 
-                Word("null").kind(.nullLiteral).map(to: JSON.null)
+                Word("null").map(to: JSON.null)
             }
         }
     }
