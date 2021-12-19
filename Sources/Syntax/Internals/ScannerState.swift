@@ -7,7 +7,7 @@ struct ExpressionScanResult {
     let state: ScannerState
 }
 
-private protocol ScannerStateStorage: class {
+private protocol ScannerStateStorage: AnyObject {
     var allowErrorHandling: Bool { get }
 
     var lastDiagnosticError: DiagnosticError? { get }
