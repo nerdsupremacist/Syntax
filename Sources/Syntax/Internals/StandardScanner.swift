@@ -278,7 +278,7 @@ extension StandardScanner {
 
         func pruneNode(strategy: Kind.CombinationStrategy) {
             guard allowedToRegisterNodes else { return }
-            pruneNode(strategy: strategy)
+            scanner.pruneNode(strategy: strategy)
         }
 
         func configureNode(kind: Kind) {
