@@ -1,7 +1,7 @@
 %{ import itertools }%
 import Foundation
 
-@_functionBuilder
+@resultBuilder
 public struct ParserBuilder {
 
     public static func buildExpression<P: Parser>(_ parser: P) -> PartialEmptyParserResult where P.Output == Void {

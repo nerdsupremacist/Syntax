@@ -1,7 +1,7 @@
 
 import Foundation
 
-@_functionBuilder
+@resultBuilder
 public struct EitherParserBuilder {
     public static func buildExpression<C0: Parser>(_ c0: C0) -> AnyParser<C0.Output> {
         return c0.eraseToAnyParser()
