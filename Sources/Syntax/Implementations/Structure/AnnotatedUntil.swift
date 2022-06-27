@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
     private enum AnnotationValue {
@@ -30,8 +30,8 @@ extension AnnotatedUntil: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
         scanner.beginScanning(in: scanner.range, clipToLast: true, for: AnnotationValue.self)
+        scanner.enterNode()
 
         while (true) {
             let nextContentRange = try scanner.range(for: content)
@@ -59,6 +59,7 @@ extension AnnotatedUntil: InternalParser {
             break
         }
 
+        scanner.exitNode()
         scanner.begin()
         try end.parse(using: scanner)
         try scanner.commit()
@@ -79,7 +80,6 @@ extension AnnotatedUntil: InternalParser {
 
         let newString = AnnotatedString(text: text, annotations: annotations)
         scanner.store(value: (newString, end))
-        scanner.exitNode()
     }
 
 }
