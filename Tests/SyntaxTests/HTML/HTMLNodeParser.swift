@@ -2,8 +2,22 @@
 import Foundation
 import Syntax
 
-enum HTMLParserError: Error {
+enum HTMLParserError: Error, LocalizedError {
     case unmatchedClosingTag(Substring)
+
+    var errorDescription: String? {
+        switch self {
+        case .unmatchedClosingTag(let tag):
+            return "Couldn't find a closing tag for <\(tag)>"
+        }
+    }
+
+    var recoverySuggestion: String? {
+        switch self {
+        case .unmatchedClosingTag(let tag):
+            return "Include a closing tag </\(tag)>"
+        }
+    }
 }
 
 struct HTMLNodeParser: Parser {
@@ -21,7 +35,7 @@ struct HTMLNodeParser: Parser {
 
 private struct SingleHTMLNodeParser: Parser {
     var body: AnyParser<HTMLNode> {
-        return Group {
+        return Leaf {
             "<"
 
             RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
@@ -95,7 +109,7 @@ private struct AttributeParser: Parser {
 
 private struct BeginTagParser: Parser {
     var body: AnyParser<BeginTag> {
-        return Group {
+        return Leaf {
             "<"
 
             RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
@@ -107,12 +121,16 @@ private struct BeginTagParser: Parser {
             ">"
         }
         .map { BeginTag(tag: $0.text, attributes: $1) }
+        .annotate { tag in
+            let attributeDictionary = Dictionary(tag.attributes.map { $0.keyValue() }) { lhs, rhs in lhs }
+            return ["html.attributes" : attributeDictionary, "html.tag" : String(tag.tag)]
+        }
     }
 }
 
 private struct EndTagParser: Parser {
     var body: AnyParser<EndTag> {
-        return Group {
+        return Leaf {
             "</"
 
             RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
@@ -120,5 +138,21 @@ private struct EndTagParser: Parser {
             ">"
         }
         .map { EndTag(tag: $0.text) }
+        .annotate { tag in
+            return ["html.tag" : String(tag.tag)]
+        }
     }
+}
+
+extension HTMLNode.Attribute {
+
+    fileprivate func keyValue() -> (String, String) {
+        switch self {
+        case .flag(let string):
+            return (String(string), "true")
+        case .set(let string, let value):
+            return (String(string), value)
+        }
+    }
+
 }

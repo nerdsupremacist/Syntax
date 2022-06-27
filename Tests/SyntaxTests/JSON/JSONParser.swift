@@ -1,17 +1,16 @@
 
 import Syntax
-import SyntaxTree
 
 struct JSONParser: Parser {
     struct JSONArrayParser: Parser {
         let json: AnyParser<JSON>
 
         var body: AnyParser<[JSON]> {
-            "["
+            "[".kind(.jsonArrayStartDelimiter)
 
             json.separated(by: ",")
 
-            "]"
+            "]".kind(.jsonArrayEndDelimiter)
         }
     }
 
@@ -19,7 +18,7 @@ struct JSONParser: Parser {
         let json: AnyParser<JSON>
 
         var body: AnyParser<[String : JSON]> {
-            "{"
+            "{".kind(.jsonDictionaryStartDelimiter)
 
             Group {
                 StringLiteral()
@@ -28,12 +27,13 @@ struct JSONParser: Parser {
 
                 json
             }
+            .kind(.jsonDictionaryKeyValuePair)
             .separated(by: ",")
             .map { values in
                 return Dictionary(values) { $1 }
             }
 
-            "}"
+            "}".kind(.jsonDictionaryEndDelimiter)
         }
     }
     
@@ -43,7 +43,10 @@ struct JSONParser: Parser {
                 JSONDictionaryParser(json: parser).map(JSON.object)
                 JSONArrayParser(json: parser).map(JSON.array)
 
-                StringLiteral().map(JSON.string)
+                StringLiteral()
+                    .escapeStrategy(JavaScriptEscapeStrategy())
+                    .map(JSON.string)
+
                 IntLiteral().map(JSON.int)
                 DoubleLiteral().map(JSON.double)
                 BooleanLiteral().map(JSON.bool)
@@ -56,7 +59,13 @@ struct JSONParser: Parser {
 
 extension Kind {
 
-    static let boolLiteral: Kind = "bool.literal"
     static let nullLiteral: Kind = "null.literal"
+
+    static let jsonDictionaryKeyValuePair: Kind = "json.dictionary.keyvaluepair"
+    static let jsonDictionaryStartDelimiter: Kind = "json.dictionary.delimiter.start"
+    static let jsonDictionaryEndDelimiter: Kind = "json.dictionary.delimiter.end"
+
+    static let jsonArrayStartDelimiter: Kind = "json.array.delimiter.start"
+    static let jsonArrayEndDelimiter: Kind = "json.array.delimiter.end"
 
 }
