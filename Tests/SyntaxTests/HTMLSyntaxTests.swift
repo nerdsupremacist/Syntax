@@ -36,8 +36,8 @@ final class HTMLSyntaxTests: XCTestCase {
             _ = try HTMLNodeParser().parse(text)
             XCTFail("Expected invalid html to fail")
         } catch let error as DiagnosticError {
-            let message = error.message(file: URL(fileURLWithPath: "HTMLSyntaxTests.swift"))
-            XCTAssertEqual("/private/tmp/HTMLSyntaxTests.swift:7:9: error: Couldn\'t find a closing tag for <a>", message)
+            let message = error.message(file: URL(fileURLWithPath: "/tmp/HTMLSyntaxTests.swift"))
+            XCTAssertEqual("/tmp/HTMLSyntaxTests.swift:7:9: error: Couldn\'t find a closing tag for <a>", message)
         } catch {
             XCTFail("Expected error to conform to diagnostic error")
         }
