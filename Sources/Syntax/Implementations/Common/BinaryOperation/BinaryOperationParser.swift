@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>: Parser {
     public static var kind: Kind? {
@@ -16,7 +16,7 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
                 @ParserBuilder content: () -> Content,
                 by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
 
-        self.content = content().internalParser()
+        self.content = content().located().internalParser()
         self.wrapper = wrapper
         self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser) }
     }
@@ -82,7 +82,7 @@ extension BinaryOperationParser: InternalParser {
         case .member(let member):
             throw BinaryOperationParserError.failedToParseABinaryOperation(member: member)
         case .operation(let operation):
-            scanner.store(value: operation)
+            scanner.store(value: operation.wrappedValue)
         }
     }
 }
@@ -96,22 +96,29 @@ extension BinaryOperationParser {
         }
     }
 
+    private struct OperationUsageIntermediateRepresentation {
+        let operatorRange: Range<Location>
+        let representation: IntermediateRepresentation
+    }
+
     private func parse(operator current: CachedOperator, using scanner: Scanner, member: (Scanner) throws -> IntermediateRepresentation) throws -> IntermediateRepresentation {
         scanner.enterNode()
         let leftMost = try member(scanner)
-        var representations = [IntermediateRepresentation]()
+        var representations = [OperationUsageIntermediateRepresentation]()
         while true {
+            var location: Range<Location>!
             let added: Bool = scanner.attempt { scanner in
                 scanner.enterNode()
                 try scanner.parse(using: current.parser)
                 scanner.exitNode()
+                location = scanner.locationOfNode()
                 scanner.configureNode(kind: .binaryOperator)
                 scanner.pruneNode(strategy: .separate)
             }
 
             if added {
                 let value = try member(scanner)
-                representations.append(value)
+                representations.append(OperationUsageIntermediateRepresentation(operatorRange: location, representation: value))
             } else {
                 break
             }
@@ -131,37 +138,50 @@ extension BinaryOperationParser {
         switch current.value.associativity {
         case .left:
             let final = representations.reduce(leftMost) { lhs, rhs in
-                .operation(BinaryOperation(lhs: lhs.member(using: self.wrapper),
-                                           operation: current.value,
-                                           rhs: rhs.member(using: self.wrapper)))
+                let lhsMember = lhs.member(using: self.wrapper)
+                let rhsMember = rhs.representation.member(using: self.wrapper)
+                let operation = BinaryOperation(lhs: lhsMember,
+                                                operation: Located(wrappedValue: current.value, location: rhs.operatorRange),
+                                                rhs: rhsMember)
+
+                return .operation(Located(wrappedValue: operation, location: lhsMember.location.lowerBound..<rhsMember.location.upperBound))
             }
+
             return final
 
         case .right:
-            let reversed = ([leftMost] + representations).reversed()
-            let rightMost = reversed.first!
-            let final = reversed.dropFirst().reduce(rightMost) { rhs, lhs in
-                return .operation(BinaryOperation(lhs: lhs.member(using: wrapper),
-                                                  operation: current.value,
-                                                  rhs: rhs.member(using: wrapper)))
-            }
-            return final
+            guard let rightMost = representations.last?.representation, let firstOperationRange = representations.first?.operatorRange else { return leftMost }
+            let newLeftMost = OperationUsageIntermediateRepresentation(operatorRange: firstOperationRange, representation: leftMost)
+            let shiftedRepresentations = representations.pairs().map { OperationUsageIntermediateRepresentation(operatorRange: $1.operatorRange,
+                                                                                                                representation: $0.representation) }
+            let reversed = ([newLeftMost] + shiftedRepresentations).reversed()
+            let final = reversed.reduce(rightMost) { rhs, lhs in
+                let lhsMember = lhs.representation.member(using: wrapper)
+                let rhsMember = rhs.member(using: wrapper)
+                let operation = BinaryOperation(lhs: lhsMember,
+                                                operation: Located(wrappedValue: current.value, location: lhs.operatorRange),
+                                                rhs: rhsMember)
 
+                return .operation(Located(wrappedValue: operation, location: lhsMember.location.lowerBound..<rhsMember.location.upperBound))
+            }
+
+            return final
         }
     }
 
     private func parseMember(using scanner: Scanner) throws -> IntermediateRepresentation {
         try scanner.preventRecursion(id: content.id)
         try scanner.parse(using: content)
-        let member: Content.Output
-        if Content.Output.self != Void.self {
-            member = try scanner.pop(of: Content.Output.self)
-        } else {
-            member = () as! Content.Output
-        }
+        let member = try scanner.pop(of: Located<Content.Output>.self)
         return .member(member)
     }
 
+}
+
+extension Collection {
+    fileprivate func pairs() -> AnySequence<(Element, Element)> {
+        return AnySequence(zip(self, self.dropFirst()))
+    }
 }
 
 extension BinaryOperationParser {
@@ -172,15 +192,15 @@ extension BinaryOperationParser {
     }
 
     private enum IntermediateRepresentation {
-        case member(Content.Output)
-        case operation(BinaryOperation<Content.Output, Operator>)
+        case member(Located<Content.Output>)
+        case operation(Located<BinaryOperation<Content.Output, Operator>>)
 
-        func member(using wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output) -> Content.Output {
+        func member(using wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output) -> Located<Content.Output> {
             switch self {
             case .member(let member):
                 return member
             case .operation(let operation):
-                return wrapper(operation)
+                return operation.map(wrapper)
             }
         }
     }
