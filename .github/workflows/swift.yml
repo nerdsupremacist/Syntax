@@ -38,12 +38,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install libsqlite3
       run: apt-get update && apt-get install -y --no-install-recommends libsqlite3-dev
-    - uses: actions/cache@v2
-      with:
-        path: .build
-        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-        restore-keys: |
-          ${{ runner.os }}-spm-
     - name: Check Swift version
       run: swift --version
     - name: Build & Test
