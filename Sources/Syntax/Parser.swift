@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 private var computedKinds = [Int : Kind]()
 
@@ -42,7 +42,7 @@ extension Parser {
 
     public func syntaxTree(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> SyntaxTree {
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
-        try internalParser().parse(using: scanner)
+        try scanner.parseWithAnnotatedErrors(parser: internalParser())
         try scanner.checkIsEmpty()
         return scanner.syntaxTree()
     }
@@ -53,7 +53,7 @@ extension Parser {
 
     public func parse(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> Output {
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
-        try internalParser().parse(using: scanner)
+        try scanner.parseWithAnnotatedErrors(parser: internalParser())
         try scanner.checkIsEmpty()
         let output = try scanner.pop(of: Output.self)
         return output
@@ -119,7 +119,7 @@ extension Parser {
         }
 
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: storage)
-        try parser.parse(using: scanner)
+        try scanner.parseWithAnnotatedErrors(parser: parser)
         try scanner.checkIsEmpty()
 
         let output: Output
@@ -135,4 +135,24 @@ extension Parser {
         return entry
     }
     
+}
+
+extension Scanner {
+
+    fileprivate func parseWithAnnotatedErrors(parser: InternalParser) throws {
+        begin()
+        do {
+            try parser.parse(using: self)
+            try commit()
+        } catch let error as DiagnosticError {
+            try rollback()
+            throw error
+        } catch {
+            let end = location
+            try rollback()
+            let start = location
+            throw AnnotatedError(range: start..<end, error: error)
+        }
+    }
+
 }
