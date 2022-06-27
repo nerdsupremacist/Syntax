@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 struct ExpressionScanResult {
     let match: ExpressionMatch

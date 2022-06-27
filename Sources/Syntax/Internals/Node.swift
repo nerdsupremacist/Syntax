@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 class Node {
     let originalStart: String.Index

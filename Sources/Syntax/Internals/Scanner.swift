@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 protocol Scanner {
     var range: Range<String.Index> { get }

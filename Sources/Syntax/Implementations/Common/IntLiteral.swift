@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 private let numberFormatter = NumberFormatter()
 private let integerPrefixes: Set<String> = Set((0...9).map { String($0) } + (1...9).map { String(-$0) })
@@ -18,7 +18,6 @@ public struct IntLiteral: Parser {
             }
         }
         .optimize(using: integerPrefixes)
-        .kind(.intLiteral)
     }
 }
 

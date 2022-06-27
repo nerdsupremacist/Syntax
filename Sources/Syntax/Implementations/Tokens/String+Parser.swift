@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 extension String: Parser {
     public static let kind: Kind? = nil

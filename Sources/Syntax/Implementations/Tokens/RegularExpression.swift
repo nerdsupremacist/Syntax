@@ -1,6 +1,6 @@
 
 import Foundation
-import SyntaxTree
+@_exported import SyntaxTree
 
 public struct RegularExpression: Parser, Hashable {
     let id = UUID()
