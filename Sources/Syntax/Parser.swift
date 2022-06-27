@@ -112,7 +112,8 @@ extension Parser {
         }
 
         let storage: MemoizationStorage
-        if #available(OSX 10.15, *) {
+        
+        if #available(OSX 10.15, iOS 13, tvOS 13, watchOS 6, *) {
             storage = cache.storage(for: text)
         } else {
             storage = MemoizationStorage()
