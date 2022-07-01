@@ -2,7 +2,9 @@
 import Foundation
 
 public class Recursive<Content : Parser>: Parser {
-    private let content: (AnyParser<Output>) -> InternalParser
+    public typealias Parsed = Content.Parsed
+
+    private let content: (AnyParser<Parsed>) -> InternalParser
 
     // Prevent recursive calling of prefixes
     private var isComputingContent = false
@@ -12,15 +14,15 @@ public class Recursive<Content : Parser>: Parser {
         return content(eraseToAnyParser())
     }()
 
-    init(of type: Output.Type = Output.self, content: @escaping (AnyParser<Output>) -> InternalParser) {
+    init(of type: Parsed.Type = Parsed.self, content: @escaping (AnyParser<Parsed>) -> InternalParser) {
         self.content = content
     }
 
-    public init(of type: Output.Type = Output.self, @ParserBuilder content: @escaping (AnyParser<Output>) -> Content) {
+    public init(of type: Parsed.Type = Parsed.self, @ParserBuilder content: @escaping (AnyParser<Parsed>) -> Content) {
         self.content = { content($0).internalParser() }
     }
 
-    public var body: AnyParser<Content.Output> {
+    public var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -43,6 +45,6 @@ extension Recursive: InternalParser {
 
     func wrapContent(with wrapper: @escaping (InternalParser) -> InternalParser) -> InternalParser {
         let content = self.content
-        return Recursive<Content>(of: Content.Output.self) { wrapper(content($0)) }
+        return Recursive<Content>(of: Content.Parsed.self) { wrapper(content($0)) }
     }
 }

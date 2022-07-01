@@ -16,7 +16,7 @@ public struct Annotated<Content : Parser>: Parser {
         self.parser = content().internalParser()
     }
 
-    public var body: AnyParser<AnnotatedString<Content.Output>> {
+    public var body: AnyParser<AnnotatedString<Content.Parsed>> {
         return neverBody()
     }
 }
@@ -32,9 +32,9 @@ extension Annotated: InternalParser {
 
         if let pattern = pattern {
             let match = try scanner.take(pattern: pattern)
-            scanner.beginScanning(in: match.range, clipToLast: false, for: Content.Output.self)
+            scanner.beginScanning(in: match.range, clipToLast: false, for: Content.Parsed.self)
         } else {
-            scanner.beginScanning(in: scanner.range, clipToLast: false, for: Content.Output.self)
+            scanner.beginScanning(in: scanner.range, clipToLast: false, for: Content.Parsed.self)
         }
 
         while (true) {

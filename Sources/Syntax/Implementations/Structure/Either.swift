@@ -1,14 +1,14 @@
 
 import Foundation
 
-public struct Either<Output>: Parser {
+public struct Either<Parsed>: Parser {
     let id = UUID()
     private let maxPrefixLength: Int
     private let prefixMap: [Int : [String : [Int]]]
     private let fallbackParsers: [Int]
     private let options: [InternalParser]
 
-    private init(options: [AnyParser<Output>]) {
+    private init(options: [AnyParser<Parsed>]) {
         self.options = options.map { $0 }
         var fallbackParsers = [Int]()
         var prefixMap = [Int : [String : [Int]]]()
@@ -38,18 +38,18 @@ public struct Either<Output>: Parser {
         self.prefixMap = prefixMap
     }
 
-    public init(@EitherParserBuilder options: () -> [AnyParser<Output>]) {
+    public init(@EitherParserBuilder options: () -> [AnyParser<Parsed>]) {
         self.init(options: options())
     }
 
-    public var body: AnyParser<Output> {
+    public var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
 
 extension Either {
 
-    public init<S : Sequence>(_ data: S, @ParserBuilder option: (S.Element) -> AnyParser<Output>) {
+    public init<S : Sequence>(_ data: S, @ParserBuilder option: (S.Element) -> AnyParser<Parsed>) {
         self.init(options:  data.map { option($0) })
     }
 
@@ -84,7 +84,7 @@ extension Either: InternalParser {
             do {
                 try scanner.parse(using: option)
 
-                if Output.self == Void.self, scanner.range.lowerBound <= index {
+                if Parsed.self == Void.self, scanner.range.lowerBound <= index {
                     emptyParsers.append(option)
                     try scanner.rollback()
                     continue

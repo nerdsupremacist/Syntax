@@ -1,15 +1,15 @@
 
 import Foundation
 
-public struct Leaf<Output>: Parser {
+public struct Leaf<Parsed>: Parser {
     let id = UUID()
     private let parser: InternalParser
 
-    public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Output == Output {
+    public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Parsed == Parsed {
         self.parser = content().internalParser()
     }
 
-    public var body: AnyParser<Output> {
+    public var body: AnyParser<Parsed> {
         return neverBody()
     }
 }

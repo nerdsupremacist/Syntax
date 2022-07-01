@@ -3,7 +3,7 @@ import Foundation
 
 extension Parser {
 
-    public func map<T>(_ transform: @escaping (Output) throws -> T) -> AnyParser<T> {
+    public func map<T>(_ transform: @escaping (Parsed) throws -> T) -> AnyParser<T> {
         return MappedParser<Self, T>(parser: internalParser(),
                                      transform: transform).eraseToAnyParser()
     }
@@ -14,12 +14,12 @@ extension Parser {
 
 }
 
-private struct MappedParser<Source: Parser, Output>: Parser {
+private struct MappedParser<Source: Parser, Parsed>: Parser {
     let id = UUID()
     fileprivate let parser: InternalParser
-    fileprivate let transform: (Source.Output) throws -> Output
+    fileprivate let transform: (Source.Parsed) throws -> Parsed
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -31,15 +31,15 @@ extension MappedParser: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         try scanner.parse(using: parser)
-        let transformed: Output
-        if Source.Output.self != Void.self {
-            let output = try scanner.pop(of: Source.Output.self)
+        let transformed: Parsed
+        if Source.Parsed.self != Void.self {
+            let output = try scanner.pop(of: Source.Parsed.self)
             transformed = try transform(output)
         } else {
-            transformed = try transform(() as! Source.Output)
+            transformed = try transform(() as! Source.Parsed)
         }
 
-        if Output.self != Void.self {
+        if Parsed.self != Void.self {
             scanner.store(value: transformed)
         }
     }

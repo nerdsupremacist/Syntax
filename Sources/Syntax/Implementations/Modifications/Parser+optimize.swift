@@ -3,21 +3,21 @@ import Foundation
 
 extension Parser {
 
-    func optimize(using prefixes: String...) -> AnyParser<Output> {
+    func optimize(using prefixes: String...) -> AnyParser<Parsed> {
         return OptimizedPrefixes(parser: internalParser(), optimizations: Set(prefixes)).eraseToAnyParser()
     }
 
-    func optimize(using prefixes: Set<String>) -> AnyParser<Output> {
+    func optimize(using prefixes: Set<String>) -> AnyParser<Parsed> {
         return OptimizedPrefixes(parser: internalParser(), optimizations: prefixes).eraseToAnyParser()
     }
 
 }
 
-private struct OptimizedPrefixes<Output>: Parser {
+private struct OptimizedPrefixes<Parsed>: Parser {
     let parser: InternalParser
     let optimizations: Set<String>
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }

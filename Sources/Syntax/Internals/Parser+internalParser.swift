@@ -4,7 +4,7 @@ import Foundation
 extension Parser {
 
     func internalParser() -> InternalParser {
-        if let parser = self as? AnyParser<Output> {
+        if let parser = self as? AnyParser<Parsed> {
             return parser.parser
         }
 
@@ -39,8 +39,8 @@ private struct InternalParserWrapper<T : Parser>: InternalParser {
             scanner.pruneNode(strategy: .lower)
         }
 
-        if T.Output.self != Void.self {
-            let value = try scanner.pop(of: T.Output.self)
+        if T.Parsed.self != Void.self {
+            let value = try scanner.pop(of: T.Parsed.self)
             scanner.store(value: value)
 
             if let value = value as? Encodable {

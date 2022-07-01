@@ -4,8 +4,8 @@ import Foundation
 
 public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
     private enum AnnotationValue {
-        case content(Content.Output)
-        case end(End.Output)
+        case content(Content.Parsed)
+        case end(End.Parsed)
     }
 
     let id = UUID()
@@ -18,7 +18,7 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
         self.end = end().map(AnnotationValue.end)
     }
 
-    public var body: AnyParser<(AnnotatedString<Content.Output>, End.Output)> {
+    public var body: AnyParser<(AnnotatedString<Content.Parsed>, End.Parsed)> {
         return neverBody()
     }
 }
@@ -73,9 +73,9 @@ extension AnnotatedUntil: InternalParser {
 
         guard case .end(let end) = last.value else { fatalError() }
 
-        let annotations = annotatedString.annotations.dropLast().map { annotation -> AnnotatedString<Content.Output>.Annotation in
+        let annotations = annotatedString.annotations.dropLast().map { annotation -> AnnotatedString<Content.Parsed>.Annotation in
             guard case .content(let content) = annotation.value else { fatalError() }
-            return AnnotatedString<Content.Output>.Annotation(range: annotation.range, value: content)
+            return AnnotatedString<Content.Parsed>.Annotation(range: annotation.range, value: content)
         }
 
         let newString = AnnotatedString(text: text, annotations: annotations)

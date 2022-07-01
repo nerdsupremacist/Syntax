@@ -4,9 +4,9 @@ import Foundation
 private let emptyId = UUID()
 
 struct EmptyParser: Parser {
-    typealias Output = Void
+    typealias Parsed = Void
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }

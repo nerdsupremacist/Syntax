@@ -3,18 +3,18 @@ import Foundation
 
 extension Parser {
 
-    public func annotate(_ annotations: @escaping (Output) -> [String : Encodable]) -> AnyParser<Output> {
+    public func annotate(_ annotations: @escaping (Parsed) -> [String : Encodable]) -> AnyParser<Parsed> {
         return Annotator(content: internalParser(), annotations: annotations).eraseToAnyParser()
     }
 
 }
 
-private struct Annotator<Output>: Parser {
+private struct Annotator<Parsed>: Parser {
     let id = UUID()
     fileprivate let content: InternalParser
-    fileprivate let annotations: (Output) -> [String : Encodable]
+    fileprivate let annotations: (Parsed) -> [String : Encodable]
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -25,12 +25,12 @@ extension Annotator: InternalParser {
         scanner.enterNode()
         try scanner.parse(using: content)
         scanner.exitNode()
-        let value: Output
-        if Output.self != Void.self {
-            value = try scanner.pop(of: Output.self)
+        let value: Parsed
+        if Parsed.self != Void.self {
+            value = try scanner.pop(of: Parsed.self)
             scanner.store(value: value)
         } else {
-            value = () as! Output
+            value = () as! Parsed
         }
         let annotations = self.annotations(value)
         scanner.configureNode(annotations: annotations)

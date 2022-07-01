@@ -3,7 +3,7 @@ import Foundation
 
 @resultBuilder
 public struct EitherParserBuilder {
-    public static func buildExpression<C0: Parser>(_ c0: C0) -> AnyParser<C0.Output> {
+    public static func buildExpression<C0: Parser>(_ c0: C0) -> AnyParser<C0.Parsed> {
         return c0.eraseToAnyParser()
     }
 
@@ -11,7 +11,7 @@ public struct EitherParserBuilder {
         return EmptyParser().ignoreOutput()
     }
 
-    public static func buildBlock<Output>(_ parsers: AnyParser<Output>...) -> [AnyParser<Output>] {
+    public static func buildBlock<Parsed>(_ parsers: AnyParser<Parsed>...) -> [AnyParser<Parsed>] {
         return parsers
     }
 }

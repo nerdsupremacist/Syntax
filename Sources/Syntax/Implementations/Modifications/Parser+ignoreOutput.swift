@@ -26,8 +26,8 @@ extension IgnoreRule: InternalParser {
 
     func parse(using scanner: Scanner) throws {
         try scanner.parse(using: parser)
-        if Source.Output.self != Void.self {
-            _ = try scanner.pop(of: Source.Output.self)
+        if Source.Parsed.self != Void.self {
+            _ = try scanner.pop(of: Source.Parsed.self)
         }
     }
 

@@ -1,12 +1,12 @@
 
 import Foundation
 
-struct TupleParser<Output>: Parser {
+struct TupleParser<Parsed>: Parser {
     let id = UUID()
     let parsers: [InternalParser]
     let outputTypes: [Any.Type]
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -53,7 +53,7 @@ extension TupleParser: InternalParser {
             return
         }
 
-        let outputPointer = UnsafeMutablePointer<Output>.allocate(capacity: 1)
+        let outputPointer = UnsafeMutablePointer<Parsed>.allocate(capacity: 1)
         let record = ProtocolConformanceRecord(type: outputTypes[0], witnessTable: nil)
         let firstType = unsafeBitCast(record, to: ValuePopper.Type.self)
         try firstType.pop(from: scanner, into: outputPointer, followedBy: outputTypes.dropFirst())

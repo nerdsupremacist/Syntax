@@ -1,23 +1,23 @@
 
 import Foundation
 
-public struct AnyParser<Output>: Parser {
+public struct AnyParser<Parsed>: Parser {
     let parser: InternalParser
 
     init(_ internalParser: InternalParser) {
-        if let internalParser = internalParser as? AnyParser<Output> {
+        if let internalParser = internalParser as? AnyParser<Parsed> {
             self.parser = internalParser.parser
         } else {
             self.parser = internalParser
         }
     }
 
-    public init<Content : Parser>(_ content: Content) where Content.Output == Output {
+    public init<Content : Parser>(_ content: Content) where Content.Parsed == Parsed {
         let internalParser = content.internalParser()
         self.init(internalParser)
     }
     
-    public var body: AnyParser<Output> {
+    public var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -38,7 +38,7 @@ extension AnyParser: InternalParser {
 
 extension Parser {
 
-    public func eraseToAnyParser() -> AnyParser<Output> {
+    public func eraseToAnyParser() -> AnyParser<Parsed> {
         return AnyParser(self)
     }
 

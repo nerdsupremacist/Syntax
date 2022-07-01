@@ -3,13 +3,13 @@ import Foundation
 @resultBuilder
 public struct ParserBuilder {
 
-    public static func buildExpression<P: Parser>(_ parser: P) -> PartialEmptyParserResult where P.Output == Void {
+    public static func buildExpression<P: Parser>(_ parser: P) -> PartialEmptyParserResult where P.Parsed == Void {
         return PartialEmptyParserResult(parser: parser.internalParser())
     }
 
     @_disfavoredOverload
-    public static func buildExpression<P: Parser>(_ parser: P) -> PartialParserResult<P.Output> {
-        return PartialParserResult(parser: parser.internalParser(), outputType: P.Output.self)
+    public static func buildExpression<P: Parser>(_ parser: P) -> PartialParserResult<P.Parsed> {
+        return PartialParserResult(parser: parser.internalParser(), outputType: P.Parsed.self)
     }
 }
 
@@ -22,11 +22,11 @@ extension ParserBuilder {
         return second
     }
 
-    public static func buildEither<Output>(first: PartialParserResult<Output>) -> PartialParserResult<Output> {
+    public static func buildEither<Parsed>(first: PartialParserResult<Parsed>) -> PartialParserResult<Parsed> {
         return first
     }
 
-    public static func buildEither<Output>(second: PartialParserResult<Output>) -> PartialParserResult<Output> {
+    public static func buildEither<Parsed>(second: PartialParserResult<Parsed>) -> PartialParserResult<Parsed> {
         return second
     }
 }

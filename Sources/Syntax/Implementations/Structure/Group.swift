@@ -8,7 +8,7 @@ public struct Group<Content : Parser>: Parser {
         self.content = content().internalParser()
     }
 
-    public var body: AnyParser<Content.Output> {
+    public var body: AnyParser<Content.Parsed> {
         return neverBody()
     }
 }

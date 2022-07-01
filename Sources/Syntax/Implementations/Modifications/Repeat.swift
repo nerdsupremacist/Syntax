@@ -3,21 +3,21 @@ import Foundation
 
 extension Parser {
 
-    public func star() -> AnyParser<[Output]> {
+    public func star() -> AnyParser<[Parsed]> {
         return self.repeat(min: nil, max: nil)
     }
 
-    public func plus() -> AnyParser<[Output]> {
+    public func plus() -> AnyParser<[Parsed]> {
         return self.repeat(min: 1, max: nil)
     }
 
-    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> AnyParser<[Output]> {
+    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> AnyParser<[Parsed]> {
         return Repeat(min: min, max: max) { self }.eraseToAnyParser()
     }
 
 }
 
-extension Parser where Output == Void {
+extension Parser where Parsed == Void {
 
     public func star() -> AnyParser<Void> {
         return self.repeat(min: nil, max: nil)
@@ -39,7 +39,7 @@ public struct Repeat<Element>: Parser {
     private let max: UInt?
     private let parser: InternalParser
 
-    public init<Content : Parser>(min: UInt? = nil, max: UInt? = nil, @ParserBuilder content: () -> Content) where Content.Output == Element {
+    public init<Content : Parser>(min: UInt? = nil, max: UInt? = nil, @ParserBuilder content: () -> Content) where Content.Parsed == Element {
         self.min = min
         self.max = max
         self.parser = content().internalParser()

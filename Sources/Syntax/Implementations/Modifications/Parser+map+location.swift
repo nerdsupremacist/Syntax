@@ -4,19 +4,19 @@ import Foundation
 
 extension Parser {
 
-    public func mapWithLocation<T>(_ transform: @escaping (Output, Range<Location>) throws -> T) -> AnyParser<T> {
+    public func mapWithLocation<T>(_ transform: @escaping (Parsed, Range<Location>) throws -> T) -> AnyParser<T> {
         return ParserWithLocation<Self, T>(parser: internalParser(),
                                            transform: transform).eraseToAnyParser()
     }
 
 }
 
-private struct ParserWithLocation<Source: Parser, Output>: Parser {
+private struct ParserWithLocation<Source: Parser, Parsed>: Parser {
     let id = UUID()
     fileprivate let parser: InternalParser
-    fileprivate let transform: (Source.Output, Range<Location>) throws -> Output
+    fileprivate let transform: (Source.Parsed, Range<Location>) throws -> Parsed
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }
@@ -33,15 +33,15 @@ extension ParserWithLocation: InternalParser {
         scanner.exitNode()
         let location = scanner.locationOfNode()
         scanner.exitNode()
-        let transformed: Output
-        if Source.Output.self != Void.self {
-            let output = try scanner.pop(of: Source.Output.self)
+        let transformed: Parsed
+        if Source.Parsed.self != Void.self {
+            let output = try scanner.pop(of: Source.Parsed.self)
             transformed = try transform(output, location)
         } else {
-            transformed = try transform(() as! Source.Output, location)
+            transformed = try transform(() as! Source.Parsed, location)
         }
 
-        if Output.self != Void.self {
+        if Parsed.self != Void.self {
             scanner.store(value: transformed)
         }
 

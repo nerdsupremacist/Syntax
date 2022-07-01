@@ -3,26 +3,26 @@ import Foundation
 
 extension Parser {
 
-    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<[Output]> where Content.Output == Void {
-        return RepeatUntil<Output, Void>(parser: internalParser(), end: end().internalParser()).map { $0.0 }
+    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<[Parsed]> where Content.Parsed == Void {
+        return RepeatUntil<Parsed, Void>(parser: internalParser(), end: end().internalParser()).map { $0.0 }
     }
 
     @_disfavoredOverload
-    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<([Output], Content.Output)> {
+    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<([Parsed], Content.Parsed)> {
         return RepeatUntil(parser: internalParser(), end: end().internalParser()).eraseToAnyParser()
     }
 
 }
 
-extension Parser where Output == Void {
+extension Parser where Parsed == Void {
 
-    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<Void> where Content.Output == Void {
+    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<Void> where Content.Parsed == Void {
         return RepeatUntil<Void, Void>(parser: internalParser(), end: end().internalParser()).ignoreOutput()
     }
 
     @_disfavoredOverload
-    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<Content.Output> {
-        return RepeatUntil<Void, Content.Output>(parser: internalParser(), end: end().internalParser()).map { $1 }
+    public func repeatUntil<Content : Parser>(@ParserBuilder end: () -> Content) -> AnyParser<Content.Parsed> {
+        return RepeatUntil<Void, Content.Parsed>(parser: internalParser(), end: end().internalParser()).map { $1 }
     }
 
 }

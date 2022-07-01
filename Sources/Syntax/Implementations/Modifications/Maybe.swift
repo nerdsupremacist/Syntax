@@ -3,15 +3,15 @@ import Foundation
 
 extension Parser {
 
-    public func maybe() -> AnyParser<Output?> {
+    public func maybe() -> AnyParser<Parsed?> {
         return Maybe(content: internalParser()).eraseToAnyParser()
     }
 
-    public func maybe(default defaultOutput: Output) -> AnyParser<Output> {
+    public func maybe(default defaultOutput: Parsed) -> AnyParser<Parsed> {
         return Maybe(content: internalParser()).map { $0 ?? defaultOutput }
     }
 
-    public func maybe(default defaultOutput: Output?) -> AnyParser<Output?> {
+    public func maybe(default defaultOutput: Parsed?) -> AnyParser<Parsed?> {
         return Maybe(content: internalParser()).map { $0 ?? defaultOutput }
     }
 
@@ -28,7 +28,7 @@ public struct Maybe<Wrapped>: Parser {
 
 extension Maybe {
 
-    public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Output == Wrapped {
+    public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Parsed == Wrapped {
         self.content = content().internalParser()
     }
 
@@ -46,7 +46,7 @@ extension Maybe: InternalParser {
         }
 
         if !parsed {
-            scanner.store(value: nil as Output)
+            scanner.store(value: nil as Parsed)
         }
     }
 

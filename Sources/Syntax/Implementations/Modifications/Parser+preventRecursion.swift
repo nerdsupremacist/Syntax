@@ -4,20 +4,20 @@ import Foundation
 
 extension Parser {
 
-    public func preventRecursion() -> AnyParser<Output> {
+    public func preventRecursion() -> AnyParser<Parsed> {
         return PreventRecursion(parser: internalParser()).eraseToAnyParser()
     }
 
 }
 
-private class PreventRecursion<Output>: Parser {
+private class PreventRecursion<Parsed>: Parser {
     fileprivate let parser: InternalParser
 
     init(parser: InternalParser) {
         self.parser = parser
     }
 
-    var body: AnyParser<Output> {
+    var body: AnyParser<Parsed> {
         return neverBody()
     }
 }

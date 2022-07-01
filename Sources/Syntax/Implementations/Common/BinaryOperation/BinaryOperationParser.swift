@@ -9,19 +9,19 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
 
     let id = UUID()
     private let content: InternalParser
-    private let wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output
+    private let wrapper: (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed
     private let operators: [CachedOperator]
 
     public init(operators: [Operator],
                 @ParserBuilder content: () -> Content,
-                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
+                by wrapper: @escaping (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed) {
 
         self.content = content().located().internalParser()
         self.wrapper = wrapper
         self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser) }
     }
 
-    public var body: AnyParser<BinaryOperation<Content.Output, Operator>> {
+    public var body: AnyParser<BinaryOperation<Content.Parsed, Operator>> {
         return neverBody()
     }
 }
@@ -30,7 +30,7 @@ extension BinaryOperationParser {
 
     public init(operators: Operator...,
                 @ParserBuilder content: () -> Content,
-                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
+                by wrapper: @escaping (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed) {
 
         self.init(operators: operators, content: content, by: wrapper)
     }
@@ -40,14 +40,14 @@ extension BinaryOperationParser {
 extension BinaryOperationParser where Operator: CaseIterable {
 
     public init(@ParserBuilder content: () -> Content,
-                by wrapper: @escaping (BinaryOperation<Content.Output, Operator>) -> Content.Output) {
+                by wrapper: @escaping (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed) {
 
         self.init(operators: Array(Operator.allCases), content: content, by: wrapper)
     }
 
 }
 
-extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator {
+extension BinaryOperationParser where Content.Parsed: MemberOfBinaryOperation, Content.Parsed.Operator == Operator {
 
     public init(operators: Operator...,
                 @ParserBuilder content: () -> Content) {
@@ -63,7 +63,7 @@ extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, C
 
 }
 
-extension BinaryOperationParser where Content.Output: MemberOfBinaryOperation, Content.Output.Operator == Operator, Operator: CaseIterable {
+extension BinaryOperationParser where Content.Parsed: MemberOfBinaryOperation, Content.Parsed.Operator == Operator, Operator: CaseIterable {
 
     public init(@ParserBuilder content: () -> Content) {
         self.init(operators: Array(Operator.allCases), content: content, by: { .binaryOperation($0) })
@@ -172,7 +172,7 @@ extension BinaryOperationParser {
     private func parseMember(using scanner: Scanner) throws -> IntermediateRepresentation {
         try scanner.preventRecursion(id: content.id)
         try scanner.parse(using: content)
-        let member = try scanner.pop(of: Located<Content.Output>.self)
+        let member = try scanner.pop(of: Located<Content.Parsed>.self)
         return .member(member)
     }
 
@@ -192,10 +192,10 @@ extension BinaryOperationParser {
     }
 
     private enum IntermediateRepresentation {
-        case member(Located<Content.Output>)
-        case operation(Located<BinaryOperation<Content.Output, Operator>>)
+        case member(Located<Content.Parsed>)
+        case operation(Located<BinaryOperation<Content.Parsed, Operator>>)
 
-        func member(using wrapper: (BinaryOperation<Content.Output, Operator>) -> Content.Output) -> Located<Content.Output> {
+        func member(using wrapper: (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed) -> Located<Content.Parsed> {
             switch self {
             case .member(let member):
                 return member
