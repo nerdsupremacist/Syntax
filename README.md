@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/Swift-5.4-orange.svg" />
+    <img src="https://img.shields.io/badge/Swift-5.7-orange.svg" />
     <a href="https://swift.org/package-manager">
         <img src="https://img.shields.io/badge/swiftpm-compatible-brightgreen.svg?style=flat" alt="Swift Package Manager" />
     </a>
@@ -222,50 +222,50 @@ You will notice that we put a `map` at the end of each line.
 This is because parsers like `StringLiteral` will return a String and not JSON. So we need to map that string to JSON.
 
 So the rest of our job will go into parsing objects and literals. The first thing we notice though is that Arrays and Objects need to parse JSON again. 
-This recursion needs to be stated explicitely. For that we can wrap our `Either` in a `Recursive` that will give us a reference to the JSON Parser: 
+This recursion needs to be stated explicitely. To use a Parser recursively, we implement a different protocol called `RecursiveParser`: 
 
 ```swift
-struct JSONParser: Parser {
+struct JSONParser: RecursiveParser {
     var body: any Parser<JSON> {
-        Recursive { jsonParser in
-            Either {
-                /// TODO: Arrays and Objects
+        Either {
+            /// TODO: Arrays and Objects
 
-                StringLiteral().map(JSON.string)
-                IntLiteral().map(JSON.int)
-                DoubleLiteral().map(JSON.double)
-                BooleanLiteral().map(JSON.bool)
+            StringLiteral().map(JSON.string)
+            IntLiteral().map(JSON.int)
+            DoubleLiteral().map(JSON.double)
+            BooleanLiteral().map(JSON.bool)
                 
-                Word("null").map(to: JSON.null)
-            }
+            Word("null").map(to: JSON.null)
         }
     }
 }
 ```
 
+The name `RecursiveParser` describes quite accurately what it does. It's a `Parser`, which can have a cycle inside. 
+**Note:** the protocol `RecursiveParser` expects that your Parser type will also conform to `Hashable`. 
+If your type only has `Hashable` properties, this conformance will be synthesized by the compiler.
+
+Now, let's get parsing of these recursive definitions going.
 We can start with arrays. We can create an array parser that will parse multiple values of `JSON` separated by commas, inside `[` and `]`. In Syntax that looks like this:
 
 ```swift
 struct JSONArrayParser: Parser {
-    // reference to the JSON parser
-    let jsonParser: AnyParser<JSON>
-
     var body: any Parser<[JSON]> {
         "["
 
-        jsonParser.separated(by: ",")
+        // we can just reuse our JSON Parser here.
+        JSONParser()
+            .separated(by: ",")
 
         "]"
     }
 }
 ```
 
-Easy right. It's pretty much what we said in words. Dictionary is pretty similar, except that we have a key-value pairs separated by commas:
+Easy, right? It's pretty much what we said in words. Dictionaries are pretty similar, except that we have a key-value pairs separated by commas:
 
 ```swift
 struct JSONDictionaryParser: Parser {
-    let jsonParser: AnyParser<JSON>
-
     var body: any Parser<[String : JSON]> {
         "{"
 
@@ -276,7 +276,7 @@ struct JSONDictionaryParser: Parser {
 
             ":"
 
-            jsonParser
+            JSONParser()
         }
         .separated(by: ",")
         .map { values in
@@ -292,20 +292,18 @@ struct JSONDictionaryParser: Parser {
 And for the final act, we add those two to our `Either` for JSON:
 
 ```swift
-struct JSONParser: Parser {
+struct JSONParser: RecursiveParser {
     var body: any Parser<JSON> {
-        Recursive { jsonParser in
-            Either {
-                JSONDictionaryParser(jsonParser: jsonParser).map(JSON.object)
-                JSONArrayParser(jsonParser: jsonParser).map(JSON.array)
+        Either {
+            JSONDictionaryParser().map(JSON.object)
+            JSONArrayParser().map(JSON.array)
 
-                StringLiteral().map(JSON.string)
-                IntLiteral().map(JSON.int)
-                DoubleLiteral().map(JSON.double)
-                BooleanLiteral().map(JSON.bool)
+            StringLiteral().map(JSON.string)
+            IntLiteral().map(JSON.int)
+            DoubleLiteral().map(JSON.double)
+            BooleanLiteral().map(JSON.bool)
                 
-                Word("null").map(to: JSON.null)
-            }
+            Word("null").map(to: JSON.null)
         }
     }
 }
