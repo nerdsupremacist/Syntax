@@ -28,10 +28,11 @@ extension Token: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            let match = try scanner.take(substring: string)
-            scanner.store(value: match)
-            scanner.exitNode()
+            let match = try scanner.withNewNode { scanner in
+                let match = try scanner.take(substring: string)
+                scanner.store(value: match)
+                return match
+            }
             scanner.configureNode(kind: .tokenMatch)
             scanner.configureNode(annotations: ["match" : String(match)])
         }

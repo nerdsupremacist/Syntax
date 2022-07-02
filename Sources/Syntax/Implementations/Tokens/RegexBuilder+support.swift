@@ -42,10 +42,10 @@ extension RegexWrapperParser: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            let match = try scanner.take(regex: expression)
-            scanner.store(value: match.output)
-            scanner.exitNode()
+            try scanner.withNewNode { scanner in
+                let match = try scanner.take(regex: expression)
+                scanner.store(value: match.output)
+            }
             scanner.configureNode(kind: .expressionMatch)
         }
     }

@@ -84,14 +84,7 @@ private class InternalParserWrapper<T : Parser>: InternalParser {
     }
 
     func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        do {
-            try content.parse(using: scanner)
-            scanner.exitNode()
-        } catch {
-            scanner.exitNode()
-            throw error
-        }
+        try scanner.parseWithNewNode(content)
         if let kind = T.kind {
             scanner.configureNode(kind: kind)
             scanner.pruneNode(strategy: .lower)
@@ -103,8 +96,8 @@ private class InternalParserWrapper<T : Parser>: InternalParser {
 
             if let value = value as? Encodable {
                 scanner.configureNode(annotations: ["value" : value])
+                scanner.pruneNode(strategy: .separate)
             }
-            scanner.pruneNode(strategy: .separate)
         }
     }
 }

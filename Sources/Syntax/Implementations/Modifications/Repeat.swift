@@ -71,42 +71,41 @@ extension Repeat: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            var count = 0
-            if let min = min {
-                for _ in 0..<min {
-                    try scanner.parse(using: content)
-                    count += 1
+            try scanner.withNewNode { scanner in
+                var count = 0
+                if let min = min {
+                    for _ in 0..<min {
+                        try scanner.parse(using: content)
+                        count += 1
+                    }
                 }
-            }
 
-            while (max.map { $0 > count } ?? true) {
-                let index = scanner.range.lowerBound
-                scanner.begin()
-                do {
-                    try scanner.parse(using: content)
+                while (max.map { $0 > count } ?? true) {
+                    let index = scanner.range.lowerBound
+                    scanner.begin()
+                    do {
+                        try scanner.parse(using: content)
 
-                    if scanner.range.lowerBound <= index {
+                        if scanner.range.lowerBound <= index {
+                            try scanner.rollback()
+                            break
+                        }
+
+                        try scanner.commit()
+                        count += 1
+                    } catch {
                         try scanner.rollback()
                         break
                     }
+                }
 
-                    try scanner.commit()
-                    count += 1
-                } catch {
-                    try scanner.rollback()
-                    break
+                if Content.Parsed.self != Void.self {
+                    let values = try (0..<count).map { _ in try scanner.pop(of: Content.Parsed.self) }.reversed()
+                    scanner.store(value: Array(values))
+                } else {
+                    scanner.store(value: [])
                 }
             }
-
-            if Content.Parsed.self != Void.self {
-                let values = try (0..<count).map { _ in try scanner.pop(of: Content.Parsed.self) }.reversed()
-                scanner.store(value: Array(values))
-            } else {
-                scanner.store(value: [])
-            }
-
-            scanner.exitNode()
         }
     }
 

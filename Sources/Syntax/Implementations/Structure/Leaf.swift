@@ -27,10 +27,10 @@ extension Leaf: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            try scanner.parse(using: content)
-            scanner.removeChildrenOfNode()
-            scanner.exitNode()
+            try scanner.withNewNode { scanner in
+                try scanner.parse(using: content)
+                scanner.removeChildrenOfNode()
+            }
         }
     }
 

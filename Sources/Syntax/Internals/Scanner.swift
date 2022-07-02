@@ -68,6 +68,25 @@ extension Scanner {
         }
     }
 
+    func withNewNode<T>(_ block: (Scanner) throws -> T) rethrows -> T {
+        enterNode()
+        let value: T
+        do {
+            value = try block(self)
+        } catch {
+            exitNode()
+            throw error
+        }
+        exitNode()
+        return value
+    }
+
+    func parseWithNewNode(_ parser: InternalParser) throws {
+        try withNewNode { scanner in
+            try scanner.parse(using: parser)
+        }
+    }
+
 }
 
 extension Scanner {

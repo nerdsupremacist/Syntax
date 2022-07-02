@@ -53,22 +53,22 @@ extension TupleParser: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            for parser in parsers {
-                try scanner.parse(using: parser)
-            }
+            try scanner.withNewNode { scanner in
+                for parser in parsers {
+                    try scanner.parse(using: parser)
+                }
 
-            guard outputTypes.count > 1 else {
-                return
-            }
+                guard outputTypes.count > 1 else {
+                    return
+                }
 
-            let outputPointer = UnsafeMutablePointer<Parsed>.allocate(capacity: 1)
-            let record = ProtocolConformanceRecord(type: outputTypes[0], witnessTable: nil)
-            let firstType = unsafeBitCast(record, to: ValuePopper.Type.self)
-            try firstType.pop(from: scanner, into: outputPointer, followedBy: outputTypes.dropFirst())
-            scanner.store(value: outputPointer.pointee)
-            outputPointer.deallocate()
-            scanner.exitNode()
+                let outputPointer = UnsafeMutablePointer<Parsed>.allocate(capacity: 1)
+                let record = ProtocolConformanceRecord(type: outputTypes[0], witnessTable: nil)
+                let firstType = unsafeBitCast(record, to: ValuePopper.Type.self)
+                try firstType.pop(from: scanner, into: outputPointer, followedBy: outputTypes.dropFirst())
+                scanner.store(value: outputPointer.pointee)
+                outputPointer.deallocate()
+            }
         }
     }
 

@@ -28,10 +28,11 @@ extension Word: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            let match = try scanner.take(word: word)
-            scanner.store(value: match)
-            scanner.exitNode()
+            let match = try scanner.withNewNode { scanner in
+                let match = try scanner.take(word: word)
+                scanner.store(value: match)
+                return match
+            }
             scanner.configureNode(kind: .wordMatch)
             scanner.configureNode(annotations: ["match" : match])
         }

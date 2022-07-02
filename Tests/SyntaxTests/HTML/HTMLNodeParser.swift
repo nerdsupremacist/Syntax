@@ -22,6 +22,7 @@ enum HTMLParserError: Error, LocalizedError {
     }
 }
 
+// Parses full HTML
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 struct HTMLNodeParser: RecursiveParser {
     var body: any Parser<HTMLNode> {
@@ -33,7 +34,7 @@ struct HTMLNodeParser: RecursiveParser {
 }
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-private struct IdentifierParser: Parser {
+private struct IdentifierParser: RecursiveParser {
     var body: any Parser<Substring> {
         Regex {
           CharacterClass(
@@ -52,6 +53,7 @@ private struct IdentifierParser: Parser {
     }
 }
 
+// Parses: <MyTag />
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct SingleHTMLNodeParser: Parser {
     var body: any Parser<HTMLNode> {
@@ -67,10 +69,16 @@ private struct SingleHTMLNodeParser: Parser {
             "/>"
         }
         .map { HTMLNode(tag: $0, attributes: $1, contents: nil) }
+        .annotate { node in
+            let attributeDictionary = Dictionary(node.attributes.map { $0.keyValue() }) { lhs, rhs in lhs }
+            return ["html.attributes" : attributeDictionary, "html.tag" : String(node.tag)]
+        }
     }
 
 }
 
+
+// Parses: <MyTag annotation="value">{children}</MyTag>
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct HTMLNodeWithChildrenParser: Parser {
     var body: any Parser<HTMLNode> {
@@ -104,6 +112,7 @@ private struct EndTag {
     let tag: Substring
 }
 
+// Parses: annotation="value"
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct AttributeParser: Parser {
     var body: any Parser<HTMLNode.Attribute> {
@@ -125,6 +134,7 @@ private struct AttributeParser: Parser {
     }
 }
 
+// Parses: <MyTag annotation="value">
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct BeginTagParser: Parser {
     var body: any Parser<BeginTag> {
@@ -147,6 +157,7 @@ private struct BeginTagParser: Parser {
     }
 }
 
+// Parses: </MyTag>
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct EndTagParser: Parser {
     var body: any Parser<EndTag> {

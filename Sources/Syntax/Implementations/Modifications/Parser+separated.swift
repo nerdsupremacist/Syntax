@@ -47,51 +47,51 @@ extension Separated: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            var values: [(Content.Parsed, Separator.Parsed?)] = []
-            while (true) {
-                scanner.begin()
-                do {
-                    if !values.isEmpty {
-                        try scanner.parse(using: separator)
-                        let separatorOutput: Separator.Parsed
-                        if Separator.Parsed.self != Void.self {
-                            separatorOutput = try scanner.pop(of: Separator.Parsed.self)
-                        } else {
-                            separatorOutput = () as! Separator.Parsed
+            try scanner.withNewNode { scanner in
+                var values: [(Content.Parsed, Separator.Parsed?)] = []
+                while (true) {
+                    scanner.begin()
+                    do {
+                        if !values.isEmpty {
+                            try scanner.parse(using: separator)
+                            let separatorOutput: Separator.Parsed
+                            if Separator.Parsed.self != Void.self {
+                                separatorOutput = try scanner.pop(of: Separator.Parsed.self)
+                            } else {
+                                separatorOutput = () as! Separator.Parsed
+                            }
+
+                            values[values.count - 1] = (values[values.count - 1].0, separatorOutput)
                         }
-
-                        values[values.count - 1] = (values[values.count - 1].0, separatorOutput)
+                        try scanner.parse(using: content)
+                        let sourceOutput: Content.Parsed
+                        if Content.Parsed.self != Void.self {
+                            sourceOutput = try scanner.pop(of: Content.Parsed.self)
+                        } else {
+                            sourceOutput = () as! Content.Parsed
+                        }
+                        values.append((sourceOutput, nil))
+                        try scanner.commit()
+                    } catch {
+                        try scanner.rollback()
+                        break
                     }
-                    try scanner.parse(using: content)
-                    let sourceOutput: Content.Parsed
-                    if Content.Parsed.self != Void.self {
-                        sourceOutput = try scanner.pop(of: Content.Parsed.self)
+                }
+
+                if !values.isEmpty && allowTrailing {
+                    try scanner.parse(using: separator)
+                    let separatorOutput: Separator.Parsed
+                    if Separator.Parsed.self != Void.self {
+                        separatorOutput = try scanner.pop(of: Separator.Parsed.self)
                     } else {
-                        sourceOutput = () as! Content.Parsed
+                        separatorOutput = () as! Separator.Parsed
                     }
-                    values.append((sourceOutput, nil))
-                    try scanner.commit()
-                } catch {
-                    try scanner.rollback()
-                    break
-                }
-            }
 
-            if !values.isEmpty && allowTrailing {
-                try scanner.parse(using: separator)
-                let separatorOutput: Separator.Parsed
-                if Separator.Parsed.self != Void.self {
-                    separatorOutput = try scanner.pop(of: Separator.Parsed.self)
-                } else {
-                    separatorOutput = () as! Separator.Parsed
+                    values[values.count - 1] = (values[values.count - 1].0, separatorOutput)
                 }
 
-                values[values.count - 1] = (values[values.count - 1].0, separatorOutput)
+                scanner.store(value: Array(values))
             }
-
-            scanner.store(value: Array(values))
-            scanner.exitNode()
         }
     }
 

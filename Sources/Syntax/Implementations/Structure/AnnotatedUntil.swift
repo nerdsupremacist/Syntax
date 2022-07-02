@@ -38,35 +38,35 @@ extension AnnotatedUntil: InternalParserBuilder {
 
         func parse(using scanner: Scanner) throws {
             scanner.beginScanning(in: scanner.range, clipToLast: true, for: AnnotationValue.self)
-            scanner.enterNode()
+            
+            try scanner.withNewNode { scanner in
+                while (true) {
+                    let nextContentRange = try scanner.range(for: content)
+                    let nextEndRange = try scanner.range(for: end)
 
-            while (true) {
-                let nextContentRange = try scanner.range(for: content)
-                let nextEndRange = try scanner.range(for: end)
+                    switch (nextContentRange, nextEndRange) {
 
-                switch (nextContentRange, nextEndRange) {
-
-                case (.none, .none), (.none, .some):
-                    break
-
-                case (.some(let nextContentRange), .some(let nextEndRange)):
-                    if nextContentRange.lowerBound >= nextEndRange.lowerBound {
+                    case (.none, .none), (.none, .some):
                         break
-                    } else {
-                        fallthrough
+
+                    case (.some(let nextContentRange), .some(let nextEndRange)):
+                        if nextContentRange.lowerBound >= nextEndRange.lowerBound {
+                            break
+                        } else {
+                            fallthrough
+                        }
+
+                    default:
+                        scanner.begin()
+                        try content.parse(using: scanner)
+                        try scanner.commit()
+                        continue
                     }
 
-                default:
-                    scanner.begin()
-                    try content.parse(using: scanner)
-                    try scanner.commit()
-                    continue
+                    break
                 }
-
-                break
             }
 
-            scanner.exitNode()
             scanner.begin()
             try end.parse(using: scanner)
             try scanner.commit()
@@ -102,9 +102,10 @@ extension Scanner {
         begin()
         enterNode()
         do {
-            try parser.parse(using: self)
+            try parse(using: parser)
             exitNode()
         } catch {
+            exitNode()
             try rollback()
             return nil
         }

@@ -32,9 +32,9 @@ extension StringTokenParser: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            let match = try scanner.take(substring: string)
-            scanner.exitNode()
+            let match = try scanner.withNewNode { scanner in
+                try scanner.take(substring: string)
+            }
             scanner.configureNode(kind: .tokenMatch)
             scanner.configureNode(annotations: ["match" : String(match)])
         }

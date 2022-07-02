@@ -35,12 +35,10 @@ extension ParserWithLocation: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            scanner.enterNode()
-            try scanner.parse(using: content)
-            scanner.exitNode()
-            let location = scanner.locationOfNode()
-            scanner.exitNode()
+            let location = try scanner.withNewNode { scanner in
+                try scanner.parseWithNewNode(content)
+                return scanner.locationOfNode()
+            }
             let transformed: Parsed
             if Content.Parsed.self != Void.self {
                 let output = try scanner.pop(of: Content.Parsed.self)

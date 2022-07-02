@@ -121,29 +121,28 @@ extension BinaryOperationParser._Parser {
     }
 
     private func parse(operator current: CachedOperator, using scanner: Scanner, member: (Scanner) throws -> IntermediateRepresentation) throws -> IntermediateRepresentation {
-        scanner.enterNode()
-        let leftMost = try member(scanner)
-        var representations = [OperationUsageIntermediateRepresentation]()
-        while true {
-            var location: Range<Location>!
-            let added: Bool = scanner.attempt { scanner in
-                scanner.enterNode()
-                try scanner.parse(using: current.parser)
-                scanner.exitNode()
-                location = scanner.locationOfNode()
-                scanner.configureNode(kind: .binaryOperator)
-                scanner.pruneNode(strategy: .separate)
+        let (leftMost, representations) = try scanner.withNewNode { scanner in 
+            let leftMost = try member(scanner)
+            var representations = [OperationUsageIntermediateRepresentation]()
+            while true {
+                var location: Range<Location>!
+                let added: Bool = scanner.attempt { scanner in
+                    try scanner.parseWithNewNode(current.parser)
+                    location = scanner.locationOfNode()
+                    scanner.configureNode(kind: .binaryOperator)
+                    scanner.pruneNode(strategy: .separate)
+                }
+
+                if added {
+                    let value = try member(scanner)
+                    representations.append(OperationUsageIntermediateRepresentation(operatorRange: location, representation: value))
+                } else {
+                    break
+                }
             }
 
-            if added {
-                let value = try member(scanner)
-                representations.append(OperationUsageIntermediateRepresentation(operatorRange: location, representation: value))
-            } else {
-                break
-            }
+            return (leftMost, representations)
         }
-
-        scanner.exitNode()
 
         guard !representations.isEmpty else {
             scanner.pruneNode(strategy: .lower)

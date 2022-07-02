@@ -151,7 +151,7 @@ extension Scanner {
     fileprivate func parseWithAnnotatedErrors(parser: InternalParser) throws {
         begin()
         do {
-            try parser.parse(using: self)
+            try parse(using: parser)
             try commit()
         } catch let error as DiagnosticError {
             try rollback()

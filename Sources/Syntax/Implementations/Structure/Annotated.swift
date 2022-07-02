@@ -36,27 +36,26 @@ extension Annotated: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-
-            if let pattern = pattern {
-                let match = try scanner.take(pattern: pattern)
-                scanner.beginScanning(in: match.range, clipToLast: false, for: Content.Parsed.self)
-            } else {
-                scanner.beginScanning(in: scanner.range, clipToLast: false, for: Content.Parsed.self)
-            }
-
-            while (true) {
-                let hasParsed: Bool = scanner.attempt { scanner in
-                    try content.parse(using: scanner)
+            try scanner.withNewNode { scanner in
+                if let pattern = pattern {
+                    let match = try scanner.take(pattern: pattern)
+                    scanner.beginScanning(in: match.range, clipToLast: false, for: Content.Parsed.self)
+                } else {
+                    scanner.beginScanning(in: scanner.range, clipToLast: false, for: Content.Parsed.self)
                 }
 
-                if !hasParsed {
-                    break
-                }
-            }
+                while (true) {
+                    let hasParsed: Bool = scanner.attempt { scanner in
+                        try content.parse(using: scanner)
+                    }
 
-            try scanner.commit()
-            scanner.exitNode()
+                    if !hasParsed {
+                        break
+                    }
+                }
+
+                try scanner.commit()
+            }
         }
     }
 

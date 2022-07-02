@@ -28,10 +28,11 @@ extension RegularExpression: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            let match = try scanner.take(pattern: pattern)
-            scanner.store(value: match)
-            scanner.exitNode()
+            let match = try scanner.withNewNode { scanner in
+                let match = try scanner.take(pattern: pattern)
+                scanner.store(value: match)
+                return match
+            }
             scanner.configureNode(kind: .expressionMatch)
             scanner.configureNode(annotations: ["match" : String(match.text)])
         }

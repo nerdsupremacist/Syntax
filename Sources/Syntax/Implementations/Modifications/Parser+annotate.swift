@@ -34,9 +34,7 @@ extension Annotator: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            scanner.enterNode()
-            try scanner.parse(using: content)
-            scanner.exitNode()
+            try scanner.parseWithNewNode(content)
             let value: Parsed
             if Parsed.self != Void.self {
                 value = try scanner.pop(of: Parsed.self)
