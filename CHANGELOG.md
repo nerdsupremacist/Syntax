@@ -1,7 +1,8 @@
 # Changelog
 ## [3.0.0] - Unreleased
 ### Changed
-- Updated to Swift 5.7 to be able to use primary associated types and simplify the DSL
+- **Breaking:** Updated to Swift 5.7 to be able to use primary associated types and simplify the DSL
+- **Breaking:** Replaced `Recursive` with a protocol. To make a parser recursive, we no longer use the `Recursive` wrapper, but instead make our parser conform to `RecursiveParser`. This removes the added work of passing references of the recursive parser around.
 
 ## [2.0.0] - 2022-07-02
 ### Fixed
