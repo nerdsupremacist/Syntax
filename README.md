@@ -31,7 +31,9 @@ import PackageDescription
 let package = Package(
     [...]
     dependencies: [
-        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "1.0.0")
+        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "3.0.0"), // for Swift 5.7
+        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "2.0.0"), // for Swift 5.4
+        .package(url: "https://github.com/nerdsupremacist/Syntax.git", from: "1.0.0"), // for Swift 5.3
     ]
 )
 ```
