@@ -2,8 +2,7 @@
 import Foundation
 
 public struct TupleParser<Parsed>: Parser {
-    let id = UUID()
-    let parsers: [InternalParser]
+    let builders: [InternalParserBuilder]
     let outputTypes: [Any.Type]
 
     public var body: any Parser<Parsed> {
@@ -11,55 +10,70 @@ public struct TupleParser<Parsed>: Parser {
     }
 }
 
-extension TupleParser: InternalParser {
-    func prefixes() -> Set<String> {
-        var prefixes: Set<String> = []
+extension TupleParser: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let parsers: [InternalParser]
+        let outputTypes: [Any.Type]
 
-        for parser in parsers {
-            let currentPrefixes = parser.prefixes()
-            if currentPrefixes.isEmpty {
-                return prefixes
-            } else if prefixes.isEmpty {
-                prefixes = currentPrefixes
+        init(parsers: [InternalParser], outputTypes: [Any.Type]) {
+            self.parsers = parsers
+            self.outputTypes = outputTypes
+        }
 
-                if !currentPrefixes.contains("") {
+        func prefixes() -> Set<String> {
+            var prefixes: Set<String> = []
+
+            for parser in parsers {
+                let currentPrefixes = parser.prefixes()
+                if currentPrefixes.isEmpty {
                     return prefixes
-                }
-            } else {
-                var newPrefixes: Set<String> = prefixes
-                for start in prefixes {
-                    for end in currentPrefixes {
-                        newPrefixes.formUnion([start + end])
+                } else if prefixes.isEmpty {
+                    prefixes = currentPrefixes
+
+                    if !currentPrefixes.contains("") {
+                        return prefixes
+                    }
+                } else {
+                    var newPrefixes: Set<String> = prefixes
+                    for start in prefixes {
+                        for end in currentPrefixes {
+                            newPrefixes.formUnion([start + end])
+                        }
+                    }
+                    prefixes = newPrefixes
+
+                    if !currentPrefixes.contains("") {
+                        return prefixes
                     }
                 }
-                prefixes = newPrefixes
-
-                if !currentPrefixes.contains("") {
-                    return prefixes
-                }
             }
+
+            return prefixes
         }
 
-        return prefixes
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            for parser in parsers {
+                try scanner.parse(using: parser)
+            }
+
+            guard outputTypes.count > 1 else {
+                return
+            }
+
+            let outputPointer = UnsafeMutablePointer<Parsed>.allocate(capacity: 1)
+            let record = ProtocolConformanceRecord(type: outputTypes[0], witnessTable: nil)
+            let firstType = unsafeBitCast(record, to: ValuePopper.Type.self)
+            try firstType.pop(from: scanner, into: outputPointer, followedBy: outputTypes.dropFirst())
+            scanner.store(value: outputPointer.pointee)
+            outputPointer.deallocate()
+            scanner.exitNode()
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        for parser in parsers {
-            try scanner.parse(using: parser)
-        }
-
-        guard outputTypes.count > 1 else {
-            return
-        }
-
-        let outputPointer = UnsafeMutablePointer<Parsed>.allocate(capacity: 1)
-        let record = ProtocolConformanceRecord(type: outputTypes[0], witnessTable: nil)
-        let firstType = unsafeBitCast(record, to: ValuePopper.Type.self)
-        try firstType.pop(from: scanner, into: outputPointer, followedBy: outputTypes.dropFirst())
-        scanner.store(value: outputPointer.pointee)
-        outputPointer.deallocate()
-        scanner.exitNode()
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(parsers: builders.map { context.build(using: $0) }, outputTypes: outputTypes)
     }
 }
 
@@ -70,7 +84,6 @@ private struct ProtocolConformanceRecord {
 
 private protocol ValuePopper { }
 extension ValuePopper {
-
     static func pop<T : Collection>(from scanner: Scanner, into pointer: UnsafeMutableRawPointer, followedBy next: T) throws where T.Element == Any.Type {
         var byteOffsetNeeded = (MemoryLayout<Self>.alignment - Int(UInt(bitPattern: pointer))) % MemoryLayout<Self>.alignment
         if byteOffsetNeeded < 0 {

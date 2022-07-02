@@ -4,36 +4,45 @@ import Foundation
 extension Parser {
 
     func optimize(using prefixes: String...) -> some Parser<Parsed> {
-        return OptimizedPrefixes(parser: internalParser(), optimizations: Set(prefixes))
+        return OptimizedPrefixes(content: self, optimizations: Set(prefixes))
     }
 
     func optimize(using prefixes: Set<String>) -> some Parser<Parsed> {
-        return OptimizedPrefixes(parser: internalParser(), optimizations: prefixes)
+        return OptimizedPrefixes(content: self, optimizations: prefixes)
     }
 
 }
 
-private struct OptimizedPrefixes<Parsed>: Parser {
-    let parser: InternalParser
+private struct OptimizedPrefixes<Content : Parser>: Parser {
+    let content: Content
     let optimizations: Set<String>
 
-    var body: any Parser<Parsed> {
+    var body: any Parser<Content.Parsed> {
         return neverBody()
     }
 }
 
-extension OptimizedPrefixes: InternalParser {
+extension OptimizedPrefixes: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let content: InternalParser
+        let optimizations: Set<String>
 
-    var id: UUID {
-        return parser.id
+        init(content: InternalParser, optimizations: Set<String>) {
+            self.content = content
+            self.optimizations = optimizations
+        }
+
+        func prefixes() -> Set<String> {
+            return optimizations.union(content.prefixes())
+        }
+
+        func parse(using scanner: Scanner) throws {
+            try scanner.parse(using: content)
+        }
     }
 
-    func prefixes() -> Set<String> {
-        return optimizations
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(content: context.build(content), optimizations: optimizations)
     }
-
-    func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
-    }
-
 }

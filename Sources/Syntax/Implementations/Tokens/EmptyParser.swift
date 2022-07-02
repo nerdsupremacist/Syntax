@@ -9,18 +9,22 @@ public struct EmptyParser: Parser {
     }
 }
 
-extension EmptyParser: InternalParser, Hashable {
+extension EmptyParser: InternalParserBuilder, Hashable {
+    private class _Parser: InternalParser {
+        var id: UUID {
+            return emptyId
+        }
 
-    var id: UUID {
-        return emptyId
+        func parse(using scanner: Scanner) throws {
+            // No-op
+        }
+
+        func prefixes() -> Set<String> {
+            return []
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        // No-op
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser()
     }
-
-    func prefixes() -> Set<String> {
-        return []
-    }
-
 }

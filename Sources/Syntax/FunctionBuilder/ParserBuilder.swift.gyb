@@ -41,7 +41,7 @@ extension ParserBuilder {
 
         param_names = ['c{}'.format(idx) for idx in indices]
         params = ', '.join(['_ {}: {}'.format(param, type) for param, type in zip(param_names, types)])
-        ctor_param_expressions = ['{}.internalParser()'.format(param) for param in param_names]
+        ctor_param_expressions = ['{}.internalParserBuilder()'.format(param) for param in param_names]
         ctor_type_param_expressions = ', '.join(['{}.self'.format(type) for type in generic_names_in])
 
         tuple_ctor_args = ', '.join(ctor_param_expressions)
@@ -53,7 +53,7 @@ extension ParserBuilder {
     % else:
     public static func buildBlock<${generics}>(${params}) -> TupleParser<(${generics})> {
     % end
-        return TupleParser(parsers: [${tuple_ctor_args}],
+        return TupleParser(builders: [${tuple_ctor_args}],
                            outputTypes: [${ctor_type_param_expressions}])
     }
 

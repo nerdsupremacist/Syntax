@@ -2,10 +2,10 @@
 import Foundation
 
 public struct Group<Content : Parser>: Parser {
-    private let content: InternalParser
+    private let content: Content
 
     public init(@ParserBuilder content: () -> Content) {
-        self.content = content().internalParser()
+        self.content = content()
     }
 
     public var body: any Parser<Content.Parsed> {
@@ -13,18 +13,10 @@ public struct Group<Content : Parser>: Parser {
     }
 }
 
-extension Group: InternalParser {
+extension Group: InternalParserBuilder {
 
-    var id: UUID {
-        return content.id
-    }
-
-    func prefixes() -> Set<String> {
-        return content.prefixes()
-    }
-
-    func parse(using scanner: Scanner) throws {
-        try content.parse(using: scanner)
+    func buildParser<Context : InternalParserBuilderContext >(context: inout Context) -> InternalParser {
+        return context.build(content)
     }
 
 }

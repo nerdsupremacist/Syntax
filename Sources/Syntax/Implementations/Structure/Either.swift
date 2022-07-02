@@ -2,40 +2,10 @@
 import Foundation
 
 public struct Either<Parsed>: Parser {
-    let id = UUID()
-    private let maxPrefixLength: Int
-    private let prefixMap: [Int : [String : [Int]]]
-    private let fallbackParsers: [Int]
-    private let options: [InternalParser]
+    private let options: [InternalParserBuilder]
 
     private init(options: [AnyParser<Parsed>]) {
-        self.options = options.map { $0 }
-        var fallbackParsers = [Int]()
-        var prefixMap = [Int : [String : [Int]]]()
-        for (offset, option) in self.options.enumerated() {
-            let prefixes = option.prefixes()
-            guard !prefixes.isEmpty else {
-                fallbackParsers.append(offset)
-                continue
-            }
-
-            if prefixes.contains("") {
-                fallbackParsers.append(offset)
-            }
-
-            for prefix in prefixes where !prefix.isEmpty {
-                prefixMap[
-                    prefix.count,
-                    default: [:]
-                ][
-                    prefix,
-                    default: []
-                ].append(offset)
-            }
-        }
-        self.maxPrefixLength = prefixMap.map(\.key).max() ?? 0
-        self.fallbackParsers = fallbackParsers
-        self.prefixMap = prefixMap
+        self.options = options.map { $0.builder }
     }
 
     public init(@EitherParserBuilder options: () -> [AnyParser<Parsed>]) {
@@ -55,66 +25,106 @@ extension Either {
 
 }
 
-extension Either: InternalParser {
+extension Either: InternalParserBuilder {
+    fileprivate class _Parser: InternalParser {
+        let id = UUID()
+        private let maxPrefixLength: Int
+        private let prefixMap: [Int : [String : [Int]]]
+        private let fallbackParsers: [Int]
+        private let options: [InternalParser]
 
-    func prefixes() -> Set<String> {
-        var prefixes: Set<String> = []
-        for parser in options {
-            let current = parser.prefixes()
-            guard current != [] else { return [] }
-            prefixes.formUnion(current)
-        }
-        return prefixes
-    }
-
-    func parse(using scanner: Scanner) throws {
-        var diagnostics = [DiagnosticError]()
-
-        scanner.enterNode()
-        defer { scanner.exitNode() }
-
-        let prefix = try scanner.prefix(maxPrefixLength)
-        let options = prefix.map { parsers(for: $0) } ?? self.options
-
-        var emptyParsers = [InternalParser]()
-
-        let index = scanner.range.lowerBound
-        for option in options {
-            scanner.begin()
-            do {
-                try scanner.parse(using: option)
-
-                if Parsed.self == Void.self, scanner.range.lowerBound <= index {
-                    emptyParsers.append(option)
-                    try scanner.rollback()
+        init(options: [InternalParser]) {
+            self.options = options
+            var fallbackParsers = [Int]()
+            var prefixMap = [Int : [String : [Int]]]()
+            for (offset, option) in self.options.enumerated() {
+                let prefixes = option.prefixes()
+                guard !prefixes.isEmpty else {
+                    fallbackParsers.append(offset)
                     continue
                 }
 
-                try scanner.commit()
-                return
-            } catch let error as DiagnosticError {
-                diagnostics.append(error)
-                try scanner.rollback()
-            } catch {
-                diagnostics.append(AnnotatedError(range: scanner.locationOfNode(), error: error))
-                try scanner.rollback()
+                if prefixes.contains("") {
+                    fallbackParsers.append(offset)
+                }
+
+                for prefix in prefixes where !prefix.isEmpty {
+                    prefixMap[
+                        prefix.count,
+                        default: [:]
+                    ][
+                        prefix,
+                        default: []
+                    ].append(offset)
+                }
             }
+            self.maxPrefixLength = prefixMap.map(\.key).max() ?? 0
+            self.fallbackParsers = fallbackParsers
+            self.prefixMap = prefixMap
         }
 
-        for option in emptyParsers {
-            try scanner.parse(using: option)
-            return
+        func prefixes() -> Set<String> {
+            var prefixes: Set<String> = []
+            for parser in options {
+                let current = parser.prefixes()
+                guard current != [] else { return [] }
+                prefixes.formUnion(current)
+            }
+            return prefixes
         }
 
-        if let diagnosticError = diagnostics.max(by: { $0.location < $1.location }) {
-            scanner.store(error: diagnosticError)
-            throw diagnosticError
+        func parse(using scanner: Scanner) throws {
+            var diagnostics = [DiagnosticError]()
+
+            scanner.enterNode()
+            defer { scanner.exitNode() }
+
+            let prefix = try scanner.prefix(maxPrefixLength)
+            let options = prefix.map { parsers(for: $0) } ?? self.options
+
+            var emptyParsers = [InternalParser]()
+
+            let index = scanner.range.lowerBound
+            for option in options {
+                scanner.begin()
+                do {
+                    try scanner.parse(using: option)
+
+                    if Parsed.self == Void.self, scanner.range.lowerBound <= index {
+                        emptyParsers.append(option)
+                        try scanner.rollback()
+                        continue
+                    }
+
+                    try scanner.commit()
+                    return
+                } catch let error as DiagnosticError {
+                    diagnostics.append(error)
+                    try scanner.rollback()
+                } catch {
+                    diagnostics.append(AnnotatedError(range: scanner.locationOfNode(), error: error))
+                    try scanner.rollback()
+                }
+            }
+
+            for option in emptyParsers {
+                try scanner.parse(using: option)
+                return
+            }
+
+            if let diagnosticError = diagnostics.max(by: { $0.location < $1.location }) {
+                scanner.store(error: diagnosticError)
+                throw diagnosticError
+            }
         }
     }
 
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(options: options.map { context.build(using: $0) })
+    }
 }
 
-extension Either {
+extension Either._Parser {
 
     func parsers(for prefix: Substring) -> [InternalParser] {
         var usedParsers = [Int]()

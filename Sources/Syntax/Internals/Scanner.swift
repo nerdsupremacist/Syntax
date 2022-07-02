@@ -96,9 +96,4 @@ extension Scanner {
             }
         }
     }
-
-    func parse<T : Parser>(using parser: T) throws {
-        let internalParser = parser.internalParser()
-        try internalParser.parse(using: self)
-    }
 }

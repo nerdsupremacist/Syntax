@@ -1,28 +1,40 @@
 
 import Foundation
 
-public struct Leaf<Parsed>: Parser {
-    let id = UUID()
-    private let parser: InternalParser
+public struct Leaf<Content : Parser>: Parser {
+    private let content: Content
 
-    public init<Content : Parser>(@ParserBuilder content: () -> Content) where Content.Parsed == Parsed {
-        self.parser = content().internalParser()
+    public init(@ParserBuilder content: () -> Content) {
+        self.content = content()
     }
 
-    public var body: any Parser<Parsed> {
+    public var body: any Parser<Content.Parsed> {
         return neverBody()
     }
 }
 
-extension Leaf: InternalParser {
-    func prefixes() -> Set<String> {
-        return parser.prefixes()
+extension Leaf: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let content: InternalParser
+
+        init(content: InternalParser) {
+            self.content = content
+        }
+
+        func prefixes() -> Set<String> {
+            return content.prefixes()
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            try scanner.parse(using: content)
+            scanner.removeChildrenOfNode()
+            scanner.exitNode()
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        try scanner.parse(using: parser)
-        scanner.removeChildrenOfNode()
-        scanner.exitNode()
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(content: context.build(content))
     }
 }

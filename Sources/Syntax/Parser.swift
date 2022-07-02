@@ -41,8 +41,11 @@ extension Parser {
     }
 
     public func syntaxTree(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> SyntaxTree {
+        var context = StandardInternalParserBuilderContext()
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
-        try scanner.parseWithAnnotatedErrors(parser: internalParser())
+        let builder = internalParserBuilder()
+        let parser = builder.buildParser(context: &context)
+        try scanner.parseWithAnnotatedErrors(parser: parser)
         try scanner.checkIsEmpty()
         return scanner.syntaxTree()
     }
@@ -52,8 +55,11 @@ extension Parser {
     }
 
     public func parse(_ text: String, options: [ParserOption] = [.allowWhiteSpaces]) throws -> Parsed {
+        var context = StandardInternalParserBuilderContext()
         let scanner = StandardScanner(text: text, errorHandlers: options.compactMap(\.errorHandler), memoizationStorage: MemoizationStorage())
-        try scanner.parseWithAnnotatedErrors(parser: internalParser())
+        let builder = internalParserBuilder()
+        let parser = builder.buildParser(context: &context)
+        try scanner.parseWithAnnotatedErrors(parser: parser)
         try scanner.checkIsEmpty()
         let output = try scanner.pop(of: Parsed.self)
         return output
@@ -107,7 +113,9 @@ extension Parser {
         if let cached = cache.internalParser {
             parser = cached
         } else {
-            parser = internalParser()
+            var context = StandardInternalParserBuilderContext()
+            let builder = internalParserBuilder()
+            parser = builder.buildParser(context: &context)
             cache.internalParser = parser
         }
 

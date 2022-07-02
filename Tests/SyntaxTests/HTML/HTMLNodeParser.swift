@@ -23,17 +23,13 @@ enum HTMLParserError: Error, LocalizedError {
 }
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-struct HTMLNodeParser: Parser {
-
+struct HTMLNodeParser: RecursiveParser {
     var body: any Parser<HTMLNode> {
-        Recursive { parser in
-            Either {
-                HTMLNodeWithChildrenParser(parser: parser)
-                SingleHTMLNodeParser()
-            }
+        Either {
+            HTMLNodeWithChildrenParser()
+            SingleHTMLNodeParser()
         }
     }
-
 }
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
@@ -77,13 +73,11 @@ private struct SingleHTMLNodeParser: Parser {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct HTMLNodeWithChildrenParser: Parser {
-    let parser: AnyParser<HTMLNode>
-
     var body: any Parser<HTMLNode> {
         return Group {
             BeginTagParser()
 
-            AnnotatedUntil(content: { parser }) {
+            AnnotatedUntil(content: { HTMLNodeParser() }) {
                 EndTagParser()
             }
         }

@@ -3,7 +3,6 @@ import Foundation
 @_exported import SyntaxTree
 
 struct Token: Parser, Hashable {
-    let id = UUID()
     private let string: String
 
     init(_ string: String) {
@@ -15,21 +14,32 @@ struct Token: Parser, Hashable {
     }
 }
 
-extension Token: InternalParser {
+extension Token: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let string: String
 
-    func prefixes() -> Set<String> {
-        return [string]
+        init(string: String) {
+            self.string = string
+        }
+
+        func prefixes() -> Set<String> {
+            return [string]
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            let match = try scanner.take(substring: string)
+            scanner.store(value: match)
+            scanner.exitNode()
+            scanner.configureNode(kind: .tokenMatch)
+            scanner.configureNode(annotations: ["match" : String(match)])
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        let match = try scanner.take(substring: string)
-        scanner.store(value: match)
-        scanner.exitNode()
-        scanner.configureNode(kind: .tokenMatch)
-        scanner.configureNode(annotations: ["match" : String(match)])
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(string: string)
     }
-
 }
 
 extension Kind {

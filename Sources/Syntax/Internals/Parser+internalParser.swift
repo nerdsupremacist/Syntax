@@ -3,23 +3,81 @@ import Foundation
 
 extension Parser {
 
-    func internalParser() -> InternalParser {
+    func internalParserBuilder() -> InternalParserBuilder {
         if let parser = self as? AnyParser<Parsed> {
-            return parser.parser
+            return parser.builder
         }
 
-        if let parser = self as? InternalParser {
-            return parser
+        if let parser = self as? any RecursiveParser {
+            return parser.derivedRecursiveInternalParserBuilder()
         }
 
-        return body.internalParser().wrapContent { InternalParserWrapper<Self>(content: $0) }
+        if let builder = self as? InternalParserBuilder {
+            return builder
+        }
+
+        return derivedInternalParserBuilder()
     }
 
 }
 
-private struct InternalParserWrapper<T : Parser>: InternalParser {
+extension Parser {
+
+    fileprivate func derivedInternalParserBuilder() -> InternalParserBuilder {
+        return DerivedParserBuilder(content: self)
+    }
+
+}
+
+
+extension RecursiveParser {
+
+    fileprivate func derivedRecursiveInternalParserBuilder() -> InternalParserBuilder {
+        return DerivedRecursiveParserBuilder(content: self)
+    }
+
+}
+
+private class DerivedParserBuilder<T : Parser>: InternalParserBuilder {
+    let content: T
+
+    init(content: T) {
+        self.content = content
+    }
+
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        let parser = context.build(content.body)
+        return InternalParserWrapper<T>(content: parser)
+    }
+}
+
+private class DerivedRecursiveParserBuilder<T : RecursiveParser>: InternalParserBuilder {
+    let content: T
+
+    init(content: T) {
+        self.content = content
+    }
+
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        let reference = context.reference(content)
+        if case .fresh = reference.state {
+            reference.state = .initializing
+            let parser = context.build(content.body)
+            let wrapper = InternalParserWrapper<T>(content: parser)
+            reference.internalParser = wrapper
+            reference.state = .initialized
+        }
+        return reference
+    }
+}
+
+private class InternalParserWrapper<T : Parser>: InternalParser {
     let id = UUID()
     let content: InternalParser
+
+    init(content: InternalParser) {
+        self.content = content
+    }
 
     func prefixes() -> Set<String> {
         return content.prefixes()

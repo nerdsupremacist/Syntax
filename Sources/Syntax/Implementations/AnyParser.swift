@@ -2,19 +2,19 @@
 import Foundation
 
 public struct AnyParser<Parsed>: Parser {
-    let parser: InternalParser
+    let builder: InternalParserBuilder
 
-    init(_ internalParser: InternalParser) {
-        if let internalParser = internalParser as? AnyParser<Parsed> {
-            self.parser = internalParser.parser
+    init(_ builder: InternalParserBuilder) {
+        if let parser = builder as? AnyParser<Parsed> {
+            self.builder = parser.builder
         } else {
-            self.parser = internalParser
+            self.builder = builder
         }
     }
 
     public init<Content : Parser>(_ content: Content) where Content.Parsed == Parsed {
-        let internalParser = content.internalParser()
-        self.init(internalParser)
+        let builder = content.internalParserBuilder()
+        self.init(builder)
     }
     
     public var body: any Parser<Parsed> {
@@ -22,17 +22,9 @@ public struct AnyParser<Parsed>: Parser {
     }
 }
 
-extension AnyParser: InternalParser {
-    var id: UUID {
-        return parser.id
-    }
-
-    func prefixes() -> Set<String> {
-        return parser.prefixes()
-    }
-
-    func parse(using scanner: Scanner) throws {
-        try parser.parse(using: scanner)
+extension AnyParser: InternalParserBuilder {
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return context.build(using: builder)
     }
 }
 

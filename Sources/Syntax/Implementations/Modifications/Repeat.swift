@@ -3,15 +3,15 @@ import Foundation
 
 extension Parser {
 
-    public func star() -> any Parser<[Parsed]> {
+    public func star() -> some Parser<[Parsed]> {
         return self.repeat(min: nil, max: nil)
     }
 
-    public func plus() -> any Parser<[Parsed]> {
+    public func plus() -> some Parser<[Parsed]> {
         return self.repeat(min: 1, max: nil)
     }
 
-    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> any Parser<[Parsed]> {
+    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> some Parser<[Parsed]> {
         return Repeat(min: min, max: max) { self }
     }
 
@@ -19,83 +19,98 @@ extension Parser {
 
 extension Parser where Parsed == Void {
 
-    public func star() -> any Parser<Void> {
+    public func star() -> some Parser<Void> {
         return self.repeat(min: nil, max: nil)
     }
 
-    public func plus() -> any Parser<Void> {
+    public func plus() -> some Parser<Void> {
         return self.repeat(min: 1, max: nil)
     }
 
-    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> any Parser<Void> {
+    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> some Parser<Void> {
         return Repeat(min: min, max: max) { self }.ignoreOutput()
     }
 
 }
 
-public struct Repeat<Element>: Parser {
-    let id = UUID()
+public struct Repeat<Content : Parser>: Parser {
     private let min: UInt?
     private let max: UInt?
-    private let parser: InternalParser
+    private let content: Content
 
-    public init<Content : Parser>(min: UInt? = nil, max: UInt? = nil, @ParserBuilder content: () -> Content) where Content.Parsed == Element {
+    public init(min: UInt? = nil, max: UInt? = nil, @ParserBuilder content: () -> Content) {
         self.min = min
         self.max = max
-        self.parser = content().internalParser()
+        self.content = content()
     }
     
-    public var body: any Parser<[Element]> {
+    public var body: any Parser<[Content.Parsed]> {
         return neverBody()
     }
 }
 
-extension Repeat: InternalParser {
-    func prefixes() -> Set<String> {
-        if let min = min, min > 0 {
-            return parser.prefixes()
-        } else {
-            return parser.prefixes().union([""])
-        }
-    }
+extension Repeat: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        private let min: UInt?
+        private let max: UInt?
+        private let content: InternalParser
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        var count = 0
-        if let min = min {
-            for _ in 0..<min {
-                try scanner.parse(using: parser)
-                count += 1
+        init(min: UInt?, max: UInt?, content: InternalParser) {
+            self.min = min
+            self.max = max
+            self.content = content
+        }
+
+        func prefixes() -> Set<String> {
+            if let min = min, min > 0 {
+                return content.prefixes()
+            } else {
+                return content.prefixes().union([""])
             }
         }
 
-        while (max.map { $0 > count } ?? true) {
-            let index = scanner.range.lowerBound
-            scanner.begin()
-            do {
-                try scanner.parse(using: parser)
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            var count = 0
+            if let min = min {
+                for _ in 0..<min {
+                    try scanner.parse(using: content)
+                    count += 1
+                }
+            }
 
-                if scanner.range.lowerBound <= index {
+            while (max.map { $0 > count } ?? true) {
+                let index = scanner.range.lowerBound
+                scanner.begin()
+                do {
+                    try scanner.parse(using: content)
+
+                    if scanner.range.lowerBound <= index {
+                        try scanner.rollback()
+                        break
+                    }
+
+                    try scanner.commit()
+                    count += 1
+                } catch {
                     try scanner.rollback()
                     break
                 }
-
-                try scanner.commit()
-                count += 1
-            } catch {
-                try scanner.rollback()
-                break
             }
-        }
 
-        if Element.self != Void.self {
-            let values = try (0..<count).map { _ in try scanner.pop(of: Element.self) }.reversed()
-            scanner.store(value: Array(values))
-        } else {
-            scanner.store(value: [])
-        }
+            if Content.Parsed.self != Void.self {
+                let values = try (0..<count).map { _ in try scanner.pop(of: Content.Parsed.self) }.reversed()
+                scanner.store(value: Array(values))
+            } else {
+                scanner.store(value: [])
+            }
 
-        scanner.exitNode()
+            scanner.exitNode()
+        }
     }
 
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(min: min, max: max, content: context.build(content))
+    }
 }

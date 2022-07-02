@@ -1,40 +1,46 @@
 
 import Foundation
 
-
 extension Parser {
 
-    public func preventRecursion() -> any Parser<Parsed> {
-        return PreventRecursion(parser: internalParser())
+    public func preventRecursion() -> some Parser<Parsed> {
+        return PreventRecursion(content: self)
     }
 
 }
 
-private class PreventRecursion<Parsed>: Parser {
-    fileprivate let parser: InternalParser
+private class PreventRecursion<Content : Parser>: Parser {
+    fileprivate let content: Content
 
-    init(parser: InternalParser) {
-        self.parser = parser
+    init(content: Content) {
+        self.content = content
     }
 
-    var body: any Parser<Parsed> {
+    var body: any Parser<Content.Parsed> {
         return neverBody()
     }
 }
 
-extension PreventRecursion: InternalParser {
+extension PreventRecursion: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let content: InternalParser
 
-    var id: UUID {
-        return parser.id
+        init(content: InternalParser) {
+            self.content = content
+        }
+
+        func prefixes() -> Set<String> {
+            return content.prefixes()
+        }
+
+        func parse(using scanner: Scanner) throws {
+            try scanner.preventRecursion(id: id)
+            try content.parse(using: scanner)
+        }
     }
 
-    func prefixes() -> Set<String> {
-        return parser.prefixes()
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(content: context.build(content))
     }
-
-    func parse(using scanner: Scanner) throws {
-        try scanner.preventRecursion(id: id)
-        try parser.parse(using: scanner)
-    }
-
 }

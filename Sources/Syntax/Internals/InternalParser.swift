@@ -1,7 +1,7 @@
 
 import Foundation
 
-protocol InternalParser {
+protocol InternalParser: AnyObject {
     var id: UUID { get }
     func parse(using scanner: Scanner) throws
     func prefixes() -> Set<String>

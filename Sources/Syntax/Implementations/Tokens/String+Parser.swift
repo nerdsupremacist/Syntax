@@ -10,23 +10,37 @@ extension String: Parser {
     }
 }
 
-private struct StringTokenParser: Parser, InternalParser {
-    let id = UUID()
+private struct StringTokenParser: Parser {
     let string: String
 
     var body: any Parser<Void> {
         return neverBody()
     }
+}
 
-    func prefixes() -> Set<String> {
-        return [string]
+extension StringTokenParser: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let string: String
+
+        init(string: String) {
+            self.string = string
+        }
+
+        func prefixes() -> Set<String> {
+            return [string]
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            let match = try scanner.take(substring: string)
+            scanner.exitNode()
+            scanner.configureNode(kind: .tokenMatch)
+            scanner.configureNode(annotations: ["match" : String(match)])
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        let match = try scanner.take(substring: string)
-        scanner.exitNode()
-        scanner.configureNode(kind: .tokenMatch)
-        scanner.configureNode(annotations: ["match" : String(match)])
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(string: string)
     }
 }

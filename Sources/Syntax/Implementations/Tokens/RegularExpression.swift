@@ -3,7 +3,6 @@ import Foundation
 @_exported import SyntaxTree
 
 public struct RegularExpression: Parser, Hashable {
-    let id = UUID()
     private let pattern: String
 
     public init(_ pattern: String) {
@@ -15,21 +14,32 @@ public struct RegularExpression: Parser, Hashable {
     }
 }
 
-extension RegularExpression: InternalParser {
+extension RegularExpression: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let pattern: String
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        let match = try scanner.take(pattern: pattern)
-        scanner.store(value: match)
-        scanner.exitNode()
-        scanner.configureNode(kind: .expressionMatch)
-        scanner.configureNode(annotations: ["match" : String(match.text)])
+        init(pattern: String) {
+            self.pattern = pattern
+        }
+
+        func prefixes() -> Set<String> {
+            return []
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            let match = try scanner.take(pattern: pattern)
+            scanner.store(value: match)
+            scanner.exitNode()
+            scanner.configureNode(kind: .expressionMatch)
+            scanner.configureNode(annotations: ["match" : String(match.text)])
+        }
     }
 
-    func prefixes() -> Set<String> {
-        return []
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(pattern: pattern)
     }
-
 }
 
 extension Kind {

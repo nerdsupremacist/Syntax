@@ -15,8 +15,7 @@ extension Regex: Parser {
 }
 
 @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
-private struct RegexWrapperParser<Parsed>: Parser, Hashable {
-    let id = UUID()
+private struct RegexWrapperParser<Parsed>: Parser {
     private let expression: Regex<Parsed>
 
     public init(_ expression: Regex<Parsed>) {
@@ -26,29 +25,33 @@ private struct RegexWrapperParser<Parsed>: Parser, Hashable {
     public var body: any Parser<Parsed> {
         return neverBody()
     }
-
-    public static func == (lhs: RegexWrapperParser<Parsed>, rhs: RegexWrapperParser<Parsed>) -> Bool {
-        return lhs.id == rhs.id
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
 }
 
 @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
-extension RegexWrapperParser: InternalParser {
+extension RegexWrapperParser: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let expression: Regex<Parsed>
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        let match = try scanner.take(regex: expression)
-        scanner.store(value: match.output)
-        scanner.exitNode()
-        scanner.configureNode(kind: .expressionMatch)
+        init(expression: Regex<Parsed>) {
+            self.expression = expression
+        }
+
+        func prefixes() -> Set<String> {
+            return []
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            let match = try scanner.take(regex: expression)
+            scanner.store(value: match.output)
+            scanner.exitNode()
+            scanner.configureNode(kind: .expressionMatch)
+        }
     }
 
-    func prefixes() -> Set<String> {
-        return []
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(expression: expression)
     }
 }
 

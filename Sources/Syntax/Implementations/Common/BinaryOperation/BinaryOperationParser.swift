@@ -7,18 +7,17 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
         return nil
     }
 
-    let id = UUID()
-    private let content: InternalParser
+    private let content: Content
     private let wrapper: (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed
-    private let operators: [CachedOperator]
+    private let operators: [Operator]
 
     public init(operators: [Operator],
                 @ParserBuilder content: () -> Content,
                 by wrapper: @escaping (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed) {
 
-        self.content = content().located().internalParser()
+        self.content = content()
         self.wrapper = wrapper
-        self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser.internalParser()) }
+        self.operators = operators
     }
 
     public var body: any Parser<BinaryOperation<Content.Parsed, Operator>> {
@@ -71,23 +70,43 @@ extension BinaryOperationParser where Content.Parsed: MemberOfBinaryOperation, C
 
 }
 
-extension BinaryOperationParser: InternalParser {
-    func prefixes() -> Set<String> {
-        return content.prefixes()
+extension BinaryOperationParser: InternalParserBuilder {
+    fileprivate class _Parser: InternalParser {
+        let id = UUID()
+        private let content: InternalParser
+        private let wrapper: (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed
+        private let operators: [CachedOperator]
+
+        init(content: InternalParser, wrapper: @escaping (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed, operators: [CachedOperator]) {
+            self.content = content
+            self.wrapper = wrapper
+            self.operators = operators
+        }
+
+        func prefixes() -> Set<String> {
+            return content.prefixes()
+        }
+
+        func parse(using scanner: Scanner) throws {
+            guard let first = operators.first else { fatalError() }
+            switch try parse(operator: first, using: scanner, rest: operators.dropFirst()) {
+            case .member(let member):
+                throw BinaryOperationParserError.failedToParseABinaryOperation(member: member)
+            case .operation(let operation):
+                scanner.store(value: operation.wrappedValue)
+            }
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        guard let first = operators.first else { fatalError() }
-        switch try parse(operator: first, using: scanner, rest: operators.dropFirst()) {
-        case .member(let member):
-            throw BinaryOperationParserError.failedToParseABinaryOperation(member: member)
-        case .operation(let operation):
-            scanner.store(value: operation.wrappedValue)
-        }
+
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(content: context.build(content.located()),
+                       wrapper: wrapper,
+                       operators: operators.sorted { !$0.precedes($1) }.map { _Parser.CachedOperator(value: $0, parser: context.build($0.parser)) })
     }
 }
 
-extension BinaryOperationParser {
+extension BinaryOperationParser._Parser {
 
     private func parse<C : Collection>(operator current: CachedOperator, using scanner: Scanner, rest: C) throws -> IntermediateRepresentation where C.Element == CachedOperator {
         guard let next = rest.first else { return try parse(operator: current, using: scanner, member: parseMember(using:)) }
@@ -184,14 +203,14 @@ extension Collection {
     }
 }
 
-extension BinaryOperationParser {
+extension BinaryOperationParser._Parser {
 
-    private struct CachedOperator {
+    fileprivate struct CachedOperator {
         let value: Operator
         let parser: InternalParser
     }
 
-    private enum IntermediateRepresentation {
+    fileprivate enum IntermediateRepresentation {
         case member(Located<Content.Parsed>)
         case operation(Located<BinaryOperation<Content.Parsed, Operator>>)
 

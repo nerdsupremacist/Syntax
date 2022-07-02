@@ -4,48 +4,60 @@ import Foundation
 
 extension Parser {
 
-    public func mapWithLocation<T>(_ transform: @escaping (Parsed, Range<Location>) throws -> T) -> any Parser<T> {
-        return ParserWithLocation<Self, T>(parser: internalParser(),
-                                           transform: transform)
+    public func mapWithLocation<T>(_ transform: @escaping (Parsed, Range<Location>) throws -> T) -> some Parser<T> {
+        return ParserWithLocation<Self, T>(content: self, transform: transform)
     }
 
 }
 
-private struct ParserWithLocation<Source: Parser, Parsed>: Parser {
-    let id = UUID()
-    fileprivate let parser: InternalParser
-    fileprivate let transform: (Source.Parsed, Range<Location>) throws -> Parsed
+private struct ParserWithLocation<Content: Parser, Parsed>: Parser {
+    fileprivate let content: Content
+    fileprivate let transform: (Content.Parsed, Range<Location>) throws -> Parsed
 
     var body: any Parser<Parsed> {
         return neverBody()
     }
 }
 
-extension ParserWithLocation: InternalParser {
-    func prefixes() -> Set<String> {
-        return parser.prefixes()
-    }
+extension ParserWithLocation: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let content: InternalParser
+        let transform: (Content.Parsed, Range<Location>) throws -> Parsed
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        scanner.enterNode()
-        try scanner.parse(using: parser)
-        scanner.exitNode()
-        let location = scanner.locationOfNode()
-        scanner.exitNode()
-        let transformed: Parsed
-        if Source.Parsed.self != Void.self {
-            let output = try scanner.pop(of: Source.Parsed.self)
-            transformed = try transform(output, location)
-        } else {
-            transformed = try transform(() as! Source.Parsed, location)
+        init(content: InternalParser, transform: @escaping (Content.Parsed, Range<Location>) throws -> Parsed) {
+            self.content = content
+            self.transform = transform
         }
 
-        if Parsed.self != Void.self {
-            scanner.store(value: transformed)
+        func prefixes() -> Set<String> {
+            return content.prefixes()
         }
 
-        scanner.pruneNode(strategy: .separate)
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            scanner.enterNode()
+            try scanner.parse(using: content)
+            scanner.exitNode()
+            let location = scanner.locationOfNode()
+            scanner.exitNode()
+            let transformed: Parsed
+            if Content.Parsed.self != Void.self {
+                let output = try scanner.pop(of: Content.Parsed.self)
+                transformed = try transform(output, location)
+            } else {
+                transformed = try transform(() as! Content.Parsed, location)
+            }
+
+            if Content.Parsed.self != Void.self {
+                scanner.store(value: transformed)
+            }
+
+            scanner.pruneNode(strategy: .separate)
+        }
     }
 
+    func buildParser<Context>(context: inout Context) -> InternalParser where Context : InternalParserBuilderContext {
+        return _Parser(content: context.build(content), transform: transform)
+    }
 }

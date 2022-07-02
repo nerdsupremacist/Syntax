@@ -3,7 +3,6 @@ import Foundation
 @_exported import SyntaxTree
 
 public struct Word: Parser, Hashable {
-    let id = UUID()
     private let word: String
 
     public init(_ word: String) {
@@ -15,21 +14,32 @@ public struct Word: Parser, Hashable {
     }
 }
 
-extension Word: InternalParser {
+extension Word: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let word: String
 
-    func prefixes() -> Set<String> {
-        return [word]
+        init(word: String) {
+            self.word = word
+        }
+
+        func prefixes() -> Set<String> {
+            return [word]
+        }
+
+        func parse(using scanner: Scanner) throws {
+            scanner.enterNode()
+            let match = try scanner.take(word: word)
+            scanner.store(value: match)
+            scanner.exitNode()
+            scanner.configureNode(kind: .wordMatch)
+            scanner.configureNode(annotations: ["match" : match])
+        }
     }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.enterNode()
-        let match = try scanner.take(word: word)
-        scanner.store(value: match)
-        scanner.exitNode()
-        scanner.configureNode(kind: .wordMatch)
-        scanner.configureNode(annotations: ["match" : match])
+    func buildParser<Context : InternalParserBuilderContext >(context: inout Context) -> InternalParser {
+        return _Parser(word: word)
     }
-
 }
 
 

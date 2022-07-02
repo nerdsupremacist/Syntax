@@ -15,6 +15,7 @@ class StandardScanner {
     private let memoizationStorage: MemoizationStorage
 
     private let errorHandlers: [ScannerErrorHandler]
+    private var recursiveParsersInStack: [AnyHashable : InternalParser] = [:]
 
     init(text: String, errorHandlers: [ScannerErrorHandler], memoizationStorage: MemoizationStorage) {
         self.text = text

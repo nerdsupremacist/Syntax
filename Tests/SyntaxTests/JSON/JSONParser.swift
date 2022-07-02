@@ -1,22 +1,18 @@
 
 import Syntax
 
-struct JSONParser: Parser {
+struct JSONParser: RecursiveParser {
     struct JSONArrayParser: Parser {
-        let json: AnyParser<JSON>
-
         var body: any Parser<[JSON]> {
             "[".kind(.jsonArrayStartDelimiter)
 
-            json.separated(by: ",")
+            JSONParser().separated(by: ",")
 
             "]".kind(.jsonArrayEndDelimiter)
         }
     }
 
     struct JSONDictionaryParser: Parser {
-        let json: AnyParser<JSON>
-
         var body: any Parser<[String : JSON]> {
             "{".kind(.jsonDictionaryStartDelimiter)
 
@@ -25,7 +21,7 @@ struct JSONParser: Parser {
 
                 ":"
 
-                json
+                JSONParser()
             }
             .kind(.jsonDictionaryKeyValuePair)
             .separated(by: ",")
@@ -38,21 +34,19 @@ struct JSONParser: Parser {
     }
     
     var body: any Parser<JSON> {
-        Recursive { parser in
-            Either {
-                JSONDictionaryParser(json: parser).map(JSON.object)
-                JSONArrayParser(json: parser).map(JSON.array)
+        Either {
+            JSONDictionaryParser().map(JSON.object)
+            JSONArrayParser().map(JSON.array)
 
-                StringLiteral()
-                    .escapeStrategy(JavaScriptEscapeStrategy())
-                    .map(JSON.string)
+            StringLiteral()
+                .escapeStrategy(JavaScriptEscapeStrategy())
+                .map(JSON.string)
 
-                IntLiteral().map(JSON.int)
-                DoubleLiteral().map(JSON.double)
-                BooleanLiteral().map(JSON.bool)
-                
-                Word("null").kind(.nullLiteral).map(to: JSON.null)
-            }
+            IntLiteral().map(JSON.int)
+            DoubleLiteral().map(JSON.double)
+            BooleanLiteral().map(JSON.bool)
+
+            Word("null").kind(.nullLiteral).map(to: JSON.null)
         }
     }
 }

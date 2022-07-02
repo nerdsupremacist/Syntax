@@ -2,14 +2,14 @@
 import Foundation
 
 public struct IfElseConditionalParser<A : Parser, B : Parser>: Parser where A.Parsed == B.Parsed {
-    let internalParser: InternalParser
+    let builder: InternalParserBuilder
 
     init(_ a: A) {
-        internalParser = a.internalParser()
+        builder = a.internalParserBuilder()
     }
 
     init(_ b: B) {
-        internalParser = b.internalParser()
+        builder = b.internalParserBuilder()
     }
 
     public var body: any Parser<A.Parsed> {
@@ -17,16 +17,8 @@ public struct IfElseConditionalParser<A : Parser, B : Parser>: Parser where A.Pa
     }
 }
 
-extension IfElseConditionalParser: InternalParser {
-    var id: UUID {
-        return internalParser.id
-    }
-
-    func prefixes() -> Set<String> {
-        return internalParser.prefixes()
-    }
-
-    func parse(using scanner: Scanner) throws {
-        try internalParser.parse(using: scanner)
+extension IfElseConditionalParser: InternalParserBuilder {
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return context.build(using: builder)
     }
 }

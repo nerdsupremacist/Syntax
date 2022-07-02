@@ -8,14 +8,12 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
         case end(End.Parsed)
     }
 
-    let id = UUID()
-
-    let content: InternalParser
-    let end: InternalParser
+    private let content: Content
+    private let end: End
 
     public init(@ParserBuilder content: () -> Content, @ParserBuilder end: () -> End) {
-        self.content = content().map(AnnotationValue.content).internalParser()
-        self.end = end().map(AnnotationValue.end).internalParser()
+        self.content = content()
+        self.end = end()
     }
 
     public var body: any Parser<(AnnotatedString<Content.Parsed>, End.Parsed)> {
@@ -23,65 +21,79 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
     }
 }
 
-extension AnnotatedUntil: InternalParser {
+extension AnnotatedUntil: InternalParserBuilder {
+    private class _Parser: InternalParser {
+        let id = UUID()
+        let content: InternalParser
+        let end: InternalParser
 
-    func prefixes() -> Set<String> {
-        return []
-    }
+        init(content: InternalParser, end: InternalParser) {
+            self.content = content
+            self.end = end
+        }
 
-    func parse(using scanner: Scanner) throws {
-        scanner.beginScanning(in: scanner.range, clipToLast: true, for: AnnotationValue.self)
-        scanner.enterNode()
+        func prefixes() -> Set<String> {
+            return []
+        }
 
-        while (true) {
-            let nextContentRange = try scanner.range(for: content)
-            let nextEndRange = try scanner.range(for: end)
+        func parse(using scanner: Scanner) throws {
+            scanner.beginScanning(in: scanner.range, clipToLast: true, for: AnnotationValue.self)
+            scanner.enterNode()
 
-            switch (nextContentRange, nextEndRange) {
+            while (true) {
+                let nextContentRange = try scanner.range(for: content)
+                let nextEndRange = try scanner.range(for: end)
 
-            case (.none, .none), (.none, .some):
-                break
+                switch (nextContentRange, nextEndRange) {
 
-            case (.some(let nextContentRange), .some(let nextEndRange)):
-                if nextContentRange.lowerBound >= nextEndRange.lowerBound {
+                case (.none, .none), (.none, .some):
                     break
-                } else {
-                    fallthrough
+
+                case (.some(let nextContentRange), .some(let nextEndRange)):
+                    if nextContentRange.lowerBound >= nextEndRange.lowerBound {
+                        break
+                    } else {
+                        fallthrough
+                    }
+
+                default:
+                    scanner.begin()
+                    try content.parse(using: scanner)
+                    try scanner.commit()
+                    continue
                 }
 
-            default:
-                scanner.begin()
-                try content.parse(using: scanner)
-                try scanner.commit()
-                continue
+                break
             }
 
-            break
+            scanner.exitNode()
+            scanner.begin()
+            try end.parse(using: scanner)
+            try scanner.commit()
+
+            try scanner.commit()
+
+            let annotatedString = try scanner.pop(of: AnnotatedString<AnnotationValue>.self)
+            let last = annotatedString.annotations.last!
+
+            let text = annotatedString.text[..<last.range.lowerBound]
+
+            guard case .end(let end) = last.value else { fatalError() }
+
+            let annotations = annotatedString.annotations.dropLast().map { annotation -> AnnotatedString<Content.Parsed>.Annotation in
+                guard case .content(let content) = annotation.value else { fatalError() }
+                return AnnotatedString<Content.Parsed>.Annotation(range: annotation.range, value: content)
+            }
+
+            let newString = AnnotatedString(text: text, annotations: annotations)
+            scanner.store(value: (newString, end))
         }
-
-        scanner.exitNode()
-        scanner.begin()
-        try end.parse(using: scanner)
-        try scanner.commit()
-
-        try scanner.commit()
-
-        let annotatedString = try scanner.pop(of: AnnotatedString<AnnotationValue>.self)
-        let last = annotatedString.annotations.last!
-
-        let text = annotatedString.text[..<last.range.lowerBound]
-
-        guard case .end(let end) = last.value else { fatalError() }
-
-        let annotations = annotatedString.annotations.dropLast().map { annotation -> AnnotatedString<Content.Parsed>.Annotation in
-            guard case .content(let content) = annotation.value else { fatalError() }
-            return AnnotatedString<Content.Parsed>.Annotation(range: annotation.range, value: content)
-        }
-
-        let newString = AnnotatedString(text: text, annotations: annotations)
-        scanner.store(value: (newString, end))
     }
 
+    func buildParser<Context : InternalParserBuilderContext>(context: inout Context) -> InternalParser {
+        return _Parser(content: context.build(content.map(AnnotationValue.content)),
+                       end: context.build(end.map(AnnotationValue.end)))
+    }
 }
 
 extension Scanner {
