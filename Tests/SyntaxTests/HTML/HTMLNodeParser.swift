@@ -1,6 +1,8 @@
 
+#if canImport(RegexBuilder)
 import Foundation
 import Syntax
+import RegexBuilder
 
 enum HTMLParserError: Error, LocalizedError {
     case unmatchedClosingTag(Substring)
@@ -20,6 +22,7 @@ enum HTMLParserError: Error, LocalizedError {
     }
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 struct HTMLNodeParser: Parser {
 
     var body: AnyParser<HTMLNode> {
@@ -33,12 +36,33 @@ struct HTMLNodeParser: Parser {
 
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+private struct IdentifierParser: Parser {
+    var body: AnyParser<Substring> {
+        Regex {
+          CharacterClass(
+            ("a"..."z"),
+            ("A"..."Z")
+          )
+          ZeroOrMore {
+            CharacterClass(
+              .anyOf("-"),
+              ("a"..."z"),
+              ("A"..."Z"),
+              ("0"..."9")
+            )
+          }
+        }
+    }
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct SingleHTMLNodeParser: Parser {
     var body: AnyParser<HTMLNode> {
         return Leaf {
             "<"
 
-            RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
+            IdentifierParser()
 
             Repeat {
                 AttributeParser()
@@ -46,11 +70,12 @@ private struct SingleHTMLNodeParser: Parser {
 
             "/>"
         }
-        .map { HTMLNode(tag: $0.text, attributes: $1, contents: nil) }
+        .map { HTMLNode(tag: $0, attributes: $1, contents: nil) }
     }
 
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct HTMLNodeWithChildrenParser: Parser {
     let parser: AnyParser<HTMLNode>
 
@@ -85,34 +110,34 @@ private struct EndTag {
     let tag: Substring
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct AttributeParser: Parser {
     var body: AnyParser<HTMLNode.Attribute> {
         Either {
             Group {
-                RegularExpression("[a-zA-Z][-a-zA-Z0-9]*").map { match in
-                    return match.text
-                }
+                IdentifierParser()
 
                 "="
 
                 Either {
                     IntLiteral().map(String.init)
-                    StringLiteral()
+                    StringLiteral().escapeStrategy(JavaScriptEscapeStrategy())
                 }
             }
             .map { HTMLNode.Attribute.set($0, $1) }
 
-            RegularExpression("[a-zA-Z][-a-zA-Z0-9]*").map { HTMLNode.Attribute.flag($0.text) }
+            IdentifierParser().map { HTMLNode.Attribute.flag($0) }
         }
     }
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct BeginTagParser: Parser {
     var body: AnyParser<BeginTag> {
         return Leaf {
             "<"
 
-            RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
+            IdentifierParser()
 
             Repeat {
                 AttributeParser()
@@ -120,7 +145,7 @@ private struct BeginTagParser: Parser {
 
             ">"
         }
-        .map { BeginTag(tag: $0.text, attributes: $1) }
+        .map { BeginTag(tag: $0, attributes: $1) }
         .annotate { tag in
             let attributeDictionary = Dictionary(tag.attributes.map { $0.keyValue() }) { lhs, rhs in lhs }
             return ["html.attributes" : attributeDictionary, "html.tag" : String(tag.tag)]
@@ -128,16 +153,17 @@ private struct BeginTagParser: Parser {
     }
 }
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct EndTagParser: Parser {
     var body: AnyParser<EndTag> {
         return Leaf {
             "</"
 
-            RegularExpression("[a-zA-Z][-a-zA-Z0-9]*")
+            IdentifierParser()
 
             ">"
         }
-        .map { EndTag(tag: $0.text) }
+        .map { EndTag(tag: $0) }
         .annotate { tag in
             return ["html.tag" : String(tag.tag)]
         }
@@ -156,3 +182,4 @@ extension HTMLNode.Attribute {
     }
 
 }
+#endif

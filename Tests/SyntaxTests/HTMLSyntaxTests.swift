@@ -1,6 +1,9 @@
+
+#if canImport(RegexBuilder)
 import XCTest
 import Syntax
 
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 final class HTMLSyntaxTests: XCTestCase {
 
     func testParagraph() {
@@ -16,6 +19,8 @@ final class HTMLSyntaxTests: XCTestCase {
         </p>
         """
 
+        let parsed = try! HTMLNodeParser().parse(text)
+        print(parsed)
         let syntaxTree = try! HTMLNodeParser().syntaxTree(text)
         print(String(data: try! JSONEncoder().encode(syntaxTree), encoding: .utf8)!)
     }
@@ -43,3 +48,4 @@ final class HTMLSyntaxTests: XCTestCase {
         }
     }
 }
+#endif
