@@ -98,7 +98,7 @@ extension StandardScanner: Scanner {
 #if canImport(RegexBuilder)
     @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
     func take<Parsed>(regex: Regex<Parsed>) throws -> Regex<Parsed>.Match {
-        fatalError()
+        return try take(regex: regex, allowErrorHandling: true)
     }
 #endif
 
@@ -207,7 +207,12 @@ extension StandardScanner {
         do {
             return try take(expression: expression)
         } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling && state.allowErrorHandling {
-            guard case .failedToMatch = error.reason else { throw error }
+            switch error.reason {
+            case .failedToMatchRegex, .failedToMatch:
+                break
+            default:
+                throw error
+            }
             let currentIndex = state.range.lowerBound
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
@@ -241,9 +246,14 @@ extension StandardScanner {
 extension StandardScanner {
     fileprivate func take<Parsed>(regex: Regex<Parsed>, allowErrorHandling: Bool) throws -> Regex<Parsed>.Match {
         do {
-            return try take(regex: regex)
+            return try _take(regex: regex)
         } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling && state.allowErrorHandling {
-            guard case .failedToMatch = error.reason else { throw error }
+            switch error.reason {
+            case .failedToMatchRegex, .failedToMatch:
+                break
+            default:
+                throw error
+            }
             let currentIndex = state.range.lowerBound
             let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
             let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)

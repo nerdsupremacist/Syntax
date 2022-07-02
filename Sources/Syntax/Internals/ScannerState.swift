@@ -166,10 +166,9 @@ final class ScannerState {
 #if canImport(RegexBuilder)
     @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
     func take<Parsed>(regex: Regex<Parsed>, in text: String) throws -> RegexExpressionScanResult<Parsed> {
-        fatalError()
+        return try storage.take(regex: regex, in: text, for: self)
     }
 #endif
-
 
     func begin() -> ScannerState {
         return storage.begin(self)
