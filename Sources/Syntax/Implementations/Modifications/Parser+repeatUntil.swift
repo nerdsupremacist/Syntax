@@ -32,7 +32,7 @@ private struct RepeatUntil<Element, End>: Parser {
     let parser: InternalParser
     let end: InternalParser
 
-    var body: AnyParser<([Element], End)> {
+    var body: any Parser<([Element], End)> {
         return neverBody()
     }
 }

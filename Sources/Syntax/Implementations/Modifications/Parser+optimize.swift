@@ -17,7 +17,7 @@ private struct OptimizedPrefixes<Parsed>: Parser {
     let parser: InternalParser
     let optimizations: Set<String>
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

@@ -16,7 +16,7 @@ private struct ParserWithLocation<Source: Parser, Parsed>: Parser {
     fileprivate let parser: InternalParser
     fileprivate let transform: (Source.Parsed, Range<Location>) throws -> Parsed
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

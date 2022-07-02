@@ -10,7 +10,7 @@ public struct RegularExpression: Parser, Hashable {
         self.pattern = pattern
     }
 
-    public var body: AnyParser<ExpressionMatch> {
+    public var body: any Parser<ExpressionMatch> {
         return neverBody()
     }
 }

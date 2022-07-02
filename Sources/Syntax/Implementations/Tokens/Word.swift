@@ -10,7 +10,7 @@ public struct Word: Parser, Hashable {
         self.word = word
     }
 
-    public var body: AnyParser<String> {
+    public var body: any Parser<String> {
         return neverBody()
     }
 }

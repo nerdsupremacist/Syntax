@@ -3,7 +3,7 @@ import Foundation
 import Syntax
 
 struct ExpressionParser: Parser {
-    var body: AnyParser<Expression> {
+    var body: any Parser<Expression> {
         Recursive { parser in
             Either {
                 BinaryOperationParser {

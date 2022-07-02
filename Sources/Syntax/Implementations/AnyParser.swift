@@ -17,7 +17,7 @@ public struct AnyParser<Parsed>: Parser {
         self.init(internalParser)
     }
     
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

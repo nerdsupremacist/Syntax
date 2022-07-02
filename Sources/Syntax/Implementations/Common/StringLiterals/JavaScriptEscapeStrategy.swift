@@ -2,7 +2,7 @@
 import Foundation
 
 public struct JavaScriptEscapeStrategy: StringEscapeStrategy {
-    public var escaped: AnyParser<String> {
+    public var escaped: any Parser<String> {
         Either<String> {
             "\\\\".map(to: "\\")
             "\\/".map(to: "/")

@@ -9,7 +9,7 @@ public struct StringLiteral: Parser {
     private let end: String
     private let escapeStrategy: StringEscapeStrategy
 
-    public var body: AnyParser<String> {
+    public var body: any Parser<String> {
         start.kind(.stringStartDelimiter)
 
         Annotated(pattern: "((\(NSRegularExpression.escapedPattern(for: escapeStrategy.escaped(endDelimiter: end))))|[^\(NSRegularExpression.escapedPattern(for: end))\\n])*") {

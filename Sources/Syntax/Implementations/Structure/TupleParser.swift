@@ -1,12 +1,12 @@
 
 import Foundation
 
-struct TupleParser<Parsed>: Parser {
+public struct TupleParser<Parsed>: Parser {
     let id = UUID()
     let parsers: [InternalParser]
     let outputTypes: [Any.Type]
 
-    var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

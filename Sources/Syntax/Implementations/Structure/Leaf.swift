@@ -9,7 +9,7 @@ public struct Leaf<Parsed>: Parser {
         self.parser = content().internalParser()
     }
 
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

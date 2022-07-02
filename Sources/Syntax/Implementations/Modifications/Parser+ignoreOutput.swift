@@ -14,7 +14,7 @@ struct IgnoreRule<Source : Parser>: Parser {
     let id = UUID()
     fileprivate let parser: InternalParser
 
-    var body: AnyParser<Void> {
+    var body: any Parser<Void> {
         return neverBody()
     }
 }

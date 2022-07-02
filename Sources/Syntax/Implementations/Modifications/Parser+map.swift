@@ -19,7 +19,7 @@ private struct MappedParser<Source: Parser, Parsed>: Parser {
     fileprivate let parser: InternalParser
     fileprivate let transform: (Source.Parsed) throws -> Parsed
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

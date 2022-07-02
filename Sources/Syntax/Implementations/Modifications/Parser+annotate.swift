@@ -14,7 +14,7 @@ private struct Annotator<Parsed>: Parser {
     fileprivate let content: InternalParser
     fileprivate let annotations: (Parsed) -> [String : Encodable]
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

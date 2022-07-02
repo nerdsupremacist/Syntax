@@ -10,7 +10,7 @@ public struct IntLiteral: Parser {
 
     public init() { }
 
-    public var body: AnyParser<Int> {
+    public var body: any Parser<Int> {
         Leaf {
             RegularExpression("-?\\d+(e\\d+)?\\b").map { match -> Int in
                 guard let number = numberFormatter.number(from: String(match.text)) else { fatalError() }

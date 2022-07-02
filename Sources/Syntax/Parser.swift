@@ -4,13 +4,13 @@ import Foundation
 
 private var computedKinds = [Int : Kind]()
 
-public protocol Parser {
+public protocol Parser<Parsed> {
     associatedtype Parsed
 
     static var kind: Kind? { get }
     
     @ParserBuilder
-    var body: AnyParser<Parsed> { get }
+    var body: any Parser<Parsed> { get }
 }
 
 extension Parser {

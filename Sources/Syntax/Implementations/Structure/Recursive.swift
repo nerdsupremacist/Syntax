@@ -22,7 +22,7 @@ public class Recursive<Content : Parser>: Parser {
         self.content = { content($0).internalParser() }
     }
 
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

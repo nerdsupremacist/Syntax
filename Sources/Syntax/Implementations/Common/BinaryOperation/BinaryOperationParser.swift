@@ -21,7 +21,7 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
         self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser) }
     }
 
-    public var body: AnyParser<BinaryOperation<Content.Parsed, Operator>> {
+    public var body: any Parser<BinaryOperation<Content.Parsed, Operator>> {
         return neverBody()
     }
 }

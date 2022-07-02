@@ -2,7 +2,7 @@
 import Foundation
 
 public struct SwiftEscapeStrategy: StringEscapeStrategy {
-    public var escaped: AnyParser<String> {
+    public var escaped: any Parser<String> {
         Either<String> {
             "\\\\".map(to: "\\")
             "\\n".map(to: "\n")

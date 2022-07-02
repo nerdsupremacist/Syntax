@@ -21,7 +21,7 @@ private struct KindParser<Parsed>: Parser {
     fileprivate let kind: Kind
     fileprivate let strategy: Kind.CombinationStrategy
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

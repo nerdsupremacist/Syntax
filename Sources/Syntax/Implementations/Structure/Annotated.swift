@@ -16,7 +16,7 @@ public struct Annotated<Content : Parser>: Parser {
         self.parser = content().internalParser()
     }
 
-    public var body: AnyParser<AnnotatedString<Content.Parsed>> {
+    public var body: any Parser<AnnotatedString<Content.Parsed>> {
         return neverBody()
     }
 }

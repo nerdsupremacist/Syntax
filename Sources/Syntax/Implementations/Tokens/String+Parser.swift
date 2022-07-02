@@ -5,7 +5,7 @@ import Foundation
 extension String: Parser {
     public static let kind: Kind? = nil
 
-    public var body: AnyParser<Void> {
+    public var body: any Parser<Void> {
         StringTokenParser(string: self)
     }
 }
@@ -14,7 +14,7 @@ private struct StringTokenParser: Parser, InternalParser {
     let id = UUID()
     let string: String
 
-    var body: AnyParser<Void> {
+    var body: any Parser<Void> {
         return neverBody()
     }
 

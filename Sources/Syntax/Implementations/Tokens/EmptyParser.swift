@@ -3,10 +3,8 @@ import Foundation
 
 private let emptyId = UUID()
 
-struct EmptyParser: Parser {
-    typealias Parsed = Void
-
-    var body: AnyParser<Parsed> {
+public struct EmptyParser: Parser {
+    public var body: any Parser<Void> {
         return neverBody()
     }
 }

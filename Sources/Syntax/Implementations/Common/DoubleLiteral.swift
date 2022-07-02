@@ -10,7 +10,7 @@ public struct DoubleLiteral: Parser {
 
     public init() { }
 
-    public var body: AnyParser<Double> {
+    public var body: any Parser<Double> {
         Leaf {
             RegularExpression("-?\\d+(,\\d+)*\\.\\d+(e((-|\\+)?)\\d+)?\\b").map { match -> Double in
                 guard let number = numberFormatter.number(from: String(match.text)) else { fatalError() }

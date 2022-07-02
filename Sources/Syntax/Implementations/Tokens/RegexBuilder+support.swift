@@ -8,7 +8,7 @@ import RegexBuilder
 extension Regex: Parser {
     public typealias Parsed = Output
 
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return RegexWrapperParser(self).eraseToAnyParser()
     }
 
@@ -23,7 +23,7 @@ private struct RegexWrapperParser<Parsed>: Parser, Hashable {
         self.expression = expression
     }
 
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 

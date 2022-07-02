@@ -15,7 +15,7 @@ public struct BooleanLiteral: Parser {
         self.falseValues = falseValues
     }
 
-    public var body: AnyParser<Bool> {
+    public var body: any Parser<Bool> {
         Leaf {
             Either {
                 Either(trueValues) { token in

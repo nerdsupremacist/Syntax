@@ -21,7 +21,7 @@ public struct Maybe<Wrapped>: Parser {
     let id = UUID()
     fileprivate let content: InternalParser
 
-    public var body: AnyParser<Wrapped?> {
+    public var body: any Parser<Wrapped?> {
         return neverBody()
     }
 }

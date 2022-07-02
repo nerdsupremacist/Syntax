@@ -42,7 +42,7 @@ public struct Either<Parsed>: Parser {
         self.init(options: options())
     }
 
-    public var body: AnyParser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

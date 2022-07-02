@@ -18,7 +18,7 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
         self.end = end().map(AnnotationValue.end)
     }
 
-    public var body: AnyParser<(AnnotatedString<Content.Parsed>, End.Parsed)> {
+    public var body: any Parser<(AnnotatedString<Content.Parsed>, End.Parsed)> {
         return neverBody()
     }
 }

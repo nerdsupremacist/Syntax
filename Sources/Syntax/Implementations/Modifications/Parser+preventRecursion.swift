@@ -17,7 +17,7 @@ private class PreventRecursion<Parsed>: Parser {
         self.parser = parser
     }
 
-    var body: AnyParser<Parsed> {
+    var body: any Parser<Parsed> {
         return neverBody()
     }
 }

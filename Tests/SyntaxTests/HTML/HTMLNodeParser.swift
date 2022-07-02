@@ -25,7 +25,7 @@ enum HTMLParserError: Error, LocalizedError {
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 struct HTMLNodeParser: Parser {
 
-    var body: AnyParser<HTMLNode> {
+    var body: any Parser<HTMLNode> {
         Recursive { parser in
             Either {
                 HTMLNodeWithChildrenParser(parser: parser)
@@ -38,7 +38,7 @@ struct HTMLNodeParser: Parser {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct IdentifierParser: Parser {
-    var body: AnyParser<Substring> {
+    var body: any Parser<Substring> {
         Regex {
           CharacterClass(
             ("a"..."z"),
@@ -58,7 +58,7 @@ private struct IdentifierParser: Parser {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct SingleHTMLNodeParser: Parser {
-    var body: AnyParser<HTMLNode> {
+    var body: any Parser<HTMLNode> {
         return Leaf {
             "<"
 
@@ -79,7 +79,7 @@ private struct SingleHTMLNodeParser: Parser {
 private struct HTMLNodeWithChildrenParser: Parser {
     let parser: AnyParser<HTMLNode>
 
-    var body: AnyParser<HTMLNode> {
+    var body: any Parser<HTMLNode> {
         return Group {
             BeginTagParser()
 
@@ -112,7 +112,7 @@ private struct EndTag {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct AttributeParser: Parser {
-    var body: AnyParser<HTMLNode.Attribute> {
+    var body: any Parser<HTMLNode.Attribute> {
         Either {
             Group {
                 IdentifierParser()
@@ -133,7 +133,7 @@ private struct AttributeParser: Parser {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct BeginTagParser: Parser {
-    var body: AnyParser<BeginTag> {
+    var body: any Parser<BeginTag> {
         return Leaf {
             "<"
 
@@ -155,7 +155,7 @@ private struct BeginTagParser: Parser {
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct EndTagParser: Parser {
-    var body: AnyParser<EndTag> {
+    var body: any Parser<EndTag> {
         return Leaf {
             "</"
 

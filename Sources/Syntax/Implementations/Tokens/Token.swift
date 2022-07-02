@@ -10,7 +10,7 @@ struct Token: Parser, Hashable {
         self.string = string
     }
 
-    var body: AnyParser<Substring> {
+    var body: any Parser<Substring> {
         return neverBody()
     }
 }

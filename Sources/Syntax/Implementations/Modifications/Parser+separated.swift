@@ -25,7 +25,7 @@ private struct Separated<Source: Parser, Separator: Parser>: Parser {
     fileprivate let separator: InternalParser
     fileprivate let allowTrailing: Bool
 
-    var body: AnyParser<[(Source.Parsed, Separator.Parsed?)]> {
+    var body: any Parser<[(Source.Parsed, Separator.Parsed?)]> {
         return neverBody()
     }
 }

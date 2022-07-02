@@ -12,7 +12,7 @@ extension Parser {
             return parser
         }
 
-        return body.parser.wrapContent { InternalParserWrapper<Self>(content: $0) }
+        return body.internalParser().wrapContent { InternalParserWrapper<Self>(content: $0) }
     }
 
 }

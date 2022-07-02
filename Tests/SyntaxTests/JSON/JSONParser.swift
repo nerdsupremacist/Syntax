@@ -5,7 +5,7 @@ struct JSONParser: Parser {
     struct JSONArrayParser: Parser {
         let json: AnyParser<JSON>
 
-        var body: AnyParser<[JSON]> {
+        var body: any Parser<[JSON]> {
             "[".kind(.jsonArrayStartDelimiter)
 
             json.separated(by: ",")
@@ -17,7 +17,7 @@ struct JSONParser: Parser {
     struct JSONDictionaryParser: Parser {
         let json: AnyParser<JSON>
 
-        var body: AnyParser<[String : JSON]> {
+        var body: any Parser<[String : JSON]> {
             "{".kind(.jsonDictionaryStartDelimiter)
 
             Group {
@@ -37,7 +37,7 @@ struct JSONParser: Parser {
         }
     }
     
-    var body: AnyParser<JSON> {
+    var body: any Parser<JSON> {
         Recursive { parser in
             Either {
                 JSONDictionaryParser(json: parser).map(JSON.object)

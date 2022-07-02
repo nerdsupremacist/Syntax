@@ -45,7 +45,7 @@ public struct Repeat<Element>: Parser {
         self.parser = content().internalParser()
     }
     
-    public var body: AnyParser<[Element]> {
+    public var body: any Parser<[Element]> {
         return neverBody()
     }
 }
