@@ -3,7 +3,7 @@ import Foundation
 
 public protocol BinaryOperator {
     @ParserBuilder
-    var parser: AnyParser<Void> { get }
+    var parser: any Parser<Void> { get }
     
     var associativity: Associativity { get }
 

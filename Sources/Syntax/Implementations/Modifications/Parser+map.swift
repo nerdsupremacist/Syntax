@@ -3,12 +3,12 @@ import Foundation
 
 extension Parser {
 
-    public func map<T>(_ transform: @escaping (Parsed) throws -> T) -> AnyParser<T> {
+    public func map<T>(_ transform: @escaping (Parsed) throws -> T) -> some Parser<T> {
         return MappedParser<Self, T>(parser: internalParser(),
-                                     transform: transform).eraseToAnyParser()
+                                     transform: transform)
     }
 
-    public func map<T>(to value: T) -> AnyParser<T> {
+    public func map<T>(to value: T) -> some Parser<T> {
         return map { _ in value }
     }
 

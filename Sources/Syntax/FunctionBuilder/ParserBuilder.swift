@@ -4,6 +4,13 @@ import Foundation
 public struct ParserBuilder { }
 
 extension ParserBuilder {
+    public static func buildEither<A : Parser, B : Parser>(first: A) -> IfElseConditionalParser<A, B> {
+        return IfElseConditionalParser(first)
+    }
+
+    public static func buildEither<A : Parser, B : Parser>(second: B) -> IfElseConditionalParser<A, B> {
+        return IfElseConditionalParser(second)
+    }
 }
 
 extension ParserBuilder {

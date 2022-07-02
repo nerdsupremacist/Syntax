@@ -14,8 +14,8 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
     let end: InternalParser
 
     public init(@ParserBuilder content: () -> Content, @ParserBuilder end: () -> End) {
-        self.content = content().map(AnnotationValue.content)
-        self.end = end().map(AnnotationValue.end)
+        self.content = content().map(AnnotationValue.content).internalParser()
+        self.end = end().map(AnnotationValue.end).internalParser()
     }
 
     public var body: any Parser<(AnnotatedString<Content.Parsed>, End.Parsed)> {

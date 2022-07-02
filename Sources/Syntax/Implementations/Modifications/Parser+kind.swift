@@ -4,24 +4,24 @@ import Foundation
 
 extension Parser {
 
-    public func kind(_ kind: Kind?, using strategy: Kind.CombinationStrategy = .higher) -> AnyParser<Parsed> {
-        guard let kind = kind else { return eraseToAnyParser() }
-        return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
+    public func kind(_ kind: Kind?, using strategy: Kind.CombinationStrategy = .higher) -> any Parser<Parsed> {
+        guard let kind = kind else { return self }
+        return KindParser(content: internalParser(), kind: kind, strategy: strategy)
     }
 
-    public func kind(_ kind: Kind, using strategy: Kind.CombinationStrategy = .higher) -> AnyParser<Parsed> {
-        return KindParser(content: internalParser(), kind: kind, strategy: strategy).eraseToAnyParser()
+    public func kind(_ kind: Kind, using strategy: Kind.CombinationStrategy = .higher) -> some Parser<Parsed> {
+        return KindParser<Parsed>(content: internalParser(), kind: kind, strategy: strategy)
     }
 
 }
 
-private struct KindParser<Parsed>: Parser {
+public struct KindParser<Parsed>: Parser {
     let id = UUID()
     fileprivate let content: InternalParser
     fileprivate let kind: Kind
     fileprivate let strategy: Kind.CombinationStrategy
 
-    var body: any Parser<Parsed> {
+    public var body: any Parser<Parsed> {
         return neverBody()
     }
 }

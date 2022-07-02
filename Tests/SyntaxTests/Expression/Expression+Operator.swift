@@ -26,7 +26,7 @@ extension Expression {
             }
         }
 
-        var parser: AnyParser<Void> {
+        var parser: any Parser<Void> {
             operatorString
                 .annotate {
                     return ["name" : "\(self)"]

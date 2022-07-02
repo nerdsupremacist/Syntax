@@ -24,7 +24,7 @@ public struct Located<Value> {
 
 extension Parser {
 
-    public func located() -> AnyParser<Located<Parsed>> {
+    public func located() -> any Parser<Located<Parsed>> {
         return mapWithLocation { Located(wrappedValue: $0, location: $1) }
     }
 

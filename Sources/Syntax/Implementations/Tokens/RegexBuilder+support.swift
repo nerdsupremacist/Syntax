@@ -9,7 +9,7 @@ extension Regex: Parser {
     public typealias Parsed = Output
 
     public var body: any Parser<Parsed> {
-        return RegexWrapperParser(self).eraseToAnyParser()
+        return RegexWrapperParser(self)
     }
 
 }

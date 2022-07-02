@@ -4,9 +4,9 @@ import Foundation
 
 extension Parser {
 
-    public func mapWithLocation<T>(_ transform: @escaping (Parsed, Range<Location>) throws -> T) -> AnyParser<T> {
+    public func mapWithLocation<T>(_ transform: @escaping (Parsed, Range<Location>) throws -> T) -> any Parser<T> {
         return ParserWithLocation<Self, T>(parser: internalParser(),
-                                           transform: transform).eraseToAnyParser()
+                                           transform: transform)
     }
 
 }

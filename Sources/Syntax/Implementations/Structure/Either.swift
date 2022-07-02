@@ -49,8 +49,8 @@ public struct Either<Parsed>: Parser {
 
 extension Either {
 
-    public init<S : Sequence>(_ data: S, @ParserBuilder option: (S.Element) -> AnyParser<Parsed>) {
-        self.init(options:  data.map { option($0) })
+    public init<S : Sequence, T: Parser<Parsed>>(_ data: S, @ParserBuilder option: (S.Element) -> T) {
+        self.init(options:  data.map { option($0).eraseToAnyParser() })
     }
 
 }

@@ -3,31 +3,31 @@ import Foundation
 
 extension Parser {
 
-    public func star() -> AnyParser<[Parsed]> {
+    public func star() -> any Parser<[Parsed]> {
         return self.repeat(min: nil, max: nil)
     }
 
-    public func plus() -> AnyParser<[Parsed]> {
+    public func plus() -> any Parser<[Parsed]> {
         return self.repeat(min: 1, max: nil)
     }
 
-    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> AnyParser<[Parsed]> {
-        return Repeat(min: min, max: max) { self }.eraseToAnyParser()
+    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> any Parser<[Parsed]> {
+        return Repeat(min: min, max: max) { self }
     }
 
 }
 
 extension Parser where Parsed == Void {
 
-    public func star() -> AnyParser<Void> {
+    public func star() -> any Parser<Void> {
         return self.repeat(min: nil, max: nil)
     }
 
-    public func plus() -> AnyParser<Void> {
+    public func plus() -> any Parser<Void> {
         return self.repeat(min: 1, max: nil)
     }
 
-    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> AnyParser<Void> {
+    public func `repeat`(min: UInt? = nil, max: UInt? = nil) -> any Parser<Void> {
         return Repeat(min: min, max: max) { self }.ignoreOutput()
     }
 

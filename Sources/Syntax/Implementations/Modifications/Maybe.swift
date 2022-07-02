@@ -3,15 +3,15 @@ import Foundation
 
 extension Parser {
 
-    public func maybe() -> AnyParser<Parsed?> {
-        return Maybe(content: internalParser()).eraseToAnyParser()
+    public func maybe() -> any Parser<Parsed?> {
+        return Maybe(content: internalParser())
     }
 
-    public func maybe(default defaultOutput: Parsed) -> AnyParser<Parsed> {
+    public func maybe(default defaultOutput: Parsed) -> any Parser<Parsed> {
         return Maybe(content: internalParser()).map { $0 ?? defaultOutput }
     }
 
-    public func maybe(default defaultOutput: Parsed?) -> AnyParser<Parsed?> {
+    public func maybe(default defaultOutput: Parsed?) -> any Parser<Parsed?> {
         return Maybe(content: internalParser()).map { $0 ?? defaultOutput }
     }
 

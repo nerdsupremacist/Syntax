@@ -18,7 +18,7 @@ public struct BinaryOperationParser<Content : Parser, Operator: BinaryOperator>:
 
         self.content = content().located().internalParser()
         self.wrapper = wrapper
-        self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser) }
+        self.operators = operators.sorted { !$0.precedes($1) }.map { CachedOperator(value: $0, parser: $0.parser.internalParser()) }
     }
 
     public var body: any Parser<BinaryOperation<Content.Parsed, Operator>> {
@@ -188,7 +188,7 @@ extension BinaryOperationParser {
 
     private struct CachedOperator {
         let value: Operator
-        let parser: AnyParser<Void>
+        let parser: InternalParser
     }
 
     private enum IntermediateRepresentation {

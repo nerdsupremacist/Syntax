@@ -3,14 +3,15 @@ import Foundation
 
 extension Parser {
 
-    public func ignoreOutput() -> AnyParser<Void> {
-        return IgnoreRule<Self>(parser: internalParser()).eraseToAnyParser()
+    public func ignoreOutput() -> any Parser<Void> {
+        return IgnoreRule<Self>(parser: internalParser())
     }
 
 }
 
 struct IgnoreRule<Source : Parser>: Parser {
-    typealias Output = Void
+    typealias Parsed = Void
+    
     let id = UUID()
     fileprivate let parser: InternalParser
 

@@ -3,8 +3,8 @@ import Foundation
 
 extension Parser {
 
-    public func annotate(_ annotations: @escaping (Parsed) -> [String : Encodable]) -> AnyParser<Parsed> {
-        return Annotator(content: internalParser(), annotations: annotations).eraseToAnyParser()
+    public func annotate(_ annotations: @escaping (Parsed) -> [String : Encodable]) -> some Parser<Parsed> {
+        return Annotator(content: internalParser(), annotations: annotations)
     }
 
 }

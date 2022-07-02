@@ -3,17 +3,17 @@ import Foundation
 
 extension Parser {
 
-    public func separated(by separator: String, allowTrailing: Bool = false) -> AnyParser<[Parsed]> {
+    public func separated(by separator: String, allowTrailing: Bool = false) -> some Parser<[Parsed]> {
         return Separated<Self, String>(parser: internalParser(),
                                        separator: separator.internalParser(),
                                        allowTrailing: allowTrailing).map { $0.map { $0.0 } }
     }
 
-    public func separated<Separator : Parser>(allowTrailing: Bool = false, @ParserBuilder by separator: () -> Separator) -> AnyParser<[(Parsed, Separator.Parsed?)]> {
-        return Separated<Self, Separator>(parser: internalParser(), separator: separator().internalParser(), allowTrailing: allowTrailing).eraseToAnyParser()
+    public func separated<Separator : Parser>(allowTrailing: Bool = false, @ParserBuilder by separator: () -> Separator) -> some Parser<[(Parsed, Separator.Parsed?)]> {
+        return Separated<Self, Separator>(parser: internalParser(), separator: separator().internalParser(), allowTrailing: allowTrailing)
     }
 
-    public func separated<Separator : Parser>(allowTrailing: Bool = false, @ParserBuilder by separator: () -> Separator) -> AnyParser<[Parsed]> where Separator.Parsed == Void {
+    public func separated<Separator : Parser>(allowTrailing: Bool = false, @ParserBuilder by separator: () -> Separator) -> some Parser<[Parsed]> where Separator.Parsed == Void {
         return Separated<Self, Separator>(parser: internalParser(), separator: separator().internalParser(), allowTrailing: allowTrailing).map { $0.map { $0.0 } }
     }
 

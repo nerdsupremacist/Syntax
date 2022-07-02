@@ -4,8 +4,8 @@ import Foundation
 
 extension Parser {
 
-    public func preventRecursion() -> AnyParser<Parsed> {
-        return PreventRecursion(parser: internalParser()).eraseToAnyParser()
+    public func preventRecursion() -> any Parser<Parsed> {
+        return PreventRecursion(parser: internalParser())
     }
 
 }
