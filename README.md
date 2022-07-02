@@ -57,7 +57,7 @@ And then you can just write a parser. Parser's in Syntax are structs that return
 import Syntax
 
 struct FizzBuzzParser: Parser {
-    var body: AnyParser<[FizzBuzzValue]> {
+    var body: any Parser<[FizzBuzzValue]> {
         Repeat {
             Either {
                 IntLiteral().map { FizzBuzzValue.number($0) }
@@ -95,7 +95,7 @@ Syntax supports outputing an Abstract Syntax Tree. All nodes in the Syntax Tree 
 import Syntax
 
 struct FizzBuzzParser: Parser {
-    var body: AnyParser<[FizzBuzzValue]> {
+    var body: any Parser<[FizzBuzzValue]> {
         Repeat {
             Either {
                 IntLiteral().map { FizzBuzzValue.number($0) }
@@ -203,7 +203,7 @@ So we can rely on those. We can put most of our cases in an `Either` which will 
 
 ```swift
 struct JSONParser: Parser {
-    var body: AnyParser<JSON> {
+    var body: any Parser<JSON> {
         Either {
             /// TODO: Arrays and Objects
 
@@ -226,7 +226,7 @@ This recursion needs to be stated explicitely. For that we can wrap our `Either`
 
 ```swift
 struct JSONParser: Parser {
-    var body: AnyParser<JSON> {
+    var body: any Parser<JSON> {
         Recursive { jsonParser in
             Either {
                 /// TODO: Arrays and Objects
@@ -250,7 +250,7 @@ struct JSONArrayParser: Parser {
     // reference to the JSON parser
     let jsonParser: AnyParser<JSON>
 
-    var body: AnyParser<[JSON]> {
+    var body: any Parser<[JSON]> {
         "["
 
         jsonParser.separated(by: ",")
@@ -266,7 +266,7 @@ Easy right. It's pretty much what we said in words. Dictionary is pretty similar
 struct JSONDictionaryParser: Parser {
     let jsonParser: AnyParser<JSON>
 
-    var body: AnyParser<[String : JSON]> {
+    var body: any Parser<[String : JSON]> {
         "{"
 
         // Group acts kinda like parenthesis here.
@@ -293,7 +293,7 @@ And for the final act, we add those two to our `Either` for JSON:
 
 ```swift
 struct JSONParser: Parser {
-    var body: AnyParser<JSON> {
+    var body: any Parser<JSON> {
         Recursive { jsonParser in
             Either {
                 JSONDictionaryParser(jsonParser: jsonParser).map(JSON.object)
