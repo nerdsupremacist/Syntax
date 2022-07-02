@@ -1,6 +1,9 @@
 
 import Foundation
 @_exported import SyntaxTree
+#if canImport(RegexBuilder)
+import RegexBuilder
+#endif
 
 protocol Scanner {
     var range: Range<String.Index> { get }
@@ -27,6 +30,11 @@ protocol Scanner {
     func rollback() throws
 
     func take(pattern: String) throws -> ExpressionMatch
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>) throws -> Regex<Parsed>.Match
+#endif
 
     func pop<T>(of type: T.Type) throws -> T
     func store<T>(value: T)
@@ -76,10 +84,10 @@ extension Scanner {
         }
     }
 
-    func take(substring: String) throws -> String {
+    func take(substring: String) throws -> Substring {
         do {
             let match = try take(pattern: NSRegularExpression.escapedPattern(for: substring))
-            return String(match.text)
+            return match.text
         } catch let error as ScannerError {
             if case .failedToMatch = error.reason {
                 throw ScannerError(index: error.index, location: error.location, reason: .expected(substring))

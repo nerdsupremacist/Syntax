@@ -10,7 +10,7 @@ struct Token: Parser, Hashable {
         self.string = string
     }
 
-    var body: AnyParser<String> {
+    var body: AnyParser<Substring> {
         return neverBody()
     }
 }
@@ -27,7 +27,7 @@ extension Token: InternalParser {
         scanner.store(value: match)
         scanner.exitNode()
         scanner.configureNode(kind: .tokenMatch)
-        scanner.configureNode(annotations: ["match" : match])
+        scanner.configureNode(annotations: ["match" : String(match)])
     }
 
 }

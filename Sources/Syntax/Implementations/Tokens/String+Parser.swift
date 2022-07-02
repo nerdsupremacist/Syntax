@@ -27,6 +27,6 @@ private struct StringTokenParser: Parser, InternalParser {
         let match = try scanner.take(substring: string)
         scanner.exitNode()
         scanner.configureNode(kind: .tokenMatch)
-        scanner.configureNode(annotations: ["match" : match])
+        scanner.configureNode(annotations: ["match" : String(match)])
     }
 }

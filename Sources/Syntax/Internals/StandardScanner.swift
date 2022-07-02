@@ -1,6 +1,9 @@
 
 import Foundation
 @_exported import SyntaxTree
+#if canImport(RegexBuilder)
+import RegexBuilder
+#endif
 
 // MARK: StandardScanner
 
@@ -91,6 +94,13 @@ extension StandardScanner: Scanner {
     func take(pattern: String) throws -> ExpressionMatch {
         return try take(pattern: pattern, allowErrorHandling: true)
     }
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>) throws -> Regex<Parsed>.Match {
+        fatalError()
+    }
+#endif
 
     func pop<T>(of type: T.Type = T.self) throws -> T {
         guard let value = try state.pop(of: type) else {
@@ -226,6 +236,42 @@ extension StandardScanner {
 
 }
 
+#if canImport(RegexBuilder)
+@available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+extension StandardScanner {
+    fileprivate func take<Parsed>(regex: Regex<Parsed>, allowErrorHandling: Bool) throws -> Regex<Parsed>.Match {
+        do {
+            return try take(regex: regex)
+        } catch let error as ScannerError where !errorHandlers.isEmpty && allowErrorHandling && state.allowErrorHandling {
+            guard case .failedToMatch = error.reason else { throw error }
+            let currentIndex = state.range.lowerBound
+            let errorHandlerScanner = ErroredScanner(scanner: self, allowedToRegisterNodes: false)
+            let scanner = ErroredScanner(scanner: self, allowedToRegisterNodes: true)
+            for handler in errorHandlers {
+                do {
+                    try handler.scannerFailedToMatch(errorHandlerScanner, regex: regex)
+                    if state.node.start >= currentIndex {
+                        state.node.update(from: currentIndex, to: state.range.lowerBound)
+                    }
+
+                    return try scanner.take(regex: regex)
+                } catch let error as ScannerError {
+                    guard case .failedToMatch = error.reason else { throw error }
+                }
+            }
+
+            throw error
+        }
+    }
+
+    private func _take<Parsed>(regex: Regex<Parsed>) throws -> Regex<Parsed>.Match {
+        let result = try state.take(regex: regex, in: text)
+        state = result.state
+        return result.match
+    }
+}
+#endif
+
 // MARK: - Error Handling
 
 extension StandardScanner {
@@ -303,6 +349,13 @@ extension StandardScanner {
         func take(pattern: String) throws -> ExpressionMatch {
             return try scanner.take(pattern: pattern, allowErrorHandling: false)
         }
+
+#if canImport(RegexBuilder)
+        @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+        func take<Parsed>(regex: Regex<Parsed>) throws -> Regex<Parsed>.Match {
+            return try scanner.take(regex: regex)
+        }
+#endif
 
         func pop<T>(of type: T.Type) throws -> T {
             return try scanner.pop(of: type)

@@ -1,6 +1,15 @@
 
 import Foundation
 @_exported import SyntaxTree
+#if canImport(RegexBuilder)
+import RegexBuilder
+
+@available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+struct RegexExpressionScanResult<Parsed> {
+    let match: Regex<Parsed>.Match
+    let state: ScannerState
+}
+#endif
 
 struct ExpressionScanResult {
     let match: ExpressionMatch
@@ -27,6 +36,13 @@ private protocol ScannerStateStorage: AnyObject {
     func take(expression: NSRegularExpression,
               in text: String,
               for state: ScannerState) throws -> ExpressionScanResult
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>,
+                      in text: String,
+                      for state: ScannerState) throws -> RegexExpressionScanResult<Parsed>
+#endif
 
     func begin(_ state: ScannerState) -> ScannerState
     func rollback(_ state: ScannerState) -> ScannerState?
@@ -145,6 +161,15 @@ final class ScannerState {
 
         return try storage.take(expression: expression, in: text, for: self)
     }
+
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>, in text: String) throws -> RegexExpressionScanResult<Parsed> {
+        fatalError()
+    }
+#endif
+
 
     func begin() -> ScannerState {
         return storage.begin(self)
@@ -278,6 +303,31 @@ private final class InPlaceStorage: ScannerStateStorage {
 
         return ExpressionScanResult(match: result, state: state)
     }
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>,
+                      in text: String,
+                      for state: ScannerState) throws -> RegexExpressionScanResult<Parsed> {
+
+        guard let regexMatch = try regex.prefixMatch(in: text[state.range]) else {
+            throw state.error(reason: .failedToMatchRegex)
+        }
+
+        if regexMatch.range.upperBound > state.range.lowerBound {
+            ids = []
+        }
+        state.range = regexMatch.range.upperBound..<state.range.upperBound
+
+        if let lastError = state.lastDiagnosticError,
+           lastError.location < state.location(for: regexMatch.range.upperBound) {
+
+            lastDiagnosticError = nil
+        }
+
+        return RegexExpressionScanResult(match: regexMatch, state: state)
+    }
+#endif
 
     func begin(_ state: ScannerState) -> ScannerState {
         return ScannerState(range: state.range, parent: state, storage: InPlaceStorage(ids: ids))
@@ -420,6 +470,41 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
         return ExpressionScanResult(match: result, state: state)
     }
 
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>,
+                      in text: String,
+                      for state: ScannerState) throws -> RegexExpressionScanResult<Parsed> {
+
+        let regexMatch = try firstNotOverlappingMatch(regex: regex, in: text, for: state)
+        rangeMatchStart = regexMatch.range.lowerBound
+
+        return RegexExpressionScanResult(match: regexMatch, state: state)
+    }
+
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    private func firstNotOverlappingMatch<Parsed>(regex: Regex<Parsed>,
+                                                  in text: String,
+                                                  for state: ScannerState) throws -> Regex<Parsed>.Match {
+
+        var range = state.range
+        while !range.isEmpty,
+              let match = try regex.firstMatch(in: text[range]) {
+
+            let firstConflictingRange = fromParent.first { $0.overlaps(match.range) }
+            let firstConflictingAnnotation = annotations.first { $0.range.overlaps(match.range) }?.range
+            let conflictingRange = [firstConflictingRange, firstConflictingAnnotation].compactMap { $0 }.min { $0.lowerBound < $1.lowerBound }
+            guard let conflictingRange = conflictingRange else {
+                return match
+            }
+
+            range = conflictingRange.upperBound..<range.upperBound
+        }
+
+        throw state.error(reason: .failedToMatchRegex)
+    }
+#endif
+
     func begin(_ state: ScannerState) -> ScannerState {
         return ScannerState(range: state.range, parent: state, storage: StackedScanningStateStorage<T>(parent: self))
     }
@@ -544,6 +629,24 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
         state.range = result.match.range.upperBound..<state.range.upperBound
         return result
     }
+
+#if canImport(RegexBuilder)
+    @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
+    func take<Parsed>(regex: Regex<Parsed>,
+                      in text: String,
+                      for state: ScannerState) throws -> RegexExpressionScanResult<Parsed> {
+
+        if isInPlace {
+            return try current.take(regex: regex, in: text, for: state)
+        }
+
+        let result = try current.take(regex: regex, in: text, for: state)
+        isInPlace = true
+        state.node.update(from: state.range.lowerBound, to: result.match.range.lowerBound)
+        state.range = result.match.range.upperBound..<state.range.upperBound
+        return result
+    }
+#endif
 
     func begin(_ state: ScannerState) -> ScannerState {
         return current.begin(state)
