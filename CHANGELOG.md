@@ -14,6 +14,7 @@
 ### Changed
 - Updated to Swift 5.4 to ensure we can call our Result Builders, Result Builders.
 - Syntax Tree depedency is not exported as an import. So you no longer have to import it if you're reading from the AST.
+- **Breaking:** Renamed associated type for Parser from `Output` to `Parsed`. Since Apple added a type for `String.Output` which conflicts with our definition. Let's hope that `Parsed` remains specific enough that Apple doesn't use that either.
 
 ## [1.0.3] - 2021-02-07
 ### Fixed
