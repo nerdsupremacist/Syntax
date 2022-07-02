@@ -1,4 +1,8 @@
 # Changelog
+## [3.0.0] - Unreleased
+### Changed
+- Updated to Swift 5.7 to be able to use primary associated types and simplify the DSL
+
 ## [2.0.0] - 2022-07-02
 ### Fixed
 - Fixed `mapWithLocation` reporting the wrong location.
