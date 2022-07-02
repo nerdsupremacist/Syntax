@@ -1,5 +1,5 @@
 # Changelog
-## [2.0.0] - Unreleased
+## [2.0.0] - 2022-07-02
 ### Fixed
 - Fixed `mapWithLocation` reporting the wrong location.
 - Fixed caching not being effective on iOS, watchOS and tvOS. 
