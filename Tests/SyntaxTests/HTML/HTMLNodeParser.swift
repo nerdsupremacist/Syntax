@@ -33,10 +33,63 @@ struct HTMLNodeParser: RecursiveParser {
     }
 }
 
+// Parses an xml compatible name. See: https://www.w3.org/TR/REC-xml/#NT-Name
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct IdentifierParser: RecursiveParser {
     var body: any Parser<Substring> {
-        RegularExpression("[a-zA-Z][-a-zA-Z]*").map(\.text)
+        Regex {
+            NameStartCharacter()
+            ZeroOrMore {
+                NameCharacter()
+            }
+        }
+    }
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+private struct NameStartCharacter: RegexComponent {
+    var regex: Regex<Substring> {
+        Regex {
+            ChoiceOf {
+                ":"
+                ("A"..."Z")
+                "_"
+                ("a"..."z")
+                ("\u{C0}"..."\u{D6}")
+                ("\u{D8}"..."\u{F6}")
+                ("\u{F8}"..."\u{2FF}")
+                ("\u{370}"..."\u{37D}")
+                ("\u{37F}"..."\u{1FFF}")
+                ("\u{200C}"..."\u{200D}")
+                ("\u{2070}"..."\u{218F}")
+                ("\u{2C00}"..."\u{2FEF}")
+                ("\u{3001}"..."\u{D7FF}")
+                ("\u{F900}"..."\u{FDFC}")
+                ("\u{FDF0}"..."\u{FFFD}")
+                ("\u{10000}"..."\u{EFFFF}")
+            }
+        }
+    }
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+private struct NameCharacter: RegexComponent {
+    var regex: Regex<Substring> {
+        Regex {
+            ChoiceOf {
+                NameStartCharacter()
+                "-"
+                "."
+                "\u{B7}"
+                Regex {
+                    "\\"
+                    One(.any)
+                }
+                One(.digit)
+                ("\u{0300}"..."\u{036F}")
+                ("\u{203F}"..."\u{2040}")
+            }
+        }
     }
 }
 
@@ -80,6 +133,10 @@ private struct HTMLNodeWithChildrenParser: Parser {
             let (annotated, endTag) = annotationTuple
             guard endTag.tag == beginTag.tag else { throw HTMLParserError.unmatchedClosingTag(endTag.tag) }
             return HTMLNode(tag: beginTag.tag, attributes: beginTag.attributes, contents: annotated)
+        }
+        .annotate { node in
+            let attributeDictionary = Dictionary(node.attributes.map { $0.keyValue() }) { lhs, rhs in lhs }
+            return ["html.attributes" : attributeDictionary, "html.tag" : String(node.tag)]
         }
     }
 
@@ -137,10 +194,6 @@ private struct BeginTagParser: Parser {
             ">"
         }
         .map { BeginTag(tag: $0, attributes: $1) }
-        .annotate { tag in
-            let attributeDictionary = Dictionary(tag.attributes.map { $0.keyValue() }) { lhs, rhs in lhs }
-            return ["html.attributes" : attributeDictionary, "html.tag" : String(tag.tag)]
-        }
     }
 }
 
@@ -156,9 +209,6 @@ private struct EndTagParser: Parser {
             ">"
         }
         .map { EndTag(tag: $0) }
-        .annotate { tag in
-            return ["html.tag" : String(tag.tag)]
-        }
     }
 }
 
