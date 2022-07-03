@@ -33,11 +33,15 @@ extension Maybe {
 
 extension Maybe: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
 
         init(content: InternalParser) {
             self.content = content
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {

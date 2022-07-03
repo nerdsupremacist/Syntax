@@ -3,7 +3,7 @@ import Foundation
 @_exported import SyntaxTree
 
 public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
-    private enum AnnotationValue {
+    fileprivate enum AnnotationValue {
         case content(Content.Parsed)
         case end(End.Parsed)
     }
@@ -23,13 +23,17 @@ public struct AnnotatedUntil<Content : Parser, End: Parser>: Parser {
 
 extension AnnotatedUntil: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let end: InternalParser
 
         init(content: InternalParser, end: InternalParser) {
             self.content = content
             self.end = end
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {
@@ -41,8 +45,8 @@ extension AnnotatedUntil: InternalParserBuilder {
             
             try scanner.withNewNode { scanner in
                 while (true) {
-                    let nextContentRange = try scanner.range(for: content)
-                    let nextEndRange = try scanner.range(for: end)
+                    let nextContentRange = try scanner.range(for: content, content: Content.self, end: End.self)
+                    let nextEndRange = try scanner.range(for: end, content: Content.self, end: End.self)
 
                     switch (nextContentRange, nextEndRange) {
 
@@ -58,7 +62,7 @@ extension AnnotatedUntil: InternalParserBuilder {
 
                     default:
                         scanner.begin()
-                        try content.parse(using: scanner)
+                        try scanner.parse(using: content)
                         try scanner.commit()
                         continue
                     }
@@ -68,7 +72,7 @@ extension AnnotatedUntil: InternalParserBuilder {
             }
 
             scanner.begin()
-            try end.parse(using: scanner)
+            try scanner.parse(using: end)
             try scanner.commit()
 
             try scanner.commit()
@@ -98,7 +102,7 @@ extension AnnotatedUntil: InternalParserBuilder {
 
 extension Scanner {
 
-    fileprivate func range(for parser: InternalParser) throws -> Range<Location>? {
+    fileprivate func range<Content : Parser, End: Parser>(for parser: InternalParser, content: Content.Type, end: End.Type) throws -> Range<Location>? {
         begin()
         enterNode()
         do {

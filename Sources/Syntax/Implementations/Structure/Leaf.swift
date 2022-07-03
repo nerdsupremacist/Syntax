@@ -15,11 +15,15 @@ public struct Leaf<Content : Parser>: Parser {
 
 extension Leaf: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
 
         init(content: InternalParser) {
             self.content = content
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

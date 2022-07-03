@@ -24,9 +24,16 @@ private struct OptimizedPrefixes<Content : Parser>: Parser {
 
 extension OptimizedPrefixes: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        var id: UUID? {
+            return nil
+        }
+        
         let content: InternalParser
         let optimizations: Set<String>
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
+        }
 
         init(content: InternalParser, optimizations: Set<String>) {
             self.content = content

@@ -20,11 +20,15 @@ private struct StringTokenParser: Parser {
 
 extension StringTokenParser: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let string: String
 
         init(string: String) {
             self.string = string
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

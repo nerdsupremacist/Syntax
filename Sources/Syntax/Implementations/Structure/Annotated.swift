@@ -22,13 +22,17 @@ public struct Annotated<Content : Parser>: Parser {
 
 extension Annotated: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let pattern: String?
         let content: InternalParser
 
         init(pattern: String?, content: InternalParser) {
             self.pattern = pattern
             self.content = content
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {
@@ -46,7 +50,7 @@ extension Annotated: InternalParserBuilder {
 
                 while (true) {
                     let hasParsed: Bool = scanner.attempt { scanner in
-                        try content.parse(using: scanner)
+                        try scanner.parse(using: content)
                     }
 
                     if !hasParsed {

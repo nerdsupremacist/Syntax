@@ -8,14 +8,21 @@ class InternalParserReference: InternalParser {
         case initialized
     }
 
-    let id = UUID()
     var internalParser: InternalParser!
     var state: State = .fresh
+
+    var id: UUID? {
+        return nil
+    }
+
+    var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+        return internalParser.preferredKindOverrideForDerived
+    }
 
     init() { }
 
     func parse(using scanner: Scanner) throws {
-        try internalParser.parse(using: scanner)
+        try scanner.parse(using: internalParser)
     }
 
     func prefixes() -> Set<String> {

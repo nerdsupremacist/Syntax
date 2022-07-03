@@ -21,13 +21,17 @@ private struct ParserWithLocation<Content: Parser, Parsed>: Parser {
 
 extension ParserWithLocation: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let transform: (Content.Parsed, Range<Location>) throws -> Parsed
 
         init(content: InternalParser, transform: @escaping (Content.Parsed, Range<Location>) throws -> Parsed) {
             self.content = content
             self.transform = transform
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {

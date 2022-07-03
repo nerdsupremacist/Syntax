@@ -72,7 +72,7 @@ extension BinaryOperationParser where Content.Parsed: MemberOfBinaryOperation, C
 
 extension BinaryOperationParser: InternalParserBuilder {
     fileprivate class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         private let content: InternalParser
         private let wrapper: (BinaryOperation<Content.Parsed, Operator>) -> Content.Parsed
         private let operators: [CachedOperator]
@@ -81,6 +81,10 @@ extension BinaryOperationParser: InternalParserBuilder {
             self.content = content
             self.wrapper = wrapper
             self.operators = operators
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {
@@ -188,7 +192,9 @@ extension BinaryOperationParser._Parser {
     }
 
     private func parseMember(using scanner: Scanner) throws -> IntermediateRepresentation {
-        try scanner.preventRecursion(id: content.id)
+        if let id = content.id {
+            try scanner.preventRecursion(id: id)
+        }
         try scanner.parse(using: content)
         let member = try scanner.pop(of: Located<Content.Parsed>.self)
         return .member(member)

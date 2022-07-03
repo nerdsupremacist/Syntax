@@ -51,7 +51,7 @@ public struct Repeat<Content : Parser>: Parser {
 
 extension Repeat: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         private let min: UInt?
         private let max: UInt?
         private let content: InternalParser
@@ -60,6 +60,10 @@ extension Repeat: InternalParserBuilder {
             self.min = min
             self.max = max
             self.content = content
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

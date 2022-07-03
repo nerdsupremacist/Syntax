@@ -31,7 +31,7 @@ private struct Separated<Content : Parser, Separator : Parser>: Parser {
 
 extension Separated: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let separator: InternalParser
         let allowTrailing: Bool
@@ -40,6 +40,10 @@ extension Separated: InternalParserBuilder {
             self.content = content
             self.separator = separator
             self.allowTrailing = allowTrailing
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

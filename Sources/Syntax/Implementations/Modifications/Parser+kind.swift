@@ -27,7 +27,7 @@ public struct KindParser<Content : Parser>: Parser {
 
 extension KindParser: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let kind: Kind
         let strategy: Kind.CombinationStrategy
@@ -36,6 +36,10 @@ extension KindParser: InternalParserBuilder {
             self.content = content
             self.kind = kind
             self.strategy = strategy
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .lower
         }
 
         func prefixes() -> Set<String> {

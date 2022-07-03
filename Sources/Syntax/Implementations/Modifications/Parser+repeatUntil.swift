@@ -39,13 +39,17 @@ private struct RepeatUntil<Content : Parser, End : Parser>: Parser {
 extension RepeatUntil: InternalParserBuilder {
 
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let end: InternalParser
 
         init(content: InternalParser, end: InternalParser) {
             self.content = content
             self.end = end
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .separate
         }
 
         func prefixes() -> Set<String> {

@@ -20,13 +20,17 @@ private struct Annotator<Content : Parser>: Parser {
 
 extension Annotator: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         fileprivate let content: InternalParser
         fileprivate let annotations: (Content.Parsed) -> [String : Encodable]
 
         init(content: InternalParser, annotations: @escaping (Content.Parsed) -> [String : Encodable]) {
             self.content = content
             self.annotations = annotations
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {

@@ -24,13 +24,17 @@ private struct MappedParser<Content: Parser, Parsed>: Parser {
 
 extension MappedParser: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let content: InternalParser
         let transform: (Content.Parsed) throws -> Parsed
 
         init(content: InternalParser, transform: @escaping (Content.Parsed) throws -> Parsed) {
             self.content = content
             self.transform = transform
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {

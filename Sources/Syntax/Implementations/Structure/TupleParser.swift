@@ -12,13 +12,17 @@ public struct TupleParser<Parsed>: Parser {
 
 extension TupleParser: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let parsers: [InternalParser]
         let outputTypes: [Any.Type]
 
         init(parsers: [InternalParser], outputTypes: [Any.Type]) {
             self.parsers = parsers
             self.outputTypes = outputTypes
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

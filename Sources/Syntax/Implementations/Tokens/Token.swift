@@ -16,13 +16,17 @@ struct Token: Parser, Hashable {
 
 extension Token: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let string: String
 
         init(string: String) {
             self.string = string
         }
 
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
+        }
+        
         func prefixes() -> Set<String> {
             return [string]
         }

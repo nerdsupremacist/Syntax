@@ -16,11 +16,15 @@ public struct Word: Parser, Hashable {
 
 extension Word: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let word: String
 
         init(word: String) {
             self.word = word
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

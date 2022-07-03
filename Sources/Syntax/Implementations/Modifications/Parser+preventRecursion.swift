@@ -23,11 +23,20 @@ private class PreventRecursion<Content : Parser>: Parser {
 
 extension PreventRecursion: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        private let _id = UUID()
+
+        var id: UUID? {
+            return nil
+        }
+
         let content: InternalParser
 
         init(content: InternalParser) {
             self.content = content
+        }
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return content.preferredKindOverrideForDerived
         }
 
         func prefixes() -> Set<String> {
@@ -35,8 +44,8 @@ extension PreventRecursion: InternalParserBuilder {
         }
 
         func parse(using scanner: Scanner) throws {
-            try scanner.preventRecursion(id: id)
-            try content.parse(using: scanner)
+            try scanner.preventRecursion(id: _id)
+            try scanner.parse(using: content)
         }
     }
 

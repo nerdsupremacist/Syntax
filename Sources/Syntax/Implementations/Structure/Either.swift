@@ -27,11 +27,15 @@ extension Either {
 
 extension Either: InternalParserBuilder {
     fileprivate class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         private let maxPrefixLength: Int
         private let prefixMap: [Int : [String : [Int]]]
         private let fallbackParsers: [Int]
         private let options: [InternalParser]
+
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .separate
+        }
 
         init(options: [InternalParser]) {
             self.options = options

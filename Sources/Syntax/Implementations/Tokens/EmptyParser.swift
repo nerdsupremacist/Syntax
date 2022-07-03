@@ -1,8 +1,6 @@
 
 import Foundation
 
-private let emptyId = UUID()
-
 public struct EmptyParser: Parser {
     public var body: any Parser<Void> {
         return neverBody()
@@ -11,8 +9,12 @@ public struct EmptyParser: Parser {
 
 extension EmptyParser: InternalParserBuilder, Hashable {
     private class _Parser: InternalParser {
-        var id: UUID {
-            return emptyId
+        var id: UUID? {
+            return nil
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func parse(using scanner: Scanner) throws {

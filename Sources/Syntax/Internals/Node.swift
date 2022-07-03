@@ -21,3 +21,21 @@ class Node {
         }
     }
 }
+
+extension Node {
+    func copy() -> Node {
+        let node = Node(start: originalStart)
+        node.start = start
+        node.parent = parent?.copy()
+        node.children = Array(children)
+        return node
+    }
+}
+
+extension MutableSyntaxTree {
+
+    fileprivate func copy() -> MutableSyntaxTree {
+        return MutableSyntaxTree(range: range, location: location, annotations: annotations, children: children.map { $0.copy() })
+    }
+
+}

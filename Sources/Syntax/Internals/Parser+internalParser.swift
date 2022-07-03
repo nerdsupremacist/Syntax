@@ -72,11 +72,15 @@ private class DerivedRecursiveParserBuilder<T : RecursiveParser>: InternalParser
 }
 
 private class InternalParserWrapper<T : Parser>: InternalParser {
-    let id = UUID()
+    let id: UUID? = UUID()
     let content: InternalParser
 
     init(content: InternalParser) {
         self.content = content
+    }
+
+    var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+        return .higher
     }
 
     func prefixes() -> Set<String> {
@@ -87,7 +91,7 @@ private class InternalParserWrapper<T : Parser>: InternalParser {
         try scanner.parseWithNewNode(content)
         if let kind = T.kind {
             scanner.configureNode(kind: kind)
-            scanner.pruneNode(strategy: .lower)
+            scanner.pruneNode(strategy: content.preferredKindOverrideForDerived)
         }
 
         if T.Parsed.self != Void.self {

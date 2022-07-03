@@ -16,11 +16,15 @@ public struct RegularExpression: Parser, Hashable {
 
 extension RegularExpression: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let pattern: String
 
         init(pattern: String) {
             self.pattern = pattern
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {

@@ -36,20 +36,7 @@ struct HTMLNodeParser: RecursiveParser {
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 private struct IdentifierParser: RecursiveParser {
     var body: any Parser<Substring> {
-        Regex {
-          CharacterClass(
-            ("a"..."z"),
-            ("A"..."Z")
-          )
-          ZeroOrMore {
-            CharacterClass(
-              .anyOf("-"),
-              ("a"..."z"),
-              ("A"..."Z"),
-              ("0"..."9")
-            )
-          }
-        }
+        RegularExpression("[a-zA-Z][-a-zA-Z]*").map(\.text)
     }
 }
 

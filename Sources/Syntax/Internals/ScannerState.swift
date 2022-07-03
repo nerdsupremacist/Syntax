@@ -232,10 +232,10 @@ private final class InPlaceStorage: ScannerStateStorage {
 
     func parse(_ state: ScannerState, using parser: InternalParser, with scanner: Scanner, memoizationStorage: MemoizationStorage) throws {
         let start = state.range.lowerBound
-        let key = MemoizationKey(id: parser.id, start: start)
-        if let memoized = memoizationStorage[key] {
+        let key = parser.id.map { MemoizationKey(id: $0, start: start) }
+        if let memoized = key.flatMap({ memoizationStorage[$0] }) {
             state.range = memoized.range
-            state.node = memoized.node
+            state.node = memoized.node.copy()
             values.append(contentsOf: memoized.values)
             ids = memoized.ids
             lastDiagnosticError = memoized.lastDiagnosticError
@@ -245,15 +245,18 @@ private final class InPlaceStorage: ScannerStateStorage {
         let currentStack = values
 
         try parser.parse(using: scanner)
-        var newValuesStack = self.values
-        newValuesStack.remove(from: currentStack)
-        let memoized = MemoizedState(range: state.range,
-                                     node: state.node,
-                                     values: newValuesStack,
-                                     ids: ids,
-                                     lastDiagnosticError: state.lastDiagnosticError)
 
-        memoizationStorage[key] = memoized
+        if let key = key {
+            var newValuesStack = self.values
+            newValuesStack.remove(from: currentStack)
+            let memoized = MemoizedState(range: state.range,
+                                         node: state.node.copy(),
+                                         values: newValuesStack,
+                                         ids: ids,
+                                         lastDiagnosticError: state.lastDiagnosticError)
+
+            memoizationStorage[key] = memoized
+        }
     }
 
     func store<T>(value: T) {

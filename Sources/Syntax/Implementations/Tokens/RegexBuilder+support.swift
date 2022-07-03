@@ -30,11 +30,15 @@ private struct RegexWrapperParser<Parsed>: Parser {
 @available(macOS 13.0, iOS 16, tvOS 16, watchOS 9, *)
 extension RegexWrapperParser: InternalParserBuilder {
     private class _Parser: InternalParser {
-        let id = UUID()
+        let id: UUID? = UUID()
         let expression: Regex<Parsed>
 
         init(expression: Regex<Parsed>) {
             self.expression = expression
+        }
+        
+        var preferredKindOverrideForDerived: Kind.CombinationStrategy {
+            return .higher
         }
 
         func prefixes() -> Set<String> {
