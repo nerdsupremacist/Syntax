@@ -109,7 +109,9 @@ extension ValuePopper {
         if Self.self != Void.self {
             let value = try scanner.pop(of: Self.self)
             _ = Unmanaged.passRetained(value as AnyObject)
-            pointer.storeBytes(of: value, as: Self.self)
+            let typedPointer = pointer.bindMemory(to: Self.self, capacity: 1)
+            typedPointer.deinitialize(count: 1)
+            typedPointer.initialize(repeating: value, count: 1)
         }
     }
 }

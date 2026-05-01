@@ -23,9 +23,9 @@ private protocol ScannerStateStorage: AnyObject {
 
     func effective() -> ScannerStateStorage
 
-    func store<T>(value: T)
+    func store<Value>(value: Value)
     func store(error: DiagnosticError)
-    func pop<T>(of type: T.Type) throws -> T?
+    func pop<Value>(of type: Value.Type) throws -> Value?
     func preventRecursion(id: UUID) throws
 
     func parse(_ state: ScannerState,
@@ -442,7 +442,7 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
         try parser.parse(using: scanner)
     }
 
-    func store<T>(value: T) {
+    func store<Value>(value: Value) {
         // No-op
     }
 
@@ -450,8 +450,8 @@ private final class ScanningStorage<T>: ScannerStateStorage, ScanningStorageProt
         // No-op
     }
 
-    func pop<T>(of type: T.Type) throws -> T? {
-        return annotations.last?.value as? T
+    func pop<Value>(of type: Value.Type) throws -> Value? {
+        return annotations.last?.value as? Value
     }
 
     func preventRecursion(id: UUID) throws {
@@ -600,7 +600,7 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
         self.inplace = InPlaceStorage()
     }
 
-    func store<T>(value: T) {
+    func store<Value>(value: Value) {
         current.store(value: value)
     }
 
@@ -608,7 +608,7 @@ private class StackedScanningStateStorage<T>: ScannerStateStorage {
         current.store(error: error)
     }
 
-    func pop<T>(of type: T.Type) throws -> T? {
+    func pop<Value>(of type: Value.Type) throws -> Value? {
         return try current.pop(of: type)
     }
 
